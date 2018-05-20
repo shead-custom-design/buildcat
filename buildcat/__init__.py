@@ -54,8 +54,8 @@ class Action(Node):
     def __repr__(self):
         return "<buildcat.Action %r>" % self._label
 
-    def execute(self):
-        pass
+    def execute(self, inputs, outputs):
+        log.debug("  inputs: %s outputs: %s", inputs, outputs)
 
 class Process(object):
     def __init__(self):
@@ -97,10 +97,12 @@ class Process(object):
 
     def run(self):
         for node in networkx.algorithms.dag.topological_sort(self._graph):
-            log.debug("Visiting %r", node)
+            log.info("Visiting %r", node)
             if isinstance(node, Action):
-                log.debug("Executing %r", node)
-                node.execute()
+                log.info("Executing %r", node)
+                inputs = [source for source, target in self._graph.in_edges(node)]
+                outputs = [target for source, target in self._graph.out_edges(node)]
+                node.execute(inputs, outputs)
 
         return self
 
