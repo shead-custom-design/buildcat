@@ -19,14 +19,18 @@
 
 from __future__ import absolute_import, division, print_function
 
-import logging
+import six
 
-from buildcat.action import *
-from buildcat.process import *
-from buildcat.target import *
+class Node(object):
+    def __init__(self, label):
+        assert(isinstance(label, six.string_types))
+        self._label = label
 
-__version__ = "0.1.0-dev"
+    def __repr__(self):
+        return "buildcat.Node(%r)" % self._label
 
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
+    @property
+    def label(self):
+        return self._label
+
 
