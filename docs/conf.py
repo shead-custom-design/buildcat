@@ -347,3 +347,13 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+# set up the types of member to check that are documented
+def warn_undocumented_members(app, what, name, obj, options, lines):
+    if what not in [] and len(lines) == 0:
+        print("WARNING: %s is undocumented: %s" % (what, name))
+        lines.append(".. Warning:: %s '%s' undocumented" % (what, name))
+
+def setup(app):
+    app.connect('autodoc-process-docstring', warn_undocumented_members);
+
