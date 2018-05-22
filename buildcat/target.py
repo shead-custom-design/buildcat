@@ -40,6 +40,10 @@ class Target(buildcat.node.Node):
     def exists(self, environment):
         return False
 
+    @abc.abstractmethod
+    def timestamp(self, environment):
+        return None
+
 
 class Directory(Target):
     def __init__(self, path):
@@ -49,13 +53,18 @@ class Directory(Target):
     def __repr__(self):
         return "buildcat.target.Directory(path=%r)" % (self._path)
 
+    def exists(self, environment):
+        return os.path.isdir(environment.abspath(self._path))
+
+    def timestamp(self, environment):
+        try:
+            return os.path.getmtime(environment.abspath(self._path))
+        except:
+            return None
+
     @property
     def path(self):
         return self._path
-
-    def exists(self, environment):
-        path = environment.abspath(self._path)
-        return os.path.isdir(path)
 
     def string(self, environment):
         return environment.abspath(self._path)
@@ -69,13 +78,18 @@ class File(Target):
     def __repr__(self):
         return "buildcat.target.File(path=%r)" % (self._path)
 
+    def exists(self, environment):
+        return os.path.exists(environment.abspath(self._path))
+
+    def timestamp(self, environment):
+        try:
+            return os.path.getmtime(environment.abspath(self._path))
+        except:
+            return None
+
     @property
     def path(self):
         return self._path
-
-    def exists(self, environment):
-        path = environment.abspath(self._path)
-        return os.path.exists(path)
 
     def string(self, environment):
         return environment.abspath(self._path)

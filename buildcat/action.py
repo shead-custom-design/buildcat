@@ -63,8 +63,8 @@ class MakeDirectory(Action):
 
 class Shell(Action):
     def __init__(self, command):
-        assert(isinstance(command, six.string_types))
         super(Shell, self).__init__()
+        assert(isinstance(command, six.string_types))
         self._command = command
 
     def __repr__(self):
