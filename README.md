@@ -2,8 +2,15 @@
 
 <img src="artwork/buildcat.png" width="300" style="float:right"/>
 
-Welcome to Buildcat ... an elegant, flexible build system with
-dependency tracking for complex processes.
+Buildcat is the elegant, flexible, and lightweight build system that's
+been struggling to escape monolithic tools like `make` and `SCons`.
+Use Buildcat to process data, run scientific experiments, build documentation,
+or handle any other build automation task.  Some key Buildcat features:
+
+* Written in Python, called from Python: no new config file formats or DSLs to learn.
+* Provides a library, not an executable: add it to existing scripts piecemeal, create your own front-ends, or integrate with an IDE if you like.
+* *Doesn't* provide tools for C++ or Java compilation: you're automating building a PDF paper, another !@#$! `program.exe` sample isn't what you need.
+* *Doesn't* assume all targets are on the filesystem: want to use a database record or a file stored in the cloud as a dependency?  Go for it.
 
 You can see the full Buildcat documentation with tutorials at
 https://buildcat.readthedocs.io ... for questions, comments, or suggestions, get
