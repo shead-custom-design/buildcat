@@ -19,6 +19,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import abc
 import logging
 import os
 import subprocess
@@ -31,6 +32,7 @@ import buildcat.target
 log = logging.getLogger(__name__)
 
 
+@six.add_metaclass(abc.ABCMeta)
 class Action(buildcat.node.Node):
     def __init__(self):
         super(Action, self).__init__()
@@ -38,8 +40,9 @@ class Action(buildcat.node.Node):
     def __repr__(self):
         return "buildcat.action.Action()"
 
+    @abc.abstractmethod
     def execute(self, environment, inputs, outputs):
-        pass
+        raise NotImplementedError()
 
 
 class MakeDirectory(Action):

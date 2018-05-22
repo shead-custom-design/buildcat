@@ -17,14 +17,18 @@
 
 from __future__ import absolute_import, division, print_function
 
+import abc
 import logging
 import os
+
+import six
 
 import buildcat.node
 
 log = logging.getLogger(__name__)
 
 
+@six.add_metaclass(abc.ABCMeta)
 class Target(buildcat.node.Node):
     def __init__(self):
         super(Target, self).__init__()
@@ -32,6 +36,7 @@ class Target(buildcat.node.Node):
     def __repr__(self):
         return "buildcat.target.Target()"
 
+    @abc.abstractmethod
     def exists(self, environment):
         return False
 
