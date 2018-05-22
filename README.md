@@ -3,14 +3,15 @@
 <img src="artwork/buildcat.png" width="300" style="float:right"/>
 
 Buildcat is the elegant, flexible, and lightweight build system that's
-been struggling to escape monolithic tools like `make` and `SCons`.
-Use Buildcat to process data, run scientific experiments, build documentation,
+been trapped inside bloated, monolithic tools like `make` and `SCons`.
+Use Buildcat to process data, run scientific experiments, create documentation,
 or handle any other build automation task.  Some key Buildcat features:
 
-* Written in Python, called from Python: no new config file formats or DSLs to learn.
-* Provides a library, not an executable: add it to existing scripts piecemeal, create your own front-ends, or integrate with an IDE if you like.
-* *Doesn't* provide tools for C++ or Java compilation: you're automating building a PDF paper, another !@#$! `program.exe` sample isn't what you need.
+* Written in Python, called from Python using a Pythonic API: no new config file formats or DSLs to learn.
+* Provides a library, not an executable: add it to existing scripts piecemeal, create your own front-ends, or integrate with an IDE if you're into that sort of thing.
+* *Doesn't* provide tools for C++ or Java compilation: building a PDF from LaTeX sources?  Another !@#$! shared library example isn't what you need.
 * *Doesn't* assume all targets are on the filesystem: want to use a database record or a file stored in the cloud as a dependency?  Go for it.
+* Easily extensible: derive from `buildcat.Action` to define new actions on out-of-date targets.  Derive from `buildcat.Target` to create new types of target that live outside the filesystem.  Bam!
 
 You can see the full Buildcat documentation with tutorials at
 https://buildcat.readthedocs.io ... for questions, comments, or suggestions, get
