@@ -73,3 +73,30 @@ class Nonexistent(Criteria):
             if not node.exists(environment):
                 return True
         return False
+
+
+class Outdated(Criteria):
+    def __init__(self):
+        super(Outdated, self).__init__()
+
+    def __repr__(self):
+        return "buildcat.build.Outdated()"
+
+    def outdated(self, environment, inputs, outputs):
+        for node in outputs:
+            if not node.exists(environment):
+                return True
+
+            output_timestamp = node.timestamp(environment)
+            if output_timestamp is None:
+                return True
+
+            for inode in inputs:
+                input_timestamp = node.timestamp(environment)
+                if input_timestamp is None:
+                    return True
+
+                if input_timestamp > output_timestamp:
+                    return True
+
+        return False

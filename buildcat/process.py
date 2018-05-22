@@ -80,7 +80,7 @@ class Process(object):
         elif inputs is None:
             inputs = []
         if build is None:
-            build = buildcat.build.Nonexistent()
+            build = buildcat.build.Outdated()
 
         assert(isinstance(action, buildcat.action.Action))
         for node in outputs:
@@ -112,8 +112,9 @@ class Process(object):
                 outputs = [target for source, target in self._graph.out_edges(node)]
                 build = networkx.get_node_attributes(self._graph, "build")[node]
 
-                log.debug("Testing: %r", build)
-                if build.outdated(environment, inputs, outputs):
+                outdated = build.outdated(environment, inputs, outputs)
+                log.debug("Testing: %r => %s", build, outdated)
+                if outdated:
                     log.info("Running: %r", node)
                     node.execute(environment, inputs, outputs)
 
