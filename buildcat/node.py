@@ -22,15 +22,9 @@ from __future__ import absolute_import, division, print_function
 import six
 
 class Node(object):
-    def __init__(self, label):
-        assert(isinstance(label, six.string_types))
-        self._label = label
+    def __init__(self):
+        pass
 
     def __repr__(self):
-        return "buildcat.Node(%r)" % self._label
-
-    @property
-    def label(self):
-        return self._label
-
+        return "buildcat.Node()"
 

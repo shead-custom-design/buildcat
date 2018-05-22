@@ -59,11 +59,11 @@ class Process(object):
         graph.attr("node", shape="box")
         for node in self._graph.nodes:
             if isinstance(node, buildcat.action.Action):
-                graph.node(str(id(node)), node.label)
+                graph.node(str(id(node)), type(node).__name__)
         graph.attr("node", shape="ellipse")
         for node in self._graph.nodes:
             if not isinstance(node, buildcat.action.Action):
-                graph.node(str(id(node)), node.label)
+                graph.node(str(id(node)), type(node).__name__)
         for source, target in self._graph.edges:
             graph.edge(str(id(source)), str(id(target)))
         return graph._repr_svg_()

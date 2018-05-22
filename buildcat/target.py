@@ -26,25 +26,23 @@ log = logging.getLogger(__name__)
 
 
 class Target(buildcat.node.Node):
-    def __init__(self, label):
-        super(Target, self).__init__(label)
+    def __init__(self):
+        super(Target, self).__init__()
 
     def __repr__(self):
-        return "buildcat.target.Target(label=%r)" % self._label
+        return "buildcat.target.Target()"
 
     def exists(self, environment):
         return False
 
 
 class Directory(Target):
-    def __init__(self, path, label=None):
-        if label is None:
-            label = path
-        super(Directory, self).__init__(label)
+    def __init__(self, path):
+        super(Directory, self).__init__()
         self._path = path
 
     def __repr__(self):
-        return "buildcat.target.Directory(label=%r, path=%r)" % (self._label, self._path)
+        return "buildcat.target.Directory(path=%r)" % (self._path)
 
     @property
     def path(self):
@@ -59,14 +57,12 @@ class Directory(Target):
 
 
 class File(Target):
-    def __init__(self, path, label=None):
-        if label is None:
-            label = path
-        super(File, self).__init__(label)
+    def __init__(self, path):
+        super(File, self).__init__()
         self._path = path
 
     def __repr__(self):
-        return "buildcat.target.File(label=%r, path=%r)" % (self._label, self._path)
+        return "buildcat.target.File(path=%r)" % (self._path)
 
     @property
     def path(self):

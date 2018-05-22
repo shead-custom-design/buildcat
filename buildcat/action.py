@@ -32,22 +32,22 @@ log = logging.getLogger(__name__)
 
 
 class Action(buildcat.node.Node):
-    def __init__(self, label):
-        super(Action, self).__init__(label)
+    def __init__(self):
+        super(Action, self).__init__()
 
     def __repr__(self):
-        return "buildcat.action.Action(label=%r)" % self._label
+        return "buildcat.action.Action()"
 
     def execute(self, environment, inputs, outputs):
         pass
 
 
 class MakeDirectory(Action):
-    def __init__(self, label):
-        super(MakeDirectory, self).__init__(label)
+    def __init__(self):
+        super(MakeDirectory, self).__init__()
 
     def __repr__(self):
-        return "buildcat.action.MakeDirectory(label=%r)" % self._label
+        return "buildcat.action.MakeDirectory()"
 
     def execute(self, environment, inputs, outputs):
         for node in outputs:
@@ -59,13 +59,13 @@ class MakeDirectory(Action):
 
 
 class Shell(Action):
-    def __init__(self, label, command):
+    def __init__(self, command):
         assert(isinstance(command, six.string_types))
-        super(Shell, self).__init__(label)
+        super(Shell, self).__init__()
         self._command = command
 
     def __repr__(self):
-        return "buildcat.action.Shell(label=%r, command=%r)" % (self._label, self._command)
+        return "buildcat.action.Shell(command=%r)" % (self._command)
 
     def execute(self, environment, inputs, outputs):
         command = self._command.format(
@@ -87,11 +87,11 @@ class Shell(Action):
 
 
 class TouchFile(Action):
-    def __init__(self, label):
-        super(TouchFile, self).__init__(label)
+    def __init__(self):
+        super(TouchFile, self).__init__()
 
     def __repr__(self):
-        return "buildcat.action.TouchFile(label=%r)" % self._label
+        return "buildcat.action.TouchFile()"
 
     def execute(self, environment, inputs, outputs):
         for node in outputs:
