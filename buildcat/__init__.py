@@ -22,6 +22,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 
 from buildcat.action import *
+from buildcat.build import *
 from buildcat.process import *
 from buildcat.target import *
 

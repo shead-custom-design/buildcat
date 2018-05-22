@@ -26,6 +26,7 @@ import networkx
 import networkx.algorithms.dag
 
 import buildcat.action
+import buildcat.build
 import buildcat.target
 
 log = logging.getLogger(__name__)
@@ -53,6 +54,9 @@ class Process(object):
         self._graph = networkx.DiGraph()
         self._environment = Environment(cwd=cwd)
 
+    def __repr__(self):
+        return "buildcat.process.Process()"
+
     def _repr_svg_(self):
         import graphviz
         graph = graphviz.Digraph()
@@ -68,19 +72,24 @@ class Process(object):
             graph.edge(str(id(source)), str(id(target)))
         return graph._repr_svg_()
 
-    def add_action(self, action, outputs, inputs=None):
+    def add_action(self, action, outputs, inputs=None, build=None):
         if isinstance(outputs, buildcat.target.Target):
             outputs = [outputs]
         if isinstance(inputs, buildcat.target.Target):
             inputs = [inputs]
         elif inputs is None:
             inputs = []
+        if build is None:
+            build = buildcat.build.Nonexistent()
 
         assert(isinstance(action, buildcat.action.Action))
         for node in outputs:
             assert(isinstance(node, buildcat.target.Target))
         for node in inputs:
             assert(isinstance(node, buildcat.target.Target))
+        assert(isinstance(build, buildcat.build.Criteria))
+
+        self._graph.add_node(action, build=build)
 
         for node in inputs:
             self._graph.add_edge(node, action)
@@ -90,22 +99,33 @@ class Process(object):
         return self
 
     def run(self):
+        log.info("Started process: %s", self)
+
+        environment = self._environment
+        log.info("Environment: %r", environment)
+
         stop = False
-        log.info("Environment: %r", self._environment)
         for node in networkx.algorithms.dag.topological_sort(self._graph):
-            #log.debug("Visiting: %r", node)
+            log.debug("Visiting: %r", node)
             if isinstance(node, buildcat.action.Action):
-                log.info("Running: %r", node)
                 inputs = [source for source, target in self._graph.in_edges(node)]
                 outputs = [target for source, target in self._graph.out_edges(node)]
-                node.execute(self._environment, inputs, outputs)
+                build = networkx.get_node_attributes(self._graph, "build")[node]
+
+                log.debug("Testing: %r", build)
+                if build.outdated(environment, inputs, outputs):
+                    log.info("Running: %r", node)
+                    node.execute(environment, inputs, outputs)
+
                 for output in outputs:
-                    if not output.exists(self._environment):
+                    if not output.exists(environment):
                         stop = True
                         log.error("Missing: %r", output)
 
             if stop:
                 break
+
+        log.info("Finished process: %s", self)
 
         return self
 

@@ -12,6 +12,7 @@ Contents:
 
    buildcat.rst
    buildcat.action.rst
+   buildcat.build.rst
    buildcat.node.rst
    buildcat.process.rst
    buildcat.target.rst
