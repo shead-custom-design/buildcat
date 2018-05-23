@@ -15,13 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Elegant, flexible build system in Python complex processes."""
+"""Objects that support the directed acyclic graph used to define a process."""
 
 from __future__ import absolute_import, division, print_function
 
+import abc
+
 import six
 
+@six.add_metaclass(abc.ABCMeta)
 class Node(object):
+    """Abstract base class for all user specified :ref:`targets` and :ref:`actions`."""
     def __init__(self):
         pass
 

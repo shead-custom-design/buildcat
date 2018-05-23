@@ -32,7 +32,6 @@ import buildcat.target
 log = logging.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
 class Action(buildcat.node.Node):
     def __init__(self):
         super(Action, self).__init__()
