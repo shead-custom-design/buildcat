@@ -36,6 +36,7 @@ setup(
     ],
     description="Elegant, flexible data logging in Python for connected sensors and instruments.",
     install_requires=[
+        "custom_inherit",
         "networkx",
         "six",
     ],

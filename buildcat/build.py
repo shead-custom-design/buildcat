@@ -23,12 +23,13 @@ import abc
 import logging
 import os
 
+import custom_inherit
 import six
 
 log = logging.getLogger(__name__)
 
 
-@six.add_metaclass(abc.ABCMeta)
+@six.add_metaclass(custom_inherit.DocInheritMeta(abstract_base_class=True, style="numpy_napoleon"))
 class Criteria(object):
     """Abstract base class for build criteria that determine when a :ref:`target <targets>` is out-of-date and needs to be built."""
     def __init__(self):
@@ -60,15 +61,6 @@ class Always(Criteria):
         return "buildcat.build.Always()"
 
     def outdated(self, environment, inputs, outputs):
-        """Return `True` if any of the given `outputs` is out-of-date and needs to be built.
-
-        Parameters
-        ----------
-        inputs: sequence of :class:`buildcat.target.Target` instances, required.
-            Zero-to-many dependencies of the given `outputs`.
-        outputs: sequence of :class:`buildcat.target.Target` instances, required.
-            One-to-many targets to be tested for freshness.
-        """
         return True
 
 
@@ -84,15 +76,6 @@ class Never(Criteria):
         return "buildcat.build.Never()"
 
     def outdated(self, environment, inputs, outputs):
-        """Return `True` if any of the given `outputs` is out-of-date and needs to be built.
-
-        Parameters
-        ----------
-        inputs: sequence of :class:`buildcat.target.Target` instances, required.
-            Zero-to-many dependencies of the given `outputs`.
-        outputs: sequence of :class:`buildcat.target.Target` instances, required.
-            One-to-many targets to be tested for freshness.
-        """
         return False
 
 
@@ -108,15 +91,6 @@ class Nonexistent(Criteria):
         return "buildcat.build.Nonexistent()"
 
     def outdated(self, environment, inputs, outputs):
-        """Return `True` if any of the given `outputs` is out-of-date and needs to be built.
-
-        Parameters
-        ----------
-        inputs: sequence of :class:`buildcat.target.Target` instances, required.
-            Zero-to-many dependencies of the given `outputs`.
-        outputs: sequence of :class:`buildcat.target.Target` instances, required.
-            One-to-many targets to be tested for freshness.
-        """
         for node in outputs:
             if not node.exists(environment):
                 return True
@@ -132,15 +106,6 @@ class Outdated(Criteria):
         return "buildcat.build.Outdated()"
 
     def outdated(self, environment, inputs, outputs):
-        """Return `True` if any of the given `outputs` is out-of-date and needs to be built.
-
-        Parameters
-        ----------
-        inputs: sequence of :class:`buildcat.target.Target` instances, required.
-            Zero-to-many dependencies of the given `outputs`.
-        outputs: sequence of :class:`buildcat.target.Target` instances, required.
-            One-to-many targets to be tested for freshness.
-        """
         for node in outputs:
             if not node.exists(environment):
                 return True
