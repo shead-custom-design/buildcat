@@ -15,7 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Provides classes that represent ref:`targets` - artifacts to be created and/or updated by the build process."""
+"""Objects that represent :ref:`targets`.
+
+Any artifact created by a buildcat process is a :ref:`target <targets>`, along
+with any artifact that is used as an input (a dependency).  To create a build
+process, your create target objects and the :ref:`actions` used to build them,
+then connect them by calling :meth:`buildcat.process.Process.add_action`.
+
+Use :class:`buildcat.target.Directory` and :class:`buildcat.target.File` to
+define directory and file targets on a filesystem, respectively.  Derive your own
+classes from :class:`buildcat.target.Target` to work with targets that aren't
+located on a filesystem - for example, you could use database records as inputs
+or outputs of your build process, or resources on a web server.
+"""
 
 from __future__ import absolute_import, division, print_function
 

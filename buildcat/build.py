@@ -15,7 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Objects that control the build process."""
+"""Objects that control the build process.
+
+:class:`buildcat.build.Outdated` provides the default logic for determining
+when a target needs to be rebuilt: in a nutshell, it rebuilds a target if it
+doesn't exist, or if it's older than any of its dependencies.  In some cases
+you might want to use :class:`buildcat.build.Nonexistent`, which only builds a
+target if it doesn't exist - later updates to its dependencies will be ignored.
+You might occasionally use :class:`buildcat.build.Always`, which always
+unconditionally rebuilds a target, whether it already exists or not.  You use
+these classes by passing them to :meth:`buildcat.process.Process.add_action` as
+you define your build process.
+
+If you need some other, more complex logic, you can implement it by deriving
+your own class from :class:`buildcat.build.Criteria` and implementing the
+:meth:`buildcat.build.Criteria.outdated` method.
+"""
 
 from __future__ import absolute_import, division, print_function
 

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Public API of Buildcat: an elegant, flexible, lightweight build system."""
+"""Provides the Buildcat public API."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -27,7 +27,6 @@ from buildcat.process import *
 from buildcat.target import *
 
 __version__ = "0.1.0-dev"
-"""Buildcat version, which follows the `Semantic Versioning <https://semver.org>`_ standard."""
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
