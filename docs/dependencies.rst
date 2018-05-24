@@ -17,10 +17,9 @@ To use Buildcat you will need, at a minimum, Python 2 or 3 (duh):
 plus the following (if you install Buildcat
 using pip, these are automatically installed for you):
 
-* arrow - Better dates and times for Python - http://arrow.readthedocs.io
-* numpy >= 1.8.0 - http://numpy.org
-* Pint - makes units easy - https://pint.readthedocs.io
-* six - http://pythonhosted.org/six
+* custom_inherit - tools for inheriting docstrings - https://github.com/meowklaski/custom_inherit
+* NetworkX - Python network data structures and tools - https://networkx.github.io
+* six - Python 2/3 portability - http://pythonhosted.org/six
 
 Source Installation
 -------------------

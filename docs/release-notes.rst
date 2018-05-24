@@ -7,7 +7,7 @@
 Release Notes
 =============
 
-Buildcat 0.1.0 - May 18th, 2018
+Buildcat 0.0.1 - May 18th, 2018
 -------------------------------
 
-* Initial Release
+* Setting up the project.

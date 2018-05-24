@@ -10,10 +10,9 @@ Contributing
 Even if you're not in a position to contribute code to Buildcat, there are many
 ways you can help the project out:
 
-* Send the names of serial ports that work with a device on your platform, so we can document it.
-* Let us know if one of our existing devices works with some other model or brand of hardware, so we can document *that*.
-* Send us a file containing sample output from your device.
-* Tell us if our code doesn't work with your device.
+* Tell us if Buildcat doesn't work for your problem.
+* Send us a link to your project that uses Buildcat for automatiion.
+* Help us write documentation.
 * Spread the word!
 
 Getting Started
@@ -69,7 +68,7 @@ Building the Documentation
 To build the documentation, run::
 
     $ cd buildcat
-    $ python docs/setup.py
+    $ python docs/build.py
 
 Note that significant subsets of the documentation are written using Jupyter
 notebooks, so the docs/setup.py script requires Jupyter to convert the
