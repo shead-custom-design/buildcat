@@ -17,8 +17,8 @@ To use Buildcat you will need, at a minimum, Python 2 or 3 (duh):
 plus the following (if you install Buildcat
 using pip, these are automatically installed for you):
 
-* custom_inherit - tools for inheriting docstrings - https://github.com/meowklaski/custom_inherit
-* NetworkX - Python network data structures and tools - https://networkx.github.io
+* RQ - Simple job queues for Python - http://python-rq.org
+* redis - The Python interface to the Redis key-value store - https://pypi.org/project/redis/
 * six - Python 2/3 portability - http://pythonhosted.org/six
 
 Source Installation

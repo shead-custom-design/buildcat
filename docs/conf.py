@@ -82,7 +82,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Buildcat'
-copyright = u'2016, Timothy M. Shead'
+copyright = u'2018, Timothy M. Shead'
 author = u'Timothy M. Shead'
 
 # The version info for the project you're documenting, acts as replacement for

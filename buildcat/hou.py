@@ -15,14 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Provides the Buildcat public API."""
+"""Functionality for integration with SideFX Houdini.
+"""
 
 from __future__ import absolute_import, division, print_function
 
-import logging
+import subprocess
 
-__version__ = "0.1.0-dev"
-
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
+def get_version():
+    command = ["hython", "-c", "print(hou.applicationVersionString())"]
+    return subprocess.check_output(command).strip().decode("utf-8")
 

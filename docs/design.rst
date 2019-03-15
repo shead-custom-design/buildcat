@@ -9,7 +9,3 @@ Design
 
 .. _nodes:
 
-Nodes
------
-
-Components in Buildcat manipulate `nodes` in a graph of dependencies.

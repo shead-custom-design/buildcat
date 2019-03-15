@@ -15,20 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Objects that support the directed acyclic graph used to define a process."""
 
 from __future__ import absolute_import, division, print_function
 
-import abc
+import logging
 
-import six
+import rq.timeouts
+import rq.worker
 
-@six.add_metaclass(abc.ABCMeta)
-class Node(object):
-    """Abstract base class for all user specified :ref:`targets` and :ref:`actions`."""
-    def __init__(self):
+log = logging.getLogger("rq.worker")
+
+
+class NeverTimeout(rq.timeouts.BaseDeathPenalty):
+    def setup_death_penalty(self):
+        log.warning("Job will never timeout.")
+
+    def cancel_death_penalty(self):
         pass
 
-    def __repr__(self):
-        return "buildcat.Node()"
+
+class NoForkWorker(rq.worker.SimpleWorker):
+    death_penalty_class = NeverTimeout
 

@@ -34,15 +34,10 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
-    description="Elegant, flexible data logging in Python for connected sensors and instruments.",
+    description="Elegant, simple render farm based on rq.",
     install_requires=[
-        "custom_inherit",
-        "networkx",
-        "six",
+        "rq",
     ],
-    long_description="""Buildcat provides a simple, flexible framework for retrieving data from connected sensors and instruments.
-    See the Buildcat documentation at http://buildcat.readthedocs.io, and the Buildcat sources at http://github.com/shead-custom-design/buildcat""",
-    maintainer="Timothy M. Shead",
     maintainer_email="tim@shead-custom-design.gov",
     packages=find_packages(),
     scripts=[

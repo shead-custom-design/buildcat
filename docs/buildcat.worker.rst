@@ -1,7 +1,7 @@
-buildcat.action module
+buildcat.worker module
 ======================
 
-.. automodule:: buildcat.action
+.. automodule:: buildcat.worker
     :members:
     :undoc-members:
     :show-inheritance:
