@@ -23,6 +23,5 @@ import logging
 
 __version__ = "0.1.0-dev"
 
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
+log = logging.getLogger("rq.worker")
 
