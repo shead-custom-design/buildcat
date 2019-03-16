@@ -20,10 +20,54 @@
 
 from __future__ import absolute_import, division, print_function
 
+import json
 import subprocess
+import time
 
-def get_version():
-    """Return version and path information describing the worker's local Houdini installation."""
-    command = ["hython", "-c", "print(hou.applicationVersionString())"]
-    return subprocess.check_output(command).strip().decode("utf-8")
+import redis
+import rq
+
+import buildcat
+
+
+def _hython_executable():
+    return "hython"
+
+
+def _queue():
+    return rq.Queue(connection=redis.Redis())
+
+
+def metadata():
+    """Return version and path information describing the worker's local Houdini installation.
+
+    Returns
+    -------
+    metadata: dict
+        A collection of key-value pairs containing information describing the
+        local Houdini installation.
+    """
+
+    command = [_hython_executable(), "-c", metadata.code]
+    result = json.loads(subprocess.check_output(command))
+    return result
+
+metadata.code = """
+import json
+import sys
+json.dump({
+    "name": hou.applicationName(),
+    "version": hou.applicationVersionString(),
+}, sys.stdout)
+"""
+
+
+def render(hipfile):
+    q = _queue()
+    for frame in range(10):
+        q.enqueue("buildcat.hou.render_frame", hipfile, frame)
+
+
+def render_frame(hipfile, frame):
+    time.sleep(5)
 
