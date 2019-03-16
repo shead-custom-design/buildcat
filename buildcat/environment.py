@@ -25,6 +25,15 @@ import rq
 connection = None
 
 def queue():
+    """Creates a queue connected to the service that initiated the current job.
+
+    Useful when a job handler needs to spawn additional jobs.
+
+    Returns
+    -------
+    queue: :class:`rq.Queue`
+        New queue pointing to the service where the current job originated.
+    """
     if connection is None:
         raise RuntimeError("Cannot create a queue without a connection.  Are you running outside a worker?")
     return rq.Queue(connection=connection)

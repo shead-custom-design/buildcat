@@ -37,9 +37,11 @@ class NeverTimeout(rq.timeouts.BaseDeathPenalty):
     interrupt a running job.
     """
     def setup_death_penalty(self):
+        """Do-nothing implementation."""
         buildcat.log.warning("Job will never timeout.")
 
     def cancel_death_penalty(self):
+        """Do-nothing implementation."""
         pass
 
 
@@ -52,15 +54,17 @@ else: # Operating systems without fork(), such as Windows
 
 
 class Worker(worker_base):
-    """RQ worker class that does not fork.
+    """Portable, enhanced RQ worker class.
 
-    The default RQ worker class forks to handle each job for reliability, so that
-    the worker process can keep running even if the job causes the child process to crash.
+    The default RQ worker class forks to handle each job for reliability, so
+    that the worker process can keep running even if the job causes the child
+    process to crash.
 
-    Unfortunately, Python does not support :func:`os.fork` on Windows, making this alternative
-    implementation necessary.  You should use this class when starting workers on Windows for use with Buildcat:
+    Unfortunately, Python does not support :func:`os.fork` on Windows, making
+    this alternative implementation necessary.  You must always use this class
+    when starting workers for use with Buildcat:
 
-        $ rq worker -w buildcat.worker.NoForkWorker
+        $ rq worker -w buildcat.worker.Worker
     """
     death_penalty_class = death_penalty_class
 

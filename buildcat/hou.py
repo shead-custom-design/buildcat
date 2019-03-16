@@ -56,12 +56,36 @@ json.dump({
 """
 
 
-def render(hipfile):
+def render(hipfile, rop, frames):
+    """Render a range of frames from a Houdini .hip file.
+
+    Parameters
+    ----------
+    hipfile: str, required
+        Path to the file to be rendered.
+    rop: str, required
+        Absolute path of the ROP node to use for rendering.
+    frames: tuple, required
+        Contains the half-open range of frames to be rendered.
+    """
+    start, end = frames
+
     q = buildcat.environment.queue()
-    for frame in range(3):
-        q.enqueue("buildcat.hou.render_frame", hipfile, frame)
+    for frame in range(start, end):
+        q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 
 
-def render_frame(hipfile, frame):
-    time.sleep(5)
+def render_frame(hipfile, rop, frame):
+    """Render a single frame from a Houdini .hip file.
+
+    Parameters
+    ----------
+    hipfile: str, required
+        Path to the file to be rendered.
+    rop: str, required
+        Absolute path of the ROP node to use for rendering.
+    frame: int, required
+        The frame to be rendered.
+    """
+
 
