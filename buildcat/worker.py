@@ -20,28 +20,38 @@
 
 from __future__ import absolute_import, division, print_function
 
-import logging
+import os
 
 import rq.timeouts
 import rq.worker
 
-log = logging.getLogger("rq.worker")
+import buildcat
+import buildcat.environment
 
 
 class NeverTimeout(rq.timeouts.BaseDeathPenalty):
     """Do-nothing object that never times out.
 
-    This is part of the :class:`buildcat.worker.NoForkWorker` implementation,
-    since the latter provides no way to interrupt a running job.
+    This is part of the :class:`buildcat.worker.Worker` implementation on
+    Windows, since the latter does not provide os.fork, and thus no way to
+    interrupt a running job.
     """
     def setup_death_penalty(self):
-        log.warning("Job will never timeout.")
+        buildcat.log.warning("Job will never timeout.")
 
     def cancel_death_penalty(self):
         pass
 
 
-class NoForkWorker(rq.worker.SimpleWorker):
+if hasattr(os, "fork"): # Operating systems with fork()
+    worker_base = rq.worker.Worker
+    death_penalty_class = rq.timeouts.UnixSignalDeathPenalty
+else: # Operating systems without fork(), such as Windows
+    worker_base = rq.worker.SimpleWorker
+    death_penalty_class = NeverTimeout
+
+
+class Worker(worker_base):
     """RQ worker class that does not fork.
 
     The default RQ worker class forks to handle each job for reliability, so that
@@ -52,5 +62,9 @@ class NoForkWorker(rq.worker.SimpleWorker):
 
         $ rq worker -w buildcat.worker.NoForkWorker
     """
-    death_penalty_class = NeverTimeout
+    death_penalty_class = death_penalty_class
+
+    def __init__(self, *args, **kwargs):
+        super(Worker, self).__init__(*args, **kwargs)
+        buildcat.environment.connection = self.connection
 

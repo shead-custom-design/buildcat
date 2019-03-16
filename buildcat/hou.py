@@ -24,18 +24,12 @@ import json
 import subprocess
 import time
 
-import redis
-import rq
-
 import buildcat
+import buildcat.environment
 
 
 def _hython_executable():
     return "hython"
-
-
-def _queue():
-    return rq.Queue(connection=redis.Redis())
 
 
 def metadata():
@@ -63,8 +57,8 @@ json.dump({
 
 
 def render(hipfile):
-    q = _queue()
-    for frame in range(10):
+    q = buildcat.environment.queue()
+    for frame in range(3):
         q.enqueue("buildcat.hou.render_frame", hipfile, frame)
 
 
