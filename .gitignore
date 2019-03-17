@@ -5,3 +5,5 @@
 .coverage
 dist
 dump.rdb
+examples/render
+examples/backup
