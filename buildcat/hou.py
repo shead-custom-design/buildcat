@@ -21,15 +21,22 @@
 from __future__ import absolute_import, division, print_function
 
 import json
+import logging
+import os
 import subprocess
 import time
 
 import buildcat
 import buildcat.worker
 
+log = logging.getLogger("rq.worker")
 
 def _hython_executable():
     return "hython"
+
+
+def _buildcat_root():
+    return os.getcwd()
 
 
 def metadata():
@@ -42,7 +49,7 @@ def metadata():
         local Houdini installation.
     """
 
-    code = metadata.code
+    code = metadata.code.format(BUILDCAT_ROOT=_buildcat_root())
     command = [_hython_executable(), "-c", code]
     result = json.loads(subprocess.check_output(command))
     return result
@@ -50,10 +57,11 @@ def metadata():
 metadata.code = """
 import json
 import sys
-json.dump({
+json.dump({{
     "name": hou.applicationName(),
     "version": hou.applicationVersionString(),
-}, sys.stdout)
+    "BUILDCAT_ROOT": {BUILDCAT_ROOT!r},
+}}, sys.stdout)
 """
 
 
@@ -91,11 +99,12 @@ def render_frame(hipfile, rop, frame):
     frame: int, required
         The frame to be rendered.
     """
-    hipfile = str(hipfile)
+    hipfile = str(hipfile).replace("$BUILDCAT_ROOT", _buildcat_root())
     rop = str(rop)
     frame = int(frame)
 
     code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
+    log.debug(code)
     command = [_hython_executable(), "-c", code]
     subprocess.check_call(command)
 
