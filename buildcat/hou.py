@@ -99,7 +99,7 @@ def render_frame(hipfile, rop, frame):
     frame: int, required
         The frame to be rendered.
     """
-    hipfile = str(hipfile).replace("$BUILDCAT_ROOT", _buildcat_root())
+    hipfile = os.path.abspath(hipfile.replace("$BUILDCAT_ROOT", _buildcat_root()))
     rop = str(rop)
     frame = int(frame)
 
