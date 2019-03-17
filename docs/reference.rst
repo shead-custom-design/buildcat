@@ -12,6 +12,5 @@ Contents:
 
    buildcat.rst
    buildcat.hou.rst
-   buildcat.environment.rst
    buildcat.test.rst
    buildcat.worker.rst

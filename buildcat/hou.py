@@ -25,7 +25,7 @@ import subprocess
 import time
 
 import buildcat
-import buildcat.environment
+import buildcat.worker
 
 
 def _hython_executable():
@@ -42,7 +42,8 @@ def metadata():
         local Houdini installation.
     """
 
-    command = [_hython_executable(), "-c", metadata.code]
+    code = metadata.code
+    command = [_hython_executable(), "-c", code]
     result = json.loads(subprocess.check_output(command))
     return result
 
@@ -68,9 +69,12 @@ def render(hipfile, rop, frames):
     frames: tuple, required
         Contains the half-open range of frames to be rendered.
     """
-    start, end = frames
+    hipfile = str(hipfile)
+    rop = str(rop)
+    start = int(frames[0])
+    end = int(frames[1])
 
-    q = buildcat.environment.queue()
+    q = buildcat.worker.queue()
     for frame in range(start, end):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 
@@ -87,5 +91,19 @@ def render_frame(hipfile, rop, frame):
     frame: int, required
         The frame to be rendered.
     """
+    hipfile = str(hipfile)
+    rop = str(rop)
+    frame = int(frame)
 
+    code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
+    command = [_hython_executable(), "-c", code]
+    subprocess.check_call(command)
+
+render_frame.code = """
+import hou
+
+hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
+rop = hou.node({rop!r})
+rop.render(frame_range=({frame},{frame}), verbose=True, output_progress=True)
+"""
 
