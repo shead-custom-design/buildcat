@@ -26,10 +26,12 @@ import os
 import subprocess
 import time
 
+import rq
+
 import buildcat
-import buildcat.worker
 
 log = logging.getLogger("rq.worker")
+
 
 def _hython_executable():
     return "hython"
@@ -82,7 +84,7 @@ def render(hipfile, rop, frames):
     start = int(frames[0])
     end = int(frames[1])
 
-    q = buildcat.worker.queue()
+    q = rq.Queue(connection=rq.get_current_connection())
     for frame in range(start, end):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 

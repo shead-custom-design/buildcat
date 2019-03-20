@@ -20,9 +20,11 @@
 
 from __future__ import absolute_import, division, print_function
 
+import rq
+
 import buildcat
 
-def log_message(message):
+def log(message):
     """Log a message.
 
     Parameters
@@ -31,6 +33,17 @@ def log_message(message):
         The message to be logged.
     """
     buildcat.log.info(message)
+
+def spawn(count):
+    """Create additional jobs.
+
+    Parameters
+    ----------
+    count: int, required
+        Number of new jobs to create.
+    """
+    for index in range(count):
+        rq.Queue(connection=rq.get_current_connection()).enqueue("buildcat.test.log", "Job-{}".format(index))
 
 def raise_exception(e):
     """Raise an exception.

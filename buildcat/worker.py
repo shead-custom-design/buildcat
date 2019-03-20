@@ -67,22 +67,4 @@ class Worker(worker_base):
     """
     death_penalty_class = death_penalty_class
 
-    current_connection = None
 
-    def __init__(self, *args, **kwargs):
-        super(Worker, self).__init__(*args, **kwargs)
-        Worker.current_connection = self.connection
-
-def queue():
-    """Creates a queue connected to the service that initiated the current job.
-
-    Useful when a job handler needs to spawn additional jobs.
-
-    Returns
-    -------
-    queue: :class:`rq.Queue`
-        New queue pointing to the service where the current job originated.
-    """
-    if Worker.current_connection is None:
-        raise RuntimeError("Cannot create a queue without a connection.  Did you start rq worker with the -w buildcat.worker.Worker option?")
-    return rq.Queue(connection=Worker.current_connection)
