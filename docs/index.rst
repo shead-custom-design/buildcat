@@ -10,7 +10,10 @@
 Welcome!
 ========
 
-Buildcat is the elegant, flexible, and lightweight render farm based on rq.
+Buildcat is a lightweight, elegant render farm based on
+`RQ <http://python-rq.org>`_ and `Redis <https://redis.io>`_.  It currently
+includes integration with `SideFX Houdini <http://sidefx.com>`_, and can easily
+be extended to support other tools.
 
 Documentation
 =============

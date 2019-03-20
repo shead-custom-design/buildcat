@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Custom RQ worker class for Windows portability.
+"""Provides enhanced RQ worker functionality.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -32,7 +32,7 @@ class NeverTimeout(rq.timeouts.BaseDeathPenalty):
     """Do-nothing object that never times out.
 
     This is part of the :class:`buildcat.worker.Worker` implementation on
-    Windows, since the latter does not provide os.fork, and thus no way to
+    Windows, since the latter does not provide os.fork, and thus has no way to
     interrupt a running job.
     """
     def setup_death_penalty(self):
@@ -53,7 +53,7 @@ else: # Operating systems without fork(), such as Windows
 
 
 class Worker(worker_base):
-    """Portable, enhanced RQ worker class.
+   """Enhanced RQ worker class for use by Buildcat.
 
     The default RQ worker class forks to handle each job for reliability, so
     that the worker process can keep running even if the job causes the child

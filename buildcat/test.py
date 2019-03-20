@@ -24,8 +24,17 @@ import rq
 
 import buildcat
 
+
 def log(message):
-    """Log a message.
+    """Logs a message on a worker.
+
+    Useful for testing that the system is functioning::
+
+        q = rq.Queue(connection=redis.Redis())
+        q.enqueue("buildcat.test.log", "Hello, World!")
+
+    After which the given message will appear in the output of the worker that
+    handles the job.
 
     Parameters
     ----------
@@ -34,8 +43,17 @@ def log(message):
     """
     buildcat.log.info(message)
 
+
 def spawn(count):
-    """Create additional jobs.
+    """Spawns additional jobs from a worker.
+
+    Useful for verifying that a job handler can spawn additional jobs::
+
+        q = rq.Queue(connection=redis.Redis())
+        q.enqueue("buildcat.test.spawn", 3)
+
+    The spawn job will be handled by a worker, which will spawn 3 additional
+    :func:`buildcat.test.log` jobs, which will be handled subsequently.
 
     Parameters
     ----------
@@ -45,10 +63,17 @@ def spawn(count):
     for index in range(count):
         rq.Queue(connection=rq.get_current_connection()).enqueue("buildcat.test.log", "Job-{}".format(index))
 
+
 def raise_exception(e):
     """Raise an exception.
 
-    Useful for testing the reliability of workers.
+    Useful for testing the reliability of workers::
+
+        q = rq.Queue(connection=redis.Redis())
+        q.enqueue("buildcat.test.raise_exception", NotImplementedError())
+
+    The worker that handles this job will raise the given exception and move
+    the job to the failed queue, but should continue running.
 
     Parameters
     ----------

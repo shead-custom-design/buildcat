@@ -10,8 +10,8 @@ Contributing
 Even if you're not in a position to contribute code to Buildcat, there are many
 ways you can help the project out:
 
-* Tell us if Buildcat doesn't work for your problem.
-* Send us a link to your project that uses Buildcat for automatiion.
+* Show us cool stuff that you created using Buildcat!
+* Tell us if Buildcat doesn't work for your pipeline.
 * Help us write documentation.
 * Spread the word!
 
