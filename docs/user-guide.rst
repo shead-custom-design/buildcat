@@ -13,3 +13,5 @@ Contents:
    :maxdepth: 2
 
    design.rst
+   setup.rst
+   integration.rst

@@ -1,9 +1,9 @@
-.. _design:
+.. _integration:
 
 .. image:: ../artwork/buildcat.png
   :width: 200px
   :align: right
 
-Design
-======
+Integration
+===========
 

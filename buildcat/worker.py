@@ -53,7 +53,7 @@ else: # Operating systems without fork(), such as Windows
 
 
 class Worker(worker_base):
-   """Enhanced RQ worker class for use by Buildcat.
+    """Enhanced RQ worker class for use by Buildcat.
 
     The default RQ worker class forks to handle each job for reliability, so
     that the worker process can keep running even if the job causes the child
