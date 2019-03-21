@@ -34,12 +34,19 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
+    data_files=[
+        ("integrations", ["integrations/houdini/scd__buildcat.hdalc"]),
+        ],
     description="Elegant, simple render farm based on rq.",
+#    include_package_data=True,
     install_requires=[
         "rq",
     ],
     maintainer_email="tim@shead-custom-design.gov",
     packages=find_packages(),
+#    package_data={"": [
+#        "integrations/houdini/scd__buildcat.hdalc",
+#        ]},
     scripts=[
     ],
     url="http://buildcat.readthedocs.org",
