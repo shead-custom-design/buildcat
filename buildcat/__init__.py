@@ -21,7 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
-__version__ = "0.1.0-dev"
+__version__ = "0.1.0"
 
 log = logging.getLogger("rq.worker")
 
