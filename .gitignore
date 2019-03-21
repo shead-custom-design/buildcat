@@ -9,4 +9,4 @@ dump.rdb
 examples/render
 examples/backup
 examples/supervisord/*.log
-resources/backup
+integrations/houdini/backup
