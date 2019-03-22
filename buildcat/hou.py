@@ -67,8 +67,8 @@ json.dump({{
 """
 
 
-def render(hipfile, rop, frames):
-    """Render a range of frames from a Houdini .hip file.
+def split_frames(hipfile, rop, frames):
+    """Render individual frames from a Houdini .hip file.
 
     Parameters
     ----------
@@ -89,6 +89,36 @@ def render(hipfile, rop, frames):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 
 
+def render_frames(hipfile, rop, frames):
+    """Render a single frame from a Houdini .hip file.
+
+    Parameters
+    ----------
+    hipfile: str, required
+        Path to the file to be rendered.
+    rop: str, required
+        Absolute path of the ROP node to use for rendering.
+    frames: tuple, required
+        Contains the half-open range of frames to be rendered.
+    """
+    hipfile = os.path.abspath(hipfile.replace("$BUILDCAT_ROOT", _buildcat_root()))
+    rop = str(rop)
+    start = int(frames[0])
+    end = int(frames[1])
+
+    code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1)
+    command = [_hython_executable(), "-c", code]
+    subprocess.check_call(command)
+
+render_frames.code = """
+import hou
+
+hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
+rop = hou.node({rop!r})
+rop.render(frame_range=({start},{end}), verbose=True, output_progress=True)
+"""
+
+
 def render_frame(hipfile, rop, frame):
     """Render a single frame from a Houdini .hip file.
 
@@ -106,7 +136,6 @@ def render_frame(hipfile, rop, frame):
     frame = int(frame)
 
     code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
-    log.debug(code)
     command = [_hython_executable(), "-c", code]
     subprocess.check_call(command)
 
