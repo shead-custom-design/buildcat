@@ -38,9 +38,14 @@ def _hython_executable():
 
 
 def _buildcat_root():
-    BUILDCAT_ROOT = os.path.abspath(os.getcwd())
-    BUILDCAT_ROOT = BUILDCAT_ROOT.replace("\\", "/")
-    return BUILDCAT_ROOT
+    return os.getcwd()
+
+
+def _expand_path(path):
+    path = path.replace("$BUILDCAT_ROOT", _buildcat_root())
+    path = os.path.abspath(path)
+    path = path.replace("\\", "/")
+    return path
 
 
 def metadata():
@@ -86,6 +91,8 @@ def split_frames(hipfile, rop, frames):
     start = int(frames[0])
     end = int(frames[1])
 
+    log.debug("Command: buildcat.hou.split_frames %r %r %r %r", hipfile, rop, start, end)
+
     q = rq.Queue(connection=rq.get_current_connection())
     for frame in range(start, end):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
@@ -103,10 +110,12 @@ def render_frames(hipfile, rop, frames):
     frames: tuple, required
         Contains the half-open range of frames to be rendered.
     """
-    hipfile = os.path.abspath(hipfile.replace("$BUILDCAT_ROOT", _buildcat_root()))
+    hipfile = _expand_path(hipfile)
     rop = str(rop)
     start = int(frames[0])
     end = int(frames[1])
+
+    log.debug("Command: buildcat.hou.render_frames %r %r %r %r", hipfile, rop, start, end)
 
     code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1)
     command = [_hython_executable(), "-c", code]
@@ -133,9 +142,11 @@ def render_frame(hipfile, rop, frame):
     frame: int, required
         The frame to be rendered.
     """
-    hipfile = os.path.abspath(hipfile.replace("$BUILDCAT_ROOT", _buildcat_root()))
+    hipfile = _expand_path(hipfile)
     rop = str(rop)
     frame = int(frame)
+
+    log.debug("Command: buildcat.hou.render_frame %r %r %r", hipfile, rop, frame)
 
     code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
     command = [_hython_executable(), "-c", code]
