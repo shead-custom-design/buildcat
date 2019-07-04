@@ -14,4 +14,4 @@ Contents:
 
    design.rst
    setup.rst
-   integration.rst
+   integrations.rst
