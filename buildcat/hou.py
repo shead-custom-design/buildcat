@@ -38,7 +38,9 @@ def _hython_executable():
 
 
 def _buildcat_root():
-    return os.getcwd()
+    BUILDCAT_ROOT = os.abspath(os.getcwd())
+    BUILDCAT_ROOT = BUILDCAT_ROOT.replace("\\", "/")
+    return BUILDCAT_ROOT
 
 
 def metadata():
@@ -90,7 +92,7 @@ def split_frames(hipfile, rop, frames):
 
 
 def render_frames(hipfile, rop, frames):
-    """Render a single frame from a Houdini .hip file.
+    """Render a range of frames from a Houdini .hip file.
 
     Parameters
     ----------
