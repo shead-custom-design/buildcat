@@ -38,7 +38,7 @@ def _hython_executable():
 
 
 def _buildcat_root():
-    BUILDCAT_ROOT = os.abspath(os.getcwd())
+    BUILDCAT_ROOT = os.path.abspath(os.getcwd())
     BUILDCAT_ROOT = BUILDCAT_ROOT.replace("\\", "/")
     return BUILDCAT_ROOT
 
