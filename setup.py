@@ -42,6 +42,7 @@ setup(
     description="Elegant, simple render farm based on rq.",
 #    include_package_data=True,
     install_requires=[
+        "redis",
         "rq",
     ],
     maintainer_email="tim@shead-custom-design.gov",

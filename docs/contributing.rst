@@ -67,13 +67,8 @@ Building the Documentation
 
 To build the documentation, run::
 
-    $ cd buildcat
-    $ python docs/build.py
-
-Note that significant subsets of the documentation are written using Jupyter
-notebooks, so the docs/setup.py script requires Jupyter to convert the
-notebooks into restructured text files for inclusion with the rest of the
-documentation.
+    $ cd buildcat/docs
+    $ make html
 
 Once the documentation is built, you can view it by opening
-`docs/_build/html/index.html` in a web browser.
+`buildcat/docs/_build/html/index.html` in a web browser.

@@ -10,16 +10,15 @@ Dependencies
 Minimum Requirements
 --------------------
 
-To use Buildcat you will need, at a minimum, Python 2 or 3 (duh):
+To use Buildcat you will need, at a minimum, Python 3:
 
-* Python 2.7 / Python 3 - http://python.org
+* Python 3 - http://python.org
 
 plus the following (if you install Buildcat
 using pip, these are automatically installed for you):
 
 * RQ - Simple job queues for Python - http://python-rq.org
 * redis - The Python interface to the Redis key-value store - https://pypi.org/project/redis/
-* six - Python 2/3 portability - http://pythonhosted.org/six
 
 Source Installation
 -------------------
@@ -37,8 +36,6 @@ code coverage:
 
 * behave - BDD test framework - http://pythonhosted.org/behave
 * coverage - code coverage module - http://nedbatchelder.com/code/coverage
-* mock - mocking and testing library - http://www.voidspace.org.uk/python/mock
-* nose - unit test framework - https://nose.readthedocs.io/en/latest
 
 Generating Documentation
 ------------------------
@@ -47,7 +44,4 @@ And you'll need to following to generate this documentation:
 
 * Sphinx - documentation builder - http://sphinx-doc.org
 * Sphinx readthedocs theme - https://github.com/snide/sphinx_rtd_theme
-* napoleon - http://sphinxcontrib-napoleon.readthedocs.io/en/latest/
-* Jupyter - http://ipython.org
-* Pandoc - http://johnmacfarlane.net/pandoc
 

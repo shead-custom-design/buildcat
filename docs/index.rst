@@ -21,15 +21,14 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   installation.rst
-   dependencies.rst
+   design.rst
+   setup.rst
+   integrations.rst
    compatibility.rst
-   user-guide.rst
    contributing.rst
    release-notes.rst
    reference.rst
    support.rst
-   credits.rst
 
 Indices and tables
 ==================
