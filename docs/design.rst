@@ -1,8 +1,8 @@
-.. _design:
-
 .. image:: ../artwork/buildcat.png
   :width: 200px
   :align: right
+
+.. _design:
 
 Design
 ======
@@ -38,7 +38,7 @@ Clients
     integration is a special Houdini ROP that communicates with the server to submit
     a render or simulation job.
 
-Shared storage.
+Shared Storage.
     Typically, a render job includes just the name of a scene file and a range
     of frames to render. To run the job, your workers must have access to the
     scene file and all of the assets it uses, including geometry, cached
@@ -47,7 +47,7 @@ Shared storage.
     to ensure that scene files and assets are moved to this location prior to job
     submission.
 
-Network connectivity.
+Network Connectivity.
     To function, all clients and all workers must be able to communicate with the
     server.
 
