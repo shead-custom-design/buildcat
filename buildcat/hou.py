@@ -21,7 +21,6 @@
 from __future__ import absolute_import, division, print_function
 
 import json
-import logging
 import os
 import subprocess
 import time
@@ -29,8 +28,6 @@ import time
 import rq
 
 import buildcat
-
-log = logging.getLogger("rq.worker")
 
 
 def _hython_executable():
@@ -48,6 +45,10 @@ def _expand_path(path):
     return path
 
 
+def _log_command(command):
+    buildcat.log.debug("\n\n" + " ".join(command) + "\n\n")
+
+
 def metadata():
     """Return version and path information describing the worker's local Houdini installation.
 
@@ -60,6 +61,8 @@ def metadata():
 
     code = metadata.code.format(BUILDCAT_ROOT=_buildcat_root())
     command = [_hython_executable(), "-c", code]
+    _log_command(command)
+
     result = json.loads(subprocess.check_output(command))
     return result
 
@@ -91,8 +94,6 @@ def split_frames(hipfile, rop, frames):
     start = int(frames[0])
     end = int(frames[1])
 
-    log.debug("Command: buildcat.hou.split_frames %r %r %r %r", hipfile, rop, start, end)
-
     q = rq.Queue(connection=rq.get_current_connection())
     for frame in range(start, end):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
@@ -115,10 +116,10 @@ def render_frames(hipfile, rop, frames):
     start = int(frames[0])
     end = int(frames[1])
 
-    log.debug("Command: buildcat.hou.render_frames %r %r %r %r", hipfile, rop, start, end)
-
     code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1)
     command = [_hython_executable(), "-c", code]
+    _log_command(command)
+
     subprocess.check_call(command)
 
 render_frames.code = """
@@ -126,7 +127,7 @@ import hou
 
 hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
 rop = hou.node({rop!r})
-rop.render(frame_range=({start},{end}), verbose=True, output_progress=True)
+rop.render(frame_range=({start},{end}), verbose=False, output_progress=False)
 """
 
 
@@ -146,10 +147,10 @@ def render_frame(hipfile, rop, frame):
     rop = str(rop)
     frame = int(frame)
 
-    log.debug("Command: buildcat.hou.render_frame %r %r %r", hipfile, rop, frame)
-
     code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
     command = [_hython_executable(), "-c", code]
+    _log_command(command)
+
     subprocess.check_call(command)
 
 render_frame.code = """
@@ -157,6 +158,6 @@ import hou
 
 hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
 rop = hou.node({rop!r})
-rop.render(frame_range=({frame},{frame}), verbose=True, output_progress=True)
+rop.render(frame_range=({frame},{frame}), verbose=False, output_progress=False)
 """
 

@@ -41,6 +41,7 @@ def log(message):
     message: str, required
         The message to be logged.
     """
+
     buildcat.log.info(message)
 
 
@@ -60,6 +61,7 @@ def spawn(count):
     count: int, required
         Number of new jobs to create.
     """
+
     for index in range(count):
         rq.Queue(connection=rq.get_current_connection()).enqueue("buildcat.test.log", "Job-{}".format(index))
 
@@ -80,5 +82,6 @@ def raise_exception(e):
     e: exception object, required
         The exception to be raised.
     """
+
     raise e
 

@@ -20,8 +20,16 @@
 from __future__ import absolute_import, division, print_function
 
 import logging
+import os
 
 __version__ = "0.2.0-dev"
 
-log = logging.getLogger("rq.worker")
+formatter = logging.Formatter(fmt="%(asctime)s %(levelname)s:%(name)s:%(message)s", datefmt="%H:%M:%S")
+
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+
+log = logging.getLogger(__name__)
+log.setLevel(os.environ.get("BUILDCAT_LOG_LEVEL", logging.INFO))
+log.addHandler(handler)
 
