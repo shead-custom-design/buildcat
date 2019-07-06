@@ -15,27 +15,29 @@ Shared Storage
 --------------
 
 In addition to the other considerations already discussed, you'll need to
-ensure that BUILDCAT_ROOT is accessible to every worker that will be a member
-of your render farm, and every client that will be submitting jobs.  To do so,
-you'll have to enable network file sharing for the BUILDCAT_ROOT directory on your
-platform.  We strongly recommend that you test all of your hosts to ensure that they
-can access the shared BUILDCAT_ROOT.
+ensure that your shared storage is accessible to every worker that will be a
+member of your render farm, and every client that will be submitting jobs.  To
+do so, you'll have to enable network file sharing for the shared storage
+directory on your platform.  We recommend that you try remote browsing from
+all of your worker and client hosts to ensure that they can access the
+shared storage.
 
 .. note::
     Keep in mind that BUILDCAT_ROOT will vary from host-to-host depending on
     the platform and whether it's being accessed locally or across the network.
-    On a machine named `mymac` that's hosting your shared storage,
-    BUILDCAT_ROOT might be `/Volumes/Buildcat`.  On the other machines on the
-    network, BUILDCAT_ROOT would probably be `//mymac/Buildcat`.
+    For example, on a machine named `MyMac` that's hosting your shared storage
+    on an external drive named `Buidcat`, BUILDCAT_ROOT would probably be
+    `/Volumes/Buildcat`.  On the other machines on the network, BUILDCAT_ROOT
+    would probably be `//MyMac/Buildcat` or `\\MyMac\Buildcat`.
 
 Network Communication
 ---------------------
 
-So workers and clients can communicate with the server, you'll need a public
-network address that they can access.  For example, instead of `127.0.0.1`,
-which can only be accessed by processes running on the local host, you'll need
-the address of an ethernet or wireless interface on the machine where the
-server is running.
+So workers and clients can communicate with the server, you'll need to identify
+a public network address on the server host that they can access.  For example,
+instead of `127.0.0.1`, which can only be accessed by processes running on the
+local host, you'll need the address of an ethernet or wireless interface on the
+machine where the server is running.
 
 We'll use the address `192.168.2.1` throughout the rest of this section.
 
