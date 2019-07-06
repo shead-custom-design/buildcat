@@ -9,12 +9,14 @@ Design
 
 We created Buildcat because we were frustrated with opaque render farm software
 that was needlessly complex.  Buildcat is written in Python for portability,
-simplicity, and flexibility, using existing capabilities wherever possible.
+simplicity, and flexibility.  It runs on OSX, Linux, and Windows, and uses uses
+existing open source software wherever possible instead of reinventing the
+wheel.
 
 .. tip::
-    While Buildcat is as simple as we could possibly make it, there are many moving
-    parts in a render farm - you'll need to understand the following concepts to
-    make yours work.
+    While Buildcat is as simple as we could possibly make it, there are still
+    many moving parts in a render farm - you'll need to understand the
+    following concepts to make yours work.
 
 Your Buildcat render farm will have all of the following:
 
@@ -54,5 +56,5 @@ Network Connectivity.
 
 .. note::
     The server, workers, and clients in your Buildcat render farm can be run on any
-    host, or the same host.
+    combination of hosts, including any mixture of platforms.
 

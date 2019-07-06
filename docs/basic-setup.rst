@@ -1,16 +1,16 @@
-.. _setup:
-
 .. image:: ../artwork/buildcat.png
   :width: 200px
   :align: right
 
-Setup
-=====
+.. _basic-setup:
+
+Basic Setup
+===========
 
 Follow these instructions to quickly setup a minimal-but-complete Buildcat
 render farm on a single machine. Once you've gone through the process on a
-single machine, you'll be ready to setup a full-fledged render farm spread
-across multiple machines.
+single machine, the :ref:`advanced-setup` section will cover configuring a
+full-fledged render farm spread across multiple machines.
 
 .. tip::
     Make sure you read :ref:`design` and understand how the parts of a Buildcat
@@ -72,7 +72,33 @@ Next, start Redis::
     $ redis-server
 
 The Redis server will print some startup information to the console and wait
-for connections.  Note that Redis listens for connections on the loopback
+for connections::
+    15455:C 05 Jul 2019 15:50:57.378 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+    15455:C 05 Jul 2019 15:50:57.378 # Redis version=5.0.3, bits=64, commit=00000000, modified=0, pid=15455, just started
+    15455:C 05 Jul 2019 15:50:57.378 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+    15455:M 05 Jul 2019 15:50:57.379 * Increased maximum number of open files to 10032 (it was originally set to 256).
+                    _._
+               _.-``__ ''-._
+          _.-``    `.  `_.  ''-._           Redis 5.0.3 (00000000/0) 64 bit
+      .-`` .-```.  ```\/    _.,_ ''-._
+     (    '      ,       .-`  | `,    )     Running in standalone mode
+     |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+     |    `-._   `._    /     _.-'    |     PID: 15455
+      `-._    `-._  `-./  _.-'    _.-'
+     |`-._`-._    `-.__.-'    _.-'_.-'|
+     |    `-._`-._        _.-'_.-'    |           http://redis.io
+      `-._    `-._`-.__.-'_.-'    _.-'
+     |`-._`-._    `-.__.-'    _.-'_.-'|
+     |    `-._`-._        _.-'_.-'    |
+      `-._    `-._`-.__.-'_.-'    _.-'
+          `-._    `-.__.-'    _.-'
+              `-._        _.-'
+                  `-.__.-'
+
+    15455:M 05 Jul 2019 15:50:57.380 # Server initialized
+    15455:M 05 Jul 2019 15:50:57.380 * Ready to accept connections
+
+Note that Redis listens for connections on the loopback
 address - `127.0.0.1` - by default, so we don't have to specify the network
 address we choose earlier.  Leave Redis running, and open another command line
 console to run the next set of commands.
@@ -111,9 +137,52 @@ Finally, we're ready to run a worker::
     $ rq worker -w buildcat.worker.Worker
 
 The worker will print a startup message, begin communicating with the server,
-and wait for jobs to work on.  Once again, leave the worker running and open
+and wait for jobs to work on::
+
+    16:11:42 RQ worker 'rq:worker:b9031b3c338b4307b9764fe36e7de13a' started, version 1.0
+    16:11:42 *** Listening on default...
+
+Once again, leave the worker running and open
 another command line console for the following steps.  Note that, before
 starting the worker, we changed the working directory to BUILDCAT_ROOT.  This
 way, the worker knows where BUILDCAT_ROOT is located, without having to
 configure it, mess with registry entries, etc.
 
+Testing
+-------
+
+Now it's time to test the farm.  To keep things simple, we're going to send
+a command to the server directly instead of using your DCC application.  This
+is the easiest way to ensure that everything's working.  First, open an interactive
+Python interpreter::
+
+    $ python
+
+Next, open a connection to the server::
+
+    >>> import rq, redis
+    >>> queue = rq.Queue(connection=redis.Redis())
+
+The `queue` object is what a DCC client integration would use to submit a render job.
+In our case, we'll execute a simple command that Buildcat provides for testing::
+
+    >>> queue.enqueue("buildcat.test.log", "Hello, World!")
+    Job('e8fb5e4b-18bc-4e78-be81-1c4705f0e234', enqueued_at=datetime.datetime(2019, 7, 6, 0, 19, 17, 706162))
+
+This command submits a `buildcat.test.log` job to the server, which hands it off to any
+available worker.  If you check the console where we left our worker running, you'll see that it
+accepted the job and ran it, printing `Hello, World!` to the console::
+
+    18:19:17 default: buildcat.test.log('Hello, World!') (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
+    18:19:17 INFO:buildcat:Hello, World!
+    18:19:17 default: Job OK (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
+
+Summary
+-------
+
+That's it!  Your single-machine render farm is up-and-running.  Of course,
+there are many details we've skipped in this section, such as starting the farm
+automatically when your machine boots.  In the :ref:`next section
+<advanced-setup>` we'll make suggestions on how to handle startup, and cover
+how to setup a multi-machine farm, and the section on :ref:`integrations` will
+cover how to use a Buildcat render farm with specific DCC tools.

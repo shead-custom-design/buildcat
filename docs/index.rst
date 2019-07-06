@@ -22,7 +22,8 @@ Documentation
    :maxdepth: 2
 
    design.rst
-   setup.rst
+   basic-setup.rst
+   advanced-setup.rst
    integrations.rst
    compatibility.rst
    contributing.rst
