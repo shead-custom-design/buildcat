@@ -25,7 +25,7 @@ import rq
 import buildcat
 
 
-def log(message):
+def message(msg):
     """Logs a message on a worker.
 
     Useful for testing that the system is functioning::
@@ -38,11 +38,11 @@ def log(message):
 
     Parameters
     ----------
-    message: str, required
+    msg: str, required
         The message to be logged.
     """
 
-    buildcat.log.info(message)
+    buildcat.log.info(msg)
 
 
 def spawn(count):

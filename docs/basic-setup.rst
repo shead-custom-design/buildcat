@@ -26,7 +26,8 @@ that BUILDCAT_ROOT must have enough storage for your projects, their assets
 (geometry, textures, simulations, etc), and all of their rendered outputs, so
 you'll want to pick a location on a disk with as much free space as possible.
 
-For these examples, we'll assume that our BUILDCAT_ROOT is `/Volumes/Buildcat`.
+For these examples, we'll assume that our BUILDCAT_ROOT is an external drive
+on Mac, and the path is `/Volumes/Buildcat`.
 
 Network Communication
 ---------------------
@@ -166,14 +167,14 @@ Next, open a connection to the server::
 The `queue` object is what a DCC client integration would use to submit a render job.
 In our case, we'll execute a simple command that Buildcat provides for testing::
 
-    >>> queue.enqueue("buildcat.test.log", "Hello, World!")
+    >>> queue.enqueue("buildcat.test.message", "Hello, World!")
     Job('e8fb5e4b-18bc-4e78-be81-1c4705f0e234', enqueued_at=datetime.datetime(2019, 7, 6, 0, 19, 17, 706162))
 
-This command submits a `buildcat.test.log` job to the server, which hands it off to any
+This command submits a `buildcat.test.message` job to the server, which hands it off to any
 available worker.  If you check the console where we left our worker running, you'll see that it
 accepted the job and ran it, printing `Hello, World!` to the console::
 
-    18:19:17 default: buildcat.test.log('Hello, World!') (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
+    18:19:17 default: buildcat.test.message('Hello, World!') (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
     18:19:17 INFO:buildcat:Hello, World!
     18:19:17 default: Job OK (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
 
@@ -184,5 +185,5 @@ That's it!  Your single-machine render farm is up-and-running.  Of course,
 there are many details we've skipped in this section, such as starting the farm
 automatically when your machine boots.  In the :ref:`next section
 <advanced-setup>` we'll make suggestions on how to handle startup, and cover
-how to setup a multi-machine farm, and the section on :ref:`integrations` will
+how to setup a multi-machine farm, and the section on :ref:`integrations <integrations>` will
 cover how to use a Buildcat render farm with specific DCC tools.
