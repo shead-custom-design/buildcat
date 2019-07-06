@@ -25,10 +25,10 @@ shared storage.
 .. note::
     Keep in mind that BUILDCAT_ROOT will vary from host-to-host depending on
     the platform and whether it's being accessed locally or across the network.
-    For example, on a machine named `MyMac` that's hosting your shared storage
-    on an external drive named `Buidcat`, BUILDCAT_ROOT would probably be
+    For example, on a Mac named `Aurora` that's hosting your shared storage
+    on an external drive named `Buildcat`, BUILDCAT_ROOT would likely be
     `/Volumes/Buildcat`.  On the other machines on the network, BUILDCAT_ROOT
-    would probably be `//MyMac/Buildcat` or `\\MyMac\Buildcat`.
+    would most likely be `//Aurora/Buildcat` or `\\\\\\Aurora\\Buildcat`.
 
 Network Communication
 ---------------------
