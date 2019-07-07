@@ -6,7 +6,5 @@
 build
 dist
 dump.rdb
-examples/render
-examples/backup
-examples/supervisord/*.log
 integrations/houdini/backup
+integrations/houdini/render
