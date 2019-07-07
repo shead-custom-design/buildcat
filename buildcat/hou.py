@@ -94,7 +94,7 @@ def split_frames(hipfile, rop, frames):
     start = int(frames[0])
     end = int(frames[1])
 
-    q = rq.Queue(connection=rq.get_current_connection())
+    q = rq.Queue(rq.get_current_job().origin, connection=rq.get_current_connection())
     for frame in range(start, end):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 
