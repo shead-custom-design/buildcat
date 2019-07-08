@@ -87,15 +87,16 @@ def split_frames(hipfile, rop, frames):
     rop: str, required
         Absolute path of the ROP node to use for rendering.
     frames: tuple, required
-        Contains the half-open range of frames to be rendered.
+        Contains the half-open (start, end, step) of frames to be rendered.
     """
     hipfile = str(hipfile)
     rop = str(rop)
     start = int(frames[0])
     end = int(frames[1])
+    step = int(frames[2])
 
     q = rq.Queue(rq.get_current_job().origin, connection=rq.get_current_connection())
-    for frame in range(start, end):
+    for frame in range(start, end, step):
         q.enqueue("buildcat.hou.render_frame", hipfile, rop, frame)
 
 
@@ -115,8 +116,9 @@ def render_frames(hipfile, rop, frames):
     rop = str(rop)
     start = int(frames[0])
     end = int(frames[1])
+    step = int(frames[2])
 
-    code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1)
+    code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1, step=step)
     command = [_hython_executable(), "-c", code]
     _log_command(command)
 
@@ -127,7 +129,7 @@ import hou
 
 hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
 rop = hou.node({rop!r})
-rop.render(frame_range=({start},{end}), verbose=False, output_progress=False)
+rop.render(frame_range=({start},{end},{step}), verbose=False, output_progress=False)
 """
 
 
