@@ -7,4 +7,5 @@ build
 dist
 dump.rdb
 integrations/houdini/backup
+integrations/houdini/geo
 integrations/houdini/render
