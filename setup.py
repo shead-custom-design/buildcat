@@ -19,6 +19,8 @@ from setuptools import setup, find_packages
 import re
 
 setup(
+    author="Timothy M. Shead",
+    author_email="tim@shead-custom-design.com",
     name="buildcat",
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -36,22 +38,23 @@ setup(
         "Topic :: Multimedia :: Graphics :: 3D Rendering",
         "Topic :: System :: Distributed Computing",
     ],
-    data_files=[
-        ("integrations", ["integrations/houdini/scd__buildcat.hdalc"]),
-        ],
     description="Elegant, simple render farm based on rq.",
-#    include_package_data=True,
     install_requires=[
         "redis",
         "rq",
     ],
     maintainer_email="tim@shead-custom-design.gov",
-    packages=find_packages(),
-#    package_data={"": [
-#        "integrations/houdini/scd__buildcat.hdalc",
-#        ]},
+    packages=["buildcat"],
+    package_dir={"buildcat": "buildcat"},
+    package_data={
+        "buildcat": [
+            "integrations/houdini/scd__buildcat.hdalc",
+            "integrations/houdini/demo.hiplc",
+            ],
+        },
     scripts=[
-    ],
+        "bin/buildcat-install",
+        ],
     url="http://buildcat.readthedocs.org",
     version=re.search(
         r"^__version__ = ['\"]([^'\"]*)['\"]",
