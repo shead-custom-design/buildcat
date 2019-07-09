@@ -25,10 +25,11 @@ shared storage.
 .. note::
     Keep in mind that BUILDCAT_ROOT will vary from host-to-host depending on
     the platform and whether it's being accessed locally or across the network.
-    For example, on a Mac named `Aurora` that's hosting your shared storage
-    on an external drive named `Buildcat`, BUILDCAT_ROOT would likely be
-    `/Volumes/Buildcat`.  On the other machines on the network, BUILDCAT_ROOT
-    would most likely be `//Aurora/Buildcat` or `\\\\\\Aurora\\Buildcat`.
+    For example, on a Mac named `Aurora` hosting shared storage
+    on an external drive named `Buildcat`, BUILDCAT_ROOT would be
+    `/Volumes/Buildcat`.  Elsewhere on the network, BUILDCAT_ROOT
+    would be `//Aurora/Buildcat` on Mac and Linux hosts, and `\\\\\\Aurora\\Buildcat`
+    on Windows hosts.
 
 Network Communication
 ---------------------
@@ -62,7 +63,7 @@ Now that we've changed the address that the server is listening on, we have to t
 workers to contact it at that address (and we have to point them to the correct
 BUILDCAT ROOT directory for their platform)::
 
-    $ cd //mymac/Buildcat
+    $ cd //Aurora/Buildcat
     $ rq worker -w buildcat.worker.Worker -u redis://192.168.2.1
 
 There is no secret to running multiple workers - simply start as many workers
