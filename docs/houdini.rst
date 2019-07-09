@@ -66,6 +66,17 @@ to your shared storage directory::
 
     BUILDCAT_ROOT = /Volumes/Buildcat
 
+Finally, you'll need to install the digital asset file containing the Buildcat
+ROP. You can put it in any empty directory you like, using a command-line console::
+
+    $ mkdir ~/integrations
+    $ cd ~/integrations
+    $ buildcat-install
+    INFO:buildcat-install:Copying files from /Users/tshead/src/buildcat/buildcat/integrations
+    INFO:buildcat-install:Copying houdini/demo.hiplc
+    INFO:buildcat-install:Copying houdini/scd__buildcat.hdalc
+    INFO:buildcat-install:Installation complete.
+
 Now, the next time you start Houdini, you'll be ready to use Buildcat!
 
 Production
@@ -77,7 +88,11 @@ BUILDCAT_ROOT, and accessed with relative paths (for example, relative to
 $HIP).  Use Houdini's `Render > Pre-Flight Scene ...` menu item to check your
 asset locations.
 
-Now create an instance of the `Buildcat Render` in an output context, and
+Next, you'll need to load the Buildcat digital asset into your scene.  Use the
+`Assets > Install Digital Asset Library` menu to select the
+`scd__buildcat.hdalc` file you installed above.
+
+Now create an instance of the `Buildcat Render` ROP in an output context, and
 connect an output ROP to the input of the Buildcat ROP node.  Set the `Server
 URI` parameter to point to your Buildcat server.  The `Buildcat Root` parameter
 defaults to the $BUILDCAT_ROOT environment variable that we set earlier (or you
