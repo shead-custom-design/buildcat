@@ -4,6 +4,8 @@ import argparse
 import logging
 import os
 import shutil
+import signal
+import subprocess
 import sys
 
 import buildcat
@@ -12,10 +14,14 @@ parser = argparse.ArgumentParser("Command line client for Buildcat: the portable
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
+#subparser = subparsers.add_parser("dashboard", help="Start a buildcat dashboard server.")
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
+#subparser = subparsers.add_parser("houdini", help="Submit a Foundry Modo render job.")
 #subparser = subparsers.add_parser("houdini", help="Submit a SideFX Houdini render job.")
-#subparser = subparsers.add_parser("server", help="Start a buildcat worker.")
-#subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
+#subparser = subparsers.add_parser("server", help="Start a buildcat server.")
+subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
 
 arguments = parser.parse_args()
 
@@ -41,3 +47,14 @@ if arguments.command == "install":
                 os.makedirs(os.path.basename(dirpath))
             shutil.copy2(os.path.join(dirpath, filename), relative_path)
     log.info("Installation complete.")
+
+# Start a worker
+if arguments.command == "worker":
+    address = "redis://{}".format(arguments.host)
+    command = ["rq", "worker", "-w", "buildcat.worker.Worker", "-u", address] + arguments.queues
+    try:
+        process = subprocess.Popen(command)
+        process.wait()
+    except KeyboardInterrupt:
+        process.send_signal(signal.SIGINT)
+        process.wait()

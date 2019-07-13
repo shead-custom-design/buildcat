@@ -64,7 +64,7 @@ workers to contact it at that address (and we have to point them to the correct
 BUILDCAT ROOT directory for their platform)::
 
     $ cd //Aurora/Buildcat
-    $ rq worker -w buildcat.worker.Worker -u redis://192.168.2.1
+    $ buildcat worker --host 192.168.2.1
 
 There is no secret to running multiple workers - simply start as many workers
 as you need, on multiple hosts or even the same host, pointing them to the server's

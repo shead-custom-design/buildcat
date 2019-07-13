@@ -135,7 +135,7 @@ bleeding-edge Buildcat goodness, you can install from source code::
 Finally, we're ready to run a worker::
 
     $ cd /Volumes/Buildcat
-    $ rq worker -w buildcat.worker.Worker
+    $ buildcat worker
 
 The worker will print a startup message, begin communicating with the server,
 and wait for jobs to work on::
