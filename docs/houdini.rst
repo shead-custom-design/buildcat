@@ -74,11 +74,11 @@ ROP. You can put it in any empty directory you like, using the command line::
 
     $ mkdir ~/integrations
     $ cd ~/integrations
-    $ buildcat-install
-    INFO:buildcat-install:Copying files from /Users/tshead/src/buildcat/buildcat/integrations
-    INFO:buildcat-install:Copying houdini/demo.hiplc
-    INFO:buildcat-install:Copying houdini/scd__buildcat.hdalc
-    INFO:buildcat-install:Installation complete.
+    $ buildcat install
+    INFO:buildcat:Copying files from /Users/tshead/src/buildcat/buildcat/integrations
+    INFO:buildcat:Copying houdini/demo.hiplc
+    INFO:buildcat:Copying houdini/scd__buildcat.hdalc
+    INFO:buildcat:Installation complete.
 
 Now, the next time you start Houdini, you'll be ready to use Buildcat!
 

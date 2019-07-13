@@ -53,7 +53,7 @@ setup(
             ],
         },
     scripts=[
-        "bin/buildcat-install",
+        "bin/buildcat",
         ],
     url="http://buildcat.readthedocs.org",
     version=re.search(
