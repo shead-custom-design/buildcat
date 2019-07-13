@@ -33,3 +33,19 @@ log = logging.getLogger(__name__)
 log.setLevel(os.environ.get("BUILDCAT_LOG_LEVEL", logging.INFO))
 log.addHandler(handler)
 
+class Error(Exception):
+    """Base class for all Buildcat exceptions.
+
+    Parameters
+    ----------
+    message: str, required
+        Short message describing the failure.
+    description: str, required
+        Detailed description of the failure, including possible remediations.
+    """
+    def __init__(self, message, description):
+        self.message = message
+        self.description = description
+
+    def __repr__(self):
+        return "<buildcat.Error message={!r} description={!r}>".format(self.message, self.description)
