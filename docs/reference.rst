@@ -12,5 +12,6 @@ Contents:
 
    buildcat.rst
    buildcat.hou.rst
+   buildcat.queue.rst
    buildcat.test.rst
    buildcat.worker.rst

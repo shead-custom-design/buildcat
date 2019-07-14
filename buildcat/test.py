@@ -36,11 +36,7 @@ def ping():
 
         q = buildcat.queue.Queue()
         job = q.submit("buildcat.test.ping")
-        while True:
-            if job.result != None:
-                print(job.result)
-                break
-            sleep(0.1)
+        print(job.wait())
     """
     return {
         "host": socket.gethostname(),
@@ -55,8 +51,8 @@ def message(msg):
 
     Useful for testing that the system is functioning::
 
-        q = rq.Queue(connection=redis.Redis())
-        q.enqueue("buildcat.test.log", "Hello, World!")
+        q = buildcat.queue.Queue()
+        q.submit("buildcat.test.log", "Hello, World!")
 
     After which the given message will appear in the output of the worker that
     handles the job.
@@ -75,8 +71,8 @@ def spawn(count):
 
     Useful for verifying that a job handler can spawn additional jobs::
 
-        q = rq.Queue(connection=redis.Redis())
-        q.enqueue("buildcat.test.spawn", 3)
+        q = buildcat.queue.Queue()
+        q.submit("buildcat.test.spawn", 3)
 
     The spawn job will be handled by a worker, which will spawn 3 additional
     :func:`buildcat.test.log` jobs, which will be handled subsequently.
@@ -96,8 +92,8 @@ def raise_exception(e):
 
     Useful for testing the reliability of workers::
 
-        q = rq.Queue(connection=redis.Redis())
-        q.enqueue("buildcat.test.raise_exception", NotImplementedError())
+        q = buildcat.queue.Queue()
+        q.submit("buildcat.test.raise_exception", NotImplementedError())
 
     The worker that handles this job will raise the given exception and move
     the job to the failed queue, but should continue running.

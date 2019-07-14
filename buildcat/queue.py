@@ -31,7 +31,7 @@ class Queue(object):
                 description="You must specify the IP address or hostname of the Buildcat server.",
                 )
         try:
-            self._connection = redis.Redis(host, socket_timeout=timeout)
+            self._connection = redis.Redis(host=host, port=port, socket_timeout=timeout)
             self._connection.ping()
         except redis.exceptions.TimeoutError:
             raise buildcat.Error(
