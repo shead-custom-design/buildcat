@@ -23,6 +23,7 @@ from __future__ import absolute_import, division, print_function
 import getpass
 import os
 import socket
+import sys
 
 import rq
 
@@ -40,9 +41,12 @@ def ping():
     """
     return {
         "host": socket.gethostname(),
-        "user": getpass.getuser(),
-        "root": os.getcwd(),
         "pid": os.getpid(),
+        "platform": sys.platform,
+        "python": sys.version,
+        "prefix": sys.prefix,
+        "root": os.getcwd(),
+        "user": getpass.getuser(),
     }
 
 
