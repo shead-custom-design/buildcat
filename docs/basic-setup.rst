@@ -68,11 +68,15 @@ using Anaconda::
 
     $ conda install redis
 
-Next, start Redis::
+Next, install the Buildcat software using pip::
 
-    $ redis-server
+    $ pip install buildcat
 
-The Redis server will print some startup information to the console and wait
+Next, start the server::
+
+    $ buildcat server
+
+The server will print some startup information to the console and begin waiting
 for connections::
     15455:C 05 Jul 2019 15:50:57.378 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
     15455:C 05 Jul 2019 15:50:57.378 # Redis version=5.0.3, bits=64, commit=00000000, modified=0, pid=15455, just started
@@ -99,40 +103,16 @@ for connections::
     15455:M 05 Jul 2019 15:50:57.380 # Server initialized
     15455:M 05 Jul 2019 15:50:57.380 * Ready to accept connections
 
-Note that Redis listens for connections on the loopback
-address - `127.0.0.1` - by default, so we don't have to specify the network
-address we choose earlier.  Leave Redis running, and open another command line
-console to run the next set of commands.
+Note that the server listens for connections on the loopback address -
+`127.0.0.1` - by default, so we don't have to specify it explicitly.  Leave the
+server running, and open another command line console to run the next set of
+commands.
 
 Worker
 ------
 
-Now we're ready to setup a worker.  First, we need to install the Python
-client software for Redis, so our worker can communicate with the server.
-Again, we'll use Anaconda to get it::
-
-    $ conda install redis-py
-
-Second, we'll install the RQ software that actually provides the worker process::
-
-    $ pip install rq
-
-(`pip` is a tool for installing Python software that's provided by Anaconda).
-
-Next, we need to install the Buildcat software, which adds render-farm-specific
-functionality to the vanilla RQ workers.  The following will install the most
-recent stable release of Buildcat::
-
-    $ pip install buildcat
-
-Alternatively, if you're feeling lucky and want to use the latest,
-bleeding-edge Buildcat goodness, you can install from source code::
-
-    $ git clone https://github.com/shead-custom-design/buildcat
-    $ cd buildcat
-    $ python setup.py install
-
-Finally, we're ready to run a worker::
+Now we're ready to run a worker.  Since we already installed Buildcat in the
+previous step, there's nothing to do except fire it up::
 
     $ cd /Volumes/Buildcat
     $ buildcat worker
@@ -144,11 +124,10 @@ and wait for jobs to work on::
     16:11:42 *** Listening on default...
 
 Note that we didn't have to specify the server address because the worker
-defaults to `127.0.0.1`.  Also, before starting the worker we changed the
+defaults to `127.0.0.1` too.  Also, before starting the worker we changed the
 working directory to BUILDCAT_ROOT.  This way, the worker knows where
-BUILDCAT_ROOT is located, without having to configure it.  Once again, leave
-the worker running and open another command line console for the following
-steps.
+BUILDCAT_ROOT is located, without having to configure it.  Like before, leave
+the worker running and open another command line for the following steps.
 
 Testing
 -------

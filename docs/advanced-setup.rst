@@ -45,13 +45,13 @@ We'll use the address `192.168.2.1` throughout the rest of this section.
 Server
 ------
 
-When we ran the Redis server previously, it defaulted to the loopback address
+When we ran the Buildcat server previously, it defaulted to the loopback address
 `127.0.0.1`, which meant that it would only accept connections from the same
 machine it was running on.  Now, we need the server to accept connections from
-other machines, using our public server address.  To do so, pass the server network
+other machines, using a public server address.  To do so, pass the server network
 address at startup::
 
-    $ redis-server --bind 192.168.2.1
+    $ buildcat server --bind 192.168.2.1
 
 Now, the server will be listening at the given address, allowing workers and clients
 to connect from other machines.

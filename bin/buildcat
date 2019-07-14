@@ -10,15 +10,18 @@ import sys
 
 import buildcat
 
-parser = argparse.ArgumentParser("Command line client for Buildcat: the portable, lightweight render farm.")
+parser = argparse.ArgumentParser(description="Command line client for Buildcat: the portable, lightweight render farm.")
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
 #subparser = subparsers.add_parser("dashboard", help="Start a buildcat dashboard server.")
-subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
-#subparser = subparsers.add_parser("houdini", help="Submit a Foundry Modo render job.")
 #subparser = subparsers.add_parser("houdini", help="Submit a SideFX Houdini render job.")
-#subparser = subparsers.add_parser("server", help="Start a buildcat server.")
+subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
+#subparser = subparsers.add_parser("modo", help="Submit a Foundry Modo render job.")
+
+subparser = subparsers.add_parser("server", help="Start a buildcat server.")
+subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
+
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
@@ -47,6 +50,16 @@ if arguments.command == "install":
                 os.makedirs(os.path.basename(dirpath))
             shutil.copy2(os.path.join(dirpath, filename), relative_path)
     log.info("Installation complete.")
+
+# Start a server
+if arguments.command == "server":
+    command = ["redis-server", "--bind", arguments.bind]
+    try:
+        process = subprocess.Popen(command)
+        process.wait()
+    except KeyboardInterrupt:
+        #process.send_signal(signal.SIGINT)
+        process.wait()
 
 # Start a worker
 if arguments.command == "worker":
