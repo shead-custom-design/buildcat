@@ -20,9 +20,34 @@
 
 from __future__ import absolute_import, division, print_function
 
+import getpass
+import os
+import socket
+
 import rq
 
 import buildcat
+
+
+def ping():
+    """Returns information about a worker.
+
+    Useful for testing that the system is functioning::
+
+        q = buildcat.queue.Queue()
+        job = q.submit("buildcat.test.ping")
+        while True:
+            if job.result != None:
+                print(job.result)
+                break
+            sleep(0.1)
+    """
+    return {
+        "host": socket.gethostname(),
+        "user": getpass.getuser(),
+        "cwd": os.getcwd(),
+        "pid": os.getpid(),
+    }
 
 
 def message(msg):
