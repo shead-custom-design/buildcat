@@ -50,28 +50,6 @@ class Queue(object):
                 description="You must specify the name of a Buildcat queue.",
                 )
 
-#        buildcat_root = node.evalParm("buildcat_root")
-#        if not buildcat_root:
-#            return error("Buildcat Root not set.", "You must specify the path to the Buildcat shared storage directory for this machine.")
-#
-#        if not (os.path.exists(buildcat_root) and os.path.isdir(buildcat_root)):
-#            return error("Buildcat Root path does not exist.", "The Buildcat shared storage location must be an existing directory.")
-#
-#        if not os.path.isabs(buildcat_root):
-#            return error("Buildcat Root must be absolute.", "The Buildcat Root path must be an absolute (not relative) path.")
-#
-#        hipfile = hou.hipFile.path()
-#        if not os.path.isabs(hipfile):
-#            return error("Internal error.", "The hipfile path must be an absolute (not relative) path.")
-#
-#        if not hipfile.startswith(buildcat_root):
-#            return error("HIP file stored outside Buildcat Root.", "This file and its assets must be saved to the Buildcat shared storage location to be rendered.")
-#        hipfile = os.path.join("$BUILDCAT_ROOT", os.path.relpath(hipfile, buildcat_root))
-#
-#        start = int(node.evalParm("f1"))
-#        end = int(node.evalParm("f2")) + 1 # Buildcat uses half-open ranges
-#        increment = int(node.evalParm("f3"))
-
         self._queue = rq.Queue(queue, connection=self._connection)
 
     def submit(self, command, *args, **kwargs):

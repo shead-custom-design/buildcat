@@ -15,14 +15,22 @@ parser = argparse.ArgumentParser(description="Command line client for Buildcat: 
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
-#subparser = subparsers.add_parser("dashboard", help="Start a buildcat dashboard server.")
-#subparser = subparsers.add_parser("houdini", help="Submit a SideFX Houdini render job.")
+subparser = subparsers.add_parser("houdini", help="Submit a SideFX Houdini render job.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
+subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
+subparser.add_argument("hipfile", help="Houdini .hip file to render.")
+subparser.add_argument("rop", help="ROP to use for rendering (ex: /out/mantra1).")
+subparser.add_argument("start", type=int, help="First frame to render.")
+subparser.add_argument("stop", type=int, help="Last frame to render.")
+subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
+
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
 #subparser = subparsers.add_parser("modo", help="Submit a Foundry Modo render job.")
 
 subparser = subparsers.add_parser("ping", help="Ping a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("queue", default="default", nargs="?", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
 subparser = subparsers.add_parser("server", help="Start a buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
@@ -39,6 +47,13 @@ if arguments.command is None:
 logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
 log = logging.getLogger()
 log.name = os.path.basename(sys.argv[0])
+
+# Render using Houdini
+if arguments.command == "houdini":
+    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
+    hipfile = buildcat.rooted_path(arguments.root, os.path.abspath(arguments.hipfile))
+    job = queue.submit("buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop+1, arguments.step))
+    print("Job submitted: {}".format(job))
 
 # Install integration resources
 if arguments.command == "install":
