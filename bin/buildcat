@@ -60,7 +60,6 @@ if arguments.command == "install":
 if arguments.command == "ping":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.test.ping")
-    print(job, job._job)
     print(job.wait())
 
 # Start a server

@@ -133,30 +133,26 @@ Testing
 -------
 
 Now it's time to test the farm.  To keep things simple, we're going to send a
-command to the server manually instead of using a DCC application client.  This
-is the easiest way to ensure that everything's working.  First, open an
-interactive Python interpreter::
+command to the server from the command line, as this is the easiest way to
+ensure that everything's working::
 
-    $ python
+    $ buildcat ping
 
-Next, open a connection to the server::
-
-    >>> import rq, redis
-    >>> queue = rq.Queue(connection=redis.Redis())
-
-The `queue` object is what a DCC client would use to submit a render job.  In
-our case, we'll execute a simple command that Buildcat provides for testing::
-
-    >>> queue.enqueue("buildcat.test.message", "Hello, World!")
-    Job('e8fb5e4b-18bc-4e78-be81-1c4705f0e234', enqueued_at=datetime.datetime(2019, 7, 6, 0, 19, 17, 706162))
-
-This command submits a `buildcat.test.message` job to the server, which hands it off to any
+This command submits a `buildcat.test.ping` job to the server, which hands it off to any
 available worker.  If you check the console where we left our worker running, you'll see that it
-accepted the job and ran it, printing `Hello, World!` to the console::
+accepted the job and ran it::
 
-    18:19:17 default: buildcat.test.message('Hello, World!') (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
-    18:19:17 INFO:buildcat:Hello, World!
-    18:19:17 default: Job OK (e8fb5e4b-18bc-4e78-be81-1c4705f0e234)
+    21:52:49 default: buildcat.test.ping() (4b5c9b65-03ec-48f1-95b8-7c382604a0d3)
+    21:52:49 default: Job OK (4b5c9b65-03ec-48f1-95b8-7c382604a0d3)
+    21:52:49 Result is kept for 500 seconds
+
+... and in the console where you sent the command, some information about the worker
+is printed out::
+
+    {'host': 'aurora.local', 'user': 'fred', 'root': '/Volumes/Buildcat', 'pid': 52928}
+
+This confirms that the client, server, and worker are all communicating and
+ready to render.
 
 Summary
 -------

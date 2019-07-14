@@ -75,14 +75,11 @@ Testing
 
 Similarly, our testing code needs the new server address to function::
 
-    $ python
-    >>> import rq, redis
-    >>> queue = rq.Queue(connection=redis.Redis("192.168.2.1"))
-    >>> queue.enqueue("buildcat.test.message", "foo")
+    $ buildcat ping --host 192.168.2.1
 
 Keep in mind that, now that we're running multiple workers, the job may
-be run on any one of them - you may have to hunt a bit to find the worker that
-handled this job!
+be run on any one of them, so that the ping job results will vary
+dependeing on which worker handled it.
 
 Monitoring
 ----------

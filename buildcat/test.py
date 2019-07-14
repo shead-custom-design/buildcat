@@ -45,7 +45,7 @@ def ping():
     return {
         "host": socket.gethostname(),
         "user": getpass.getuser(),
-        "cwd": os.getcwd(),
+        "root": os.getcwd(),
         "pid": os.getpid(),
     }
 
