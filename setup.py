@@ -50,6 +50,7 @@ setup(
         "buildcat": [
             "integrations/houdini/scd__buildcat.hdalc",
             "integrations/houdini/demo.hiplc",
+            "integrations/modo/demo.lxo",
             ],
         },
     scripts=[

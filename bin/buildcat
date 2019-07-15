@@ -26,7 +26,19 @@ subparser.add_argument("stop", type=int, help="Last frame to render.")
 subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
-#subparser = subparsers.add_parser("modo", help="Submit a Foundry Modo render job.")
+
+subparser = subparsers.add_parser("modo", help="Submit a Foundry Modo render job.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
+subparser.add_argument("lxofile", help="Modo .lxo file to render.")
+subparser.add_argument("start", type=int, help="First frame to render.")
+subparser.add_argument("stop", type=int, help="Last frame to render.")
+subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
+
+subparser = subparsers.add_parser("modo-ping", help="Ping a buildcat worker for Modo information.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
 subparser = subparsers.add_parser("ping", help="Ping a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
@@ -70,6 +82,19 @@ if arguments.command == "install":
                 os.makedirs(os.path.basename(dirpath))
             shutil.copy2(os.path.join(dirpath, filename), relative_path)
     log.info("Installation complete.")
+
+# Render using Modo
+if arguments.command == "modo":
+    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
+    lxofile = buildcat.rooted_path(arguments.root, os.path.abspath(arguments.lxofile))
+    job = queue.submit("buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop+1, arguments.step))
+    print("Job submitted: {}".format(job))
+
+# Ping a worker for modo-specific information
+if arguments.command == "modo-ping":
+    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
+    job = queue.submit("buildcat.modo.ping")
+    print(job.wait())
 
 # Ping a worker
 if arguments.command == "ping":
