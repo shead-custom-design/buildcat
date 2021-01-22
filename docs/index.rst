@@ -25,11 +25,12 @@ Documentation
    basic-setup.rst
    advanced-setup.rst
    integrations.rst
+   dependencies.rst
    compatibility.rst
    contributing.rst
-   release-notes.rst
    reference.rst
    support.rst
+   release-notes.rst
 
 Indices and tables
 ==================

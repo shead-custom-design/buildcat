@@ -1,20 +1,16 @@
 # Copyright 2018 Timothy M. Shead
 #
-# This file is part of Buildcat.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# Buildcat is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
-# Buildcat is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
-# Copyright 2016 Timothy M. Shead
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from behave import *
 import nose.tools
@@ -26,29 +22,21 @@ import sys
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 docs_dir = os.path.join(root_dir, "docs")
-package_dir = os.path.join(root_dir, "buildcat")
 
 copyright_notice = """# Copyright 2018 Timothy M. Shead
 #
-# This file is part of Buildcat.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# Buildcat is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#    http://www.apache.org/licenses/LICENSE-2.0
 #
-# Buildcat is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Buildcat.  If not, see <http://www.gnu.org/licenses/>.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 """
-
-portability_imports = """from __future__ import absolute_import, division, print_function
-"""
-
 
 @given(u'all sources.')
 def step_impl(context):
@@ -68,25 +56,5 @@ def step_impl(context):
         with open(source, "r") as fobj:
             if not fobj.read().startswith(copyright_notice):
                 raise AssertionError("%s missing copyright notice." % source)
-
-
-@given(u'all package sources.')
-def step_impl(context):
-    context.sources = []
-    for directory, subdirectories, filenames in os.walk(package_dir):
-        for filename in filenames:
-            if os.path.splitext(filename)[1] not in [".py"]:
-                continue
-
-            context.sources.append(os.path.join(directory, filename))
-    context.sources = sorted(context.sources)
-
-
-@then(u'every source must contain portability imports.')
-def step_impl(context):
-    for source in context.sources:
-        with open(source, "r") as fobj:
-            if portability_imports not in fobj.read():
-                raise AssertionError("%s missing portability imports." % source)
 
 
