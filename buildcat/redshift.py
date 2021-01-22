@@ -22,7 +22,7 @@ import buildcat
 
 
 def _redshift_executable():
-    return "redshiftCmdLine"
+    return buildcat.executable("redshiftCmdLine")
 
 
 def _buildcat_root():

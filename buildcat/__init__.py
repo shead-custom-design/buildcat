@@ -15,6 +15,7 @@
 """Provides the Buildcat public API."""
 
 import logging
+import platform
 import os
 
 __version__ = "0.3.0-dev"
@@ -44,6 +45,14 @@ class Error(Exception):
 
     def __repr__(self):
         return "<buildcat.Error message={!r} description={!r}>".format(self.message, self.description)
+
+
+def executable(name):
+    return f"{name}.exe" if is_wsl() else name
+
+
+def is_wsl():
+    return "Microsoft" in platform.uname().release
 
 
 def rooted_path(root, path):
