@@ -30,8 +30,8 @@ copyright = "2018, Timothy M. Shead"
 author = "Timothy M. Shead"
 
 # The full version, including alpha/beta/rc tags
-import graphcat
-release = graphcat.__version__
+import buildcat
+release = buildcat.__version__
 
 
 # -- General configuration ---------------------------------------------------

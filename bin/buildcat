@@ -115,7 +115,7 @@ if arguments.command == "server":
 # Start a worker
 if arguments.command == "worker":
     address = "redis://{}".format(arguments.host)
-    command = ["rq", "worker", "-w", "buildcat.worker.Worker", "-u", address] + arguments.queues
+    command = ["rq", "worker", "-u", address] + arguments.queues
     try:
         process = subprocess.Popen(command)
         process.wait()

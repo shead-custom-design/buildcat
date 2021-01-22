@@ -15,4 +15,3 @@ Contents:
    buildcat.modo.rst
    buildcat.queue.rst
    buildcat.test.rst
-   buildcat.worker.rst
