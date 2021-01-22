@@ -51,7 +51,6 @@ subparser.add_argument("archive", help="Redshift .rs file to render.")
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
-subparser.add_argument("--wait", action="store_true", help="Wait and print the response.")
 
 subparser = subparsers.add_parser("server", help="Start a buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
@@ -64,7 +63,8 @@ subparser.add_argument("queues", default=["default"], nargs="*", help="Server qu
 subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue.  Default: %(default)s")
-subparser.add_argument("--wait", action="store_true", help="Wait and print the response.")
+
+subparser = subparsers.add_parser("version", help="Print the version of this client.")
 
 arguments = parser.parse_args()
 
@@ -123,8 +123,7 @@ if arguments.command == "redshift":
 if arguments.command == "redshift-info":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.redshift.info")
-    if arguments.wait:
-        print(job.wait())
+    print(job.wait())
 
 # Start a server
 if arguments.command == "server":
@@ -153,6 +152,10 @@ if arguments.command == "worker":
 if arguments.command == "worker-info":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.worker.info")
-    if arguments.wait:
-        print(job.wait())
+    print(job.wait())
+
+
+# Get version info.
+if arguments.command == "version":
+    print(f"Version: {buildcat.__version__}")
 
