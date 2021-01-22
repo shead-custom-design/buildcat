@@ -29,12 +29,8 @@ def _hython_executable():
     return "hython"
 
 
-def _buildcat_root():
-    return os.getcwd()
-
-
 def _expand_path(path):
-    path = path.replace("$BUILDCAT_ROOT", _buildcat_root())
+    path = path.replace("$BUILDCAT_ROOT", buildcat.root())
     path = os.path.abspath(path)
     path = path.replace("\\", "/")
     return path
@@ -54,7 +50,7 @@ def metadata():
         local Houdini installation.
     """
 
-    code = metadata.code.format(BUILDCAT_ROOT=_buildcat_root())
+    code = metadata.code.format(BUILDCAT_ROOT=buildcat.root())
     command = [_hython_executable(), "-c", code]
     _log_command(command)
 

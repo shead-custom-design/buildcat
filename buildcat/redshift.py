@@ -25,15 +25,11 @@ def _redshift_executable():
     return buildcat.executable("redshiftCmdLine")
 
 
-#def _buildcat_root():
-#    return os.getcwd()
-
-
-#def _expand_path(path):
-#    path = path.replace("$BUILDCAT_ROOT", _buildcat_root())
-#    path = os.path.abspath(path)
-#    path = path.replace("\\", "/")
-#    return path
+def _expand_path(path):
+    path = path.replace("$BUILDCAT_ROOT", buildcat.root())
+    path = os.path.abspath(path)
+    path = path.replace("\\", "/")
+    return path
 
 
 def _log_command(command):
@@ -55,7 +51,15 @@ def info():
 
     result = {
         "version": subprocess.check_output(command),
-#        "BUILDCAT_ROOT": _buildcat_root(),
         }
     return result
+
+
+def render_archive(archive):
+    archive = _expand_path(archive)
+    command = [_redshift_executable(), archive]
+    _log_command(command)
+
+    subprocess.check_call(command)
+
 

@@ -55,6 +55,10 @@ def is_wsl():
     return "Microsoft" in platform.uname().release
 
 
+def root():
+    return os.getcwd()
+
+
 #def rooted_path(root, path):
 #    if not root:
 #        raise Error("Buildcat Root not specified.", "You must specify the path to the Buildcat shared storage directory for this machine.")
