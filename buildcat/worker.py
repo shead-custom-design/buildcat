@@ -2,8 +2,7 @@
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
-#ping You may obtain a copy of the License at
-
+# You may obtain a copy of the License at
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -13,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functionality for testing the buildcat installation and setup.
+"""Functionality for retrieving information about workers.
 """
 
 import getpass
@@ -33,7 +32,7 @@ def info():
     Useful for testing that the system is functioning::
 
         q = buildcat.queue.Queue()
-        job = q.submit("buildcat.test.ping")
+        job = q.submit("buildcat.worker.info")
         print(job.wait())
     """
     uname = platform.uname()

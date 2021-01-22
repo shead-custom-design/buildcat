@@ -15,4 +15,4 @@ Contents:
    buildcat.modo.rst
    buildcat.queue.rst
    buildcat.redshift.rst
-   buildcat.test.rst
+   buildcat.worker.rst
