@@ -13,6 +13,7 @@
 # limitations under the License.
 
 
+import pprint
 import time
 
 import redis
@@ -22,7 +23,8 @@ import buildcat
 
 
 class Job(object):
-    def __init__(self, job):
+    def __init__(self, connection, job):
+        self._connection = connection
         self._job = job
 
     @property
@@ -32,6 +34,8 @@ class Job(object):
     def wait(self):
         while True:
             if self._job.is_failed:
+                fulljob = rq.job.Job.fetch(self._job.id, connection=self._connection)
+                print(fulljob, fulljob.exc_info)
                 raise buildcat.Error("Job failed.", "")
             if self._job.result is not None:
                 return self._job.result
@@ -74,4 +78,4 @@ class Queue(object):
                 description="You must specify the name of a Buildcat command.",
                 )
 
-        return Job(self._queue.enqueue(command, *args, **kwargs))
+        return Job(self._connection, self._queue.enqueue(command, *args, **kwargs))
