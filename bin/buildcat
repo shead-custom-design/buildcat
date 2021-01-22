@@ -7,6 +7,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import uuid
 
 import buildcat
 import buildcat.queue
@@ -36,11 +37,7 @@ subparser.add_argument("start", type=int, help="First frame to render.")
 subparser.add_argument("stop", type=int, help="Last frame to render.")
 subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
-subparser = subparsers.add_parser("modo-ping", help="Ping a buildcat worker for Modo information.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
-
-subparser = subparsers.add_parser("ping", help="Ping a buildcat worker.")
+subparser = subparsers.add_parser("modo-info", help="Ping a buildcat worker for Modo information.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
@@ -53,7 +50,12 @@ subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Def
 
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--name", default=str(uuid.uuid4()), help="Worker name.  Default: %(default)s")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
+
+subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue.  Default: %(default)s")
 
 arguments = parser.parse_args()
 
@@ -95,18 +97,12 @@ if arguments.command == "modo":
     print("Job submitted: {}".format(job))
 
 # Ping a worker for modo-specific information
-if arguments.command == "modo-ping":
+if arguments.command == "modo-info":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.modo.ping")
     print(job.wait())
 
-# Ping a worker
-if arguments.command == "ping":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    job = queue.submit("buildcat.test.ping")
-    print(job.wait())
-
-# Ping a worker for Redshift-specific information
+# Get Redshift-specific information from a worker.
 if arguments.command == "redshift-info":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.redshift.info")
@@ -122,13 +118,22 @@ if arguments.command == "server":
         #process.send_signal(signal.SIGINT)
         process.wait()
 
-# Start a worker
+# Start a worker.
 if arguments.command == "worker":
     address = "redis://{}".format(arguments.host)
-    command = ["rq", "worker", "-u", address] + arguments.queues
+    queues = set(arguments.queues)
+    queues.add(arguments.name)
+    command = ["rq", "worker", "-u", address, "--name", arguments.name] + list(queues)
     try:
         process = subprocess.Popen(command)
         process.wait()
     except KeyboardInterrupt:
         process.send_signal(signal.SIGINT)
         process.wait()
+
+# Get information about a worker.
+if arguments.command == "worker-info":
+    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
+    job = queue.submit("buildcat.worker.info")
+    print(job.wait())
+

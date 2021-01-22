@@ -55,21 +55,22 @@ def is_wsl():
     return "Microsoft" in platform.uname().release
 
 
-def rooted_path(root, path):
-    if not root:
-        raise Error("Buildcat Root not specified.", "You must specify the path to the Buildcat shared storage directory for this machine.")
+#def rooted_path(root, path):
+#    if not root:
+#        raise Error("Buildcat Root not specified.", "You must specify the path to the Buildcat shared storage directory for this machine.")
+#
+#    if not (os.path.exists(root) and os.path.isdir(root)):
+#        raise Error("Buildcat Root path does not exist.", "The Buildcat shared storage location must be an existing directory.")
+#
+#    if not os.path.isabs(root):
+#        raise Error("Buildcat Root must be absolute.", "The Buildcat Root path must be an absolute (not relative) path.")
+#
+#    if not os.path.isabs(path):
+#        raise Error("Internal error.", "The path must be an absolute (not relative) path.")
+#
+#    if not path.startswith(root):
+#        raise Error("File stored outside Buildcat Root.", "This file and its assets must be saved to the Buildcat shared storage location to be rendered.")
+#    path = os.path.join("$BUILDCAT_ROOT", os.path.relpath(path, root))
+#
+#    return path
 
-    if not (os.path.exists(root) and os.path.isdir(root)):
-        raise Error("Buildcat Root path does not exist.", "The Buildcat shared storage location must be an existing directory.")
-
-    if not os.path.isabs(root):
-        raise Error("Buildcat Root must be absolute.", "The Buildcat Root path must be an absolute (not relative) path.")
-
-    if not os.path.isabs(path):
-        raise Error("Internal error.", "The path must be an absolute (not relative) path.")
-
-    if not path.startswith(root):
-        raise Error("File stored outside Buildcat Root.", "This file and its assets must be saved to the Buildcat shared storage location to be rendered.")
-    path = os.path.join("$BUILDCAT_ROOT", os.path.relpath(path, root))
-
-    return path
