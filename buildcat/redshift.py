@@ -45,5 +45,5 @@ def info():
 def render_archive(archive):
     command = [_redshift_executable(), archive]
     subprocess.check_call(command)
-
+    return True
 

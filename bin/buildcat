@@ -45,6 +45,7 @@ subparser = subparsers.add_parser("redshift", help="Submit a Redshift render job
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
 subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
+subparser.add_argument("--wait", action="store_true", help="Wait until the render is complete.")
 subparser.add_argument("archive", help="Redshift .rs file to render.")
 
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
@@ -113,9 +114,10 @@ if arguments.command == "modo-info":
 # Render using Redshift
 if arguments.command == "redshift":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    #archive = buildcat.rooted_path(arguments.root, os.path.abspath(arguments.archive))
     job = queue.submit("buildcat.redshift.render_archive", arguments.archive)
     print("Job submitted: {}".format(job))
+    if arguments.wait:
+        print(job.wait())
 
 # Get Redshift-specific information from a worker.
 if arguments.command == "redshift-info":
