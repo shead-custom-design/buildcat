@@ -15,8 +15,6 @@
 """Functionality for integration with Foundry Modo.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import getpass
 import os
 import re

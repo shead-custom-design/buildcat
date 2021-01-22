@@ -44,6 +44,10 @@ subparser = subparsers.add_parser("ping", help="Ping a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
+subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+
 subparser = subparsers.add_parser("server", help="Start a buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
 
@@ -100,6 +104,12 @@ if arguments.command == "modo-ping":
 if arguments.command == "ping":
     queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
     job = queue.submit("buildcat.test.ping")
+    print(job.wait())
+
+# Ping a worker for Redshift-specific information
+if arguments.command == "redshift-info":
+    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
+    job = queue.submit("buildcat.redshift.info")
     print(job.wait())
 
 # Start a server

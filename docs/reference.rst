@@ -14,4 +14,5 @@ Contents:
    buildcat.hou.rst
    buildcat.modo.rst
    buildcat.queue.rst
+   buildcat.redshift.rst
    buildcat.test.rst
