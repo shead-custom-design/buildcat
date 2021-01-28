@@ -59,6 +59,11 @@ def root():
     return os.getcwd()
 
 
+def require_relative_path(path, description):
+    if os.path.isabs(path):
+        raise Error("Path must be absolute.", description)
+
+
 def rooted_path(root, path):
     if not root:
         raise Error("Buildcat Root not specified.", "You must specify the path to the Buildcat shared storage directory for this machine.")

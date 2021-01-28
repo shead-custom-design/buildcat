@@ -42,8 +42,8 @@ def info():
     return result
 
 
-def render_archive(archive):
-    command = [_redshift_executable(), archive]
+def render(rsfile):
+    command = [_redshift_executable(), rsfile]
     subprocess.check_call(command)
     return True
 
