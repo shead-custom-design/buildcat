@@ -27,10 +27,6 @@ def _modo_executable():
     return buildcat.executable("modo_cl")
 
 
-def _log_command(command):
-    buildcat.log.debug("\n\n" + " ".join(command) + "\n\n")
-
-
 def info():
     """Return version and path information describing the worker's local Modo installation.
 
@@ -42,8 +38,6 @@ def info():
     """
 
     command = [_modo_executable()]
-    _log_command(command)
-
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
     stdout, stderr = process.communicate(info.code)
     version = re.search("> : (\d+)", stdout).group(1)
@@ -90,16 +84,12 @@ def render_frames(lxofile, frames):
     frames: tuple, required
         Contains the half-open (start, stop, step) range of frames to be rendered.
     """
-    lxofile = _expand_path(lxofile)
     start = int(frames[0])
     stop = int(frames[1])
     step = int(frames[2])
 
     code = render_frames.code.format(lxofile=lxofile, start=start, stop=stop-1, step=step)
-    buildcat.log.debug(code)
     command = [_modo_executable()]
-    _log_command(command)
-
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
     stdout, stderr = process.communicate(code)
 
