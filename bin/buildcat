@@ -42,10 +42,10 @@ subparser.add_argument("--queue", default="default", help="Server queue to ping.
 subparser = subparsers.add_parser("modo-render", help="Submit a Modo render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--start", type=int, default=0, help="First frame to render.  Default: %(default)s")
+subparser.add_argument("--step", type=int, default=1, help="Interval between rendered frames.  Default: %(default)s.")
+subparser.add_argument("--stop", type=int, default=1, help="One past the last frame to render.  Default: %(default)s")
 subparser.add_argument("lxofile", help="Modo .lxo file to render.")
-subparser.add_argument("start", type=int, default=0, help="First frame to render.  Default: %(default)s")
-subparser.add_argument("stop", type=int, default=1, help="One past the last frame to render.  Default: %(default)s")
-subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
 # redshift-info
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
