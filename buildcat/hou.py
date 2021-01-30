@@ -36,10 +36,6 @@ def _expand_path(path):
     return path
 
 
-def _log_command(command):
-    buildcat.log.debug("\n\n" + " ".join(command) + "\n\n")
-
-
 def info():
     """Return version and path information describing the worker's local Houdini installation.
 
@@ -51,18 +47,19 @@ def info():
     """
 
     command = [_hython_executable(), "-c", info.code]
-    _log_command(command)
-
-    result = json.loads(subprocess.check_output(command))
-    return result
+    version = ""
+    for line in subprocess.check_output(command).decode("UTF8").splitlines():
+        if line.startswith("buildcat-houdini-version: "):
+            version = line.split(sep=" ", maxsplit=1)[1]
+    return {
+        "houdini": {
+            "executable": _hython_executable(),
+            "version": version,
+            },
+        }
 
 info.code = """
-import json
-import sys
-json.dump({{
-    "name": hou.applicationName(),
-    "version": hou.applicationVersionString(),
-}}, sys.stdout)
+print("buildcat-houdini-version:", hou.applicationVersionString())
 """
 
 
@@ -109,8 +106,6 @@ def render_frames(hipfile, rop, frames):
 
     code = render_frames.code.format(hipfile=hipfile, rop=rop, start=start, end=end-1, step=step)
     command = [_hython_executable(), "-c", code]
-    _log_command(command)
-
     subprocess.check_call(command)
 
 render_frames.code = """
@@ -140,8 +135,6 @@ def render_frame(hipfile, rop, frame):
 
     code = render_frame.code.format(hipfile=hipfile, rop=rop, frame=frame)
     command = [_hython_executable(), "-c", code]
-    _log_command(command)
-
     subprocess.check_call(command)
 
 render_frame.code = """
