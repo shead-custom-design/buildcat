@@ -24,11 +24,11 @@ subparser.add_argument("--queue", default="default", help="Server queue to ping.
 subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
+subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering.  Default: %(default)s")
+subparser.add_argument("--start", type=int, default=0, help="First frame to render.  Default: %(default)s")
+subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
+subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render.  Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
-subparser.add_argument("rop", help="ROP to use for rendering (ex: /out/mantra1).")
-subparser.add_argument("start", type=int, help="First frame to render.")
-subparser.add_argument("stop", type=int, help="Last frame to render.")
-subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
 # install
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
@@ -95,7 +95,7 @@ if arguments.command == "houdini-info":
 if arguments.command == "houdini-render":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
-    job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop+1, arguments.step))
+    job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
     print("Job submitted: {}".format(job))
 
 # install
