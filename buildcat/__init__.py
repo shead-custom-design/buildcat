@@ -96,6 +96,7 @@ def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
 def require_relative_path(path, description):
     if os.path.isabs(path):
         raise Error("Path must be relative.", description)
+    return path
 
 
 def root():

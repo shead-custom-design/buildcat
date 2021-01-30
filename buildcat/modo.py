@@ -47,7 +47,7 @@ def _log_command(command):
     buildcat.log.debug("\n\n" + " ".join(command) + "\n\n")
 
 
-def ping():
+def info():
     """Return version and path information describing the worker's local Modo installation.
 
     Returns
@@ -57,12 +57,11 @@ def ping():
         local Houdini installation.
     """
 
-    code = ping.code.format(BUILDCAT_ROOT=_buildcat_root())
     command = [_modo_executable()]
     _log_command(command)
 
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
-    stdout, stderr = process.communicate(code)
+    stdout, stderr = process.communicate(info.code)
     version = re.search("> : (\d+)", stdout).group(1)
 
     return {
@@ -77,7 +76,7 @@ def ping():
         "user": getpass.getuser(),
     }
 
-ping.code = """
+info.code = """
 query platformservice appversion ?
 app.quit
 """

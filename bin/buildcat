@@ -106,7 +106,7 @@ if arguments.command == "install":
 # modo-info
 if arguments.command == "modo-info":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
-    job = buildcat.submit(queue, "buildcat.modo.ping")
+    job = buildcat.submit(queue, "buildcat.modo.info")
     print(buildcat.wait(connection=connection, job=job))
 
 # modo-render
