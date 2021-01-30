@@ -49,8 +49,10 @@ def info():
     version = re.search("> : (\d+)", stdout).group(1)
 
     return {
-        "modo": _modo_executable(),
-        "modo-version": version,
+        "modo": {
+            "executable": _modo_executable(),
+            "version": version,
+        },
     }
 
 info.code = """
