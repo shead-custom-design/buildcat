@@ -16,12 +16,12 @@ parser.add_argument("--debug", action="store_true", help="Verbose logging output
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
 # houdini-info
-subparser = subparsers.add_parser("houdini-info", help="Ping a buildcat worker for Houdini information.")
+subparser = subparsers.add_parser("houdini-info", help="Retrieve Houdini information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
 # houdini-render
-subparser = subparsers.add_parser("houdini-render", help="Submit a SideFX Houdini render job.")
+subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
@@ -34,12 +34,12 @@ subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval be
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
 
 # modo-info
-subparser = subparsers.add_parser("modo-info", help="Ping a buildcat worker for Modo information.")
+subparser = subparsers.add_parser("modo-info", help="Retrieve Modo information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
 # modo-render
-subparser = subparsers.add_parser("modo-render", help="Submit a Foundry Modo render job.")
+subparser = subparsers.add_parser("modo-render", help="Submit a Modo render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 subparser.add_argument("lxofile", help="Modo .lxo file to render.")

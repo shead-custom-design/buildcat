@@ -26,7 +26,7 @@ import buildcat
 
 
 def _hython_executable():
-    return buildcat_executable("hython")
+    return buildcat.executable("hython")
 
 
 def _expand_path(path):
