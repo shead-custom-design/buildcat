@@ -10,60 +10,66 @@ import sys
 import uuid
 
 import buildcat
-import buildcat.queue
 
 parser = argparse.ArgumentParser(description="Command line client for Buildcat: the portable, lightweight render farm.")
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
+# houdini-render
 subparser = subparsers.add_parser("houdini-render", help="Submit a SideFX Houdini render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
-subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 subparser.add_argument("rop", help="ROP to use for rendering (ex: /out/mantra1).")
 subparser.add_argument("start", type=int, help="First frame to render.")
 subparser.add_argument("stop", type=int, help="Last frame to render.")
 subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
+# install
 subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
 
+# modo-info
 subparser = subparsers.add_parser("modo-info", help="Ping a buildcat worker for Modo information.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
+# modo-render
 subparser = subparsers.add_parser("modo-render", help="Submit a Foundry Modo render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
-subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
 subparser.add_argument("lxofile", help="Modo .lxo file to render.")
 subparser.add_argument("start", type=int, help="First frame to render.")
 subparser.add_argument("stop", type=int, help="Last frame to render.")
 subparser.add_argument("step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
 
+# redshift-info
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
 
+# redshift-render
 subparser = subparsers.add_parser("redshift-render", help="Submit a Redshift render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
-subparser.add_argument("--root", default=os.getcwd(), help="Buildcat root directory.  Default: %(default)s")
 subparser.add_argument("--wait", action="store_true", help="Wait until the render is complete.")
 subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 
+# server
 subparser = subparsers.add_parser("server", help="Start a buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
 
+# worker
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--name", default=str(uuid.uuid4()), help="Worker name.  Default: %(default)s")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
 
+# worker-info
 subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue.  Default: %(default)s")
 
+# version
 subparser = subparsers.add_parser("version", help="Print the version of this client.")
 
 arguments = parser.parse_args()
@@ -75,14 +81,14 @@ logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
 log = logging.getLogger()
 log.name = os.path.basename(sys.argv[0])
 
-# Render using Houdini
-if arguments.command == "houdini":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    hipfile = buildcat.rooted_path(arguments.root, os.path.abspath(arguments.hipfile))
-    job = queue.submit("buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop+1, arguments.step))
+# houdini-render
+if arguments.command == "houdini-render":
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
+    job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop+1, arguments.step))
     print("Job submitted: {}".format(job))
 
-# Install integration resources
+# install
 if arguments.command == "install":
     buildcat_dir = os.path.dirname(buildcat.__file__)
     integrations_dir = os.path.join(buildcat_dir, "integrations")
@@ -98,35 +104,35 @@ if arguments.command == "install":
             shutil.copy2(os.path.join(dirpath, filename), relative_path)
     log.info("Installation complete.")
 
-# Render using Modo
-if arguments.command == "modo":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    lxofile = buildcat.rooted_path(arguments.root, os.path.abspath(arguments.lxofile))
-    job = queue.submit("buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop+1, arguments.step))
+# modo-info
+if arguments.command == "modo-info":
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    job = buildcat.submit(queue, "buildcat.modo.ping")
+    print(buildcat.wait(connection=connection, job=job))
+
+# modo-render
+if arguments.command == "modo-render":
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    lxofile = buildcat.require_relative_path(arguments.lxofile, "Modo .lxo file must be a relative path.")
+    job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop+1, arguments.step))
     print("Job submitted: {}".format(job))
 
-# Ping a worker for modo-specific information
-if arguments.command == "modo-info":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    job = queue.submit("buildcat.modo.ping")
-    print(job.wait())
-
-# Get Redshift-specific information from a worker.
+# redshift-info
 if arguments.command == "redshift-info":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    job = queue.submit("buildcat.redshift.info")
-    print(job.wait())
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    job = buildcat.submit(queue, "buildcat.redshift.info")
+    print(buildcat.wait(connection=connection, job=job))
 
-# Render using Redshift
+# redshift-render
 if arguments.command == "redshift-render":
     rsfile = buildcat.require_relative_path(arguments.rsfile, "Redshift .rs file must be a relative path.")
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    job = queue.submit("buildcat.redshift.render", rsfile)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    job = buildcat.submit(queue, "buildcat.redshift.render", rsfile)
     print("Job submitted: {}".format(job))
     if arguments.wait:
-        print(job.wait())
+        print(buildcat.wait(connection=connection, job=job))
 
-# Start a server
+# server
 if arguments.command == "server":
     command = ["redis-server", "--bind", arguments.bind]
     try:
@@ -136,7 +142,7 @@ if arguments.command == "server":
         #process.send_signal(signal.SIGINT)
         process.wait()
 
-# Start a worker.
+# worker
 if arguments.command == "worker":
     address = "redis://{}".format(arguments.host)
     queues = set(arguments.queues)
@@ -149,14 +155,14 @@ if arguments.command == "worker":
         process.send_signal(signal.SIGINT)
         process.wait()
 
-# Get information about a worker.
+# worker-info
 if arguments.command == "worker-info":
-    queue = buildcat.queue.Queue(queue=arguments.queue, host=arguments.host)
-    job = queue.submit("buildcat.worker.info")
-    print(job.wait())
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    job = buildcat.submit(queue, "buildcat.worker.info")
+    print(buildcat.wait(connection=connection, job=job))
 
 
-# Get version info.
+# version
 if arguments.command == "version":
     print(f"Version: {buildcat.__version__}")
 

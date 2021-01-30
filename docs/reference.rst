@@ -13,6 +13,5 @@ Contents:
    buildcat.rst
    buildcat.hou.rst
    buildcat.modo.rst
-   buildcat.queue.rst
    buildcat.redshift.rst
    buildcat.worker.rst

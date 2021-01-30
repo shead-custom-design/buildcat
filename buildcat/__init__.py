@@ -14,11 +14,16 @@
 
 """Provides the Buildcat public API."""
 
+__version__ = "0.3.0-dev"
+
 import logging
 import platform
 import os
+import time
 
-__version__ = "0.3.0-dev"
+import redis
+import rq
+
 
 formatter = logging.Formatter(fmt="%(asctime)s %(levelname)s:%(name)s:%(message)s", datefmt="%H:%M:%S")
 
@@ -47,6 +52,28 @@ class Error(Exception):
         return "<buildcat.Error message={!r} description={!r}>".format(self.message, self.description)
 
 
+def connect(*, host="127.0.0.1", port=6379, timeout=5):
+    if not host:
+        raise Error(
+            message="Server host not specified.",
+            description="You must specify the IP address or hostname of the Buildcat server.",
+            )
+    try:
+        connection = redis.Redis(host=host, port=port, socket_timeout=timeout)
+        connection.ping()
+    except redis.exceptions.TimeoutError:
+        raise Error(
+            message="Couldn't connect to server.",
+            description="Verify that the Buildcat server is listening at {} port {}.".format(host, port),
+            )
+    except Exception as e:
+        raise Error(
+            message="Couldn't connect to server.",
+            description=str(e),
+            )
+    return connection
+
+
 def executable(name):
     return f"{name}.exe" if is_wsl() else name
 
@@ -55,31 +82,43 @@ def is_wsl():
     return "Microsoft" in platform.uname().release
 
 
-def root():
-    return os.getcwd()
+def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
+    if not queue:
+        raise Error(
+            message="Server queue not specified.",
+            description="You must specify the name of a Buildcat queue.",
+            )
+
+    connection = connect(host=host, port=port, timeout=timeout)
+    return connection, rq.Queue(queue, connection=connection)
 
 
 def require_relative_path(path, description):
     if os.path.isabs(path):
-        raise Error("Path must be absolute.", description)
+        raise Error("Path must be relative.", description)
 
 
-def rooted_path(root, path):
-    if not root:
-        raise Error("Buildcat Root not specified.", "You must specify the path to the Buildcat shared storage directory for this machine.")
+def root():
+    return os.getcwd()
 
-    if not (os.path.exists(root) and os.path.isdir(root)):
-        raise Error("Buildcat Root path does not exist.", "The Buildcat shared storage location must be an existing directory.")
 
-    if not os.path.isabs(root):
-        raise Error("Buildcat Root must be absolute.", "The Buildcat Root path must be an absolute (not relative) path.")
+def submit(queue, command, *args, **kwargs):
+    if not command:
+        raise Error(
+            message="Command not specified.",
+            description="You must specify the name of a Buildcat command.",
+            )
 
-    if not os.path.isabs(path):
-        raise Error("Internal error.", "The path must be an absolute (not relative) path.")
+    return queue.enqueue(command, *args, **kwargs)
 
-    if not path.startswith(root):
-        raise Error("File stored outside Buildcat Root.", "This file and its assets must be saved to the Buildcat shared storage location to be rendered.")
-    path = os.path.join("$BUILDCAT_ROOT", os.path.relpath(path, root))
 
-    return path
+def wait(*, connection, job):
+    while True:
+        if job.is_failed:
+            fulljob = rq.job.Job.fetch(job.id, connection=connection)
+            print(fulljob, fulljob.exc_info)
+            raise Error("Job failed.", "")
+        if job.result is not None:
+            return job.result
+        time.sleep(0.5)
 
