@@ -26,7 +26,7 @@ import buildcat
 
 
 def _hython_executable():
-    return "hython"
+    return buildcat_executable("hython")
 
 
 def _expand_path(path):
@@ -40,7 +40,7 @@ def _log_command(command):
     buildcat.log.debug("\n\n" + " ".join(command) + "\n\n")
 
 
-def metadata():
+def info():
     """Return version and path information describing the worker's local Houdini installation.
 
     Returns
@@ -50,20 +50,18 @@ def metadata():
         local Houdini installation.
     """
 
-    code = metadata.code.format(BUILDCAT_ROOT=buildcat.root())
-    command = [_hython_executable(), "-c", code]
+    command = [_hython_executable(), "-c", info.code]
     _log_command(command)
 
     result = json.loads(subprocess.check_output(command))
     return result
 
-metadata.code = """
+info.code = """
 import json
 import sys
 json.dump({{
     "name": hou.applicationName(),
     "version": hou.applicationVersionString(),
-    "BUILDCAT_ROOT": {BUILDCAT_ROOT!r},
 }}, sys.stdout)
 """
 

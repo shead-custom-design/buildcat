@@ -15,6 +15,11 @@ parser = argparse.ArgumentParser(description="Command line client for Buildcat: 
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
+# houdini-info
+subparser = subparsers.add_parser("houdini-info", help="Ping a buildcat worker for Houdini information.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+
 # houdini-render
 subparser = subparsers.add_parser("houdini-render", help="Submit a SideFX Houdini render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
@@ -79,6 +84,12 @@ if arguments.command is None:
 logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
 log = logging.getLogger()
 log.name = os.path.basename(sys.argv[0])
+
+# houdini-info
+if arguments.command == "houdini-info":
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    job = buildcat.submit(queue, "buildcat.hou.info")
+    print(buildcat.wait(connection=connection, job=job))
 
 # houdini-render
 if arguments.command == "houdini-render":
