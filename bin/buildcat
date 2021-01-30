@@ -61,7 +61,6 @@ subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Def
 # worker
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--name", default=str(uuid.uuid4()), help="Worker name.  Default: %(default)s")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
 
 # worker-info
@@ -145,9 +144,7 @@ if arguments.command == "server":
 # worker
 if arguments.command == "worker":
     address = "redis://{}".format(arguments.host)
-    queues = set(arguments.queues)
-    queues.add(arguments.name)
-    command = ["rq", "worker", "-u", address, "--name", arguments.name] + list(queues)
+    command = ["rq", "worker", "-u", address] + arguments.queues
     try:
         process = subprocess.Popen(command)
         process.wait()
