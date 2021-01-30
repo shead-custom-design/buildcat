@@ -29,18 +29,7 @@ import buildcat
 
 
 def _modo_executable():
-    return "modo_cl"
-
-
-def _buildcat_root():
-    return os.getcwd()
-
-
-def _expand_path(path):
-    path = path.replace("$BUILDCAT_ROOT", _buildcat_root())
-    path = os.path.abspath(path)
-    path = path.replace("\\", "/")
-    return path
+    return buildcat.executable("modo_cl")
 
 
 def _log_command(command):
