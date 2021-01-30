@@ -29,13 +29,6 @@ def _hython_executable():
     return buildcat.executable("hython")
 
 
-def _expand_path(path):
-    path = path.replace("$BUILDCAT_ROOT", buildcat.root())
-    path = os.path.abspath(path)
-    path = path.replace("\\", "/")
-    return path
-
-
 def info():
     """Return version and path information describing the worker's local Houdini installation.
 
@@ -98,7 +91,6 @@ def render_frames(hipfile, rop, frames):
     frames: tuple, required
         Contains the half-open range of frames to be rendered.
     """
-    hipfile = _expand_path(hipfile)
     rop = str(rop)
     start = int(frames[0])
     end = int(frames[1])
@@ -129,7 +121,6 @@ def render_frame(hipfile, rop, frame):
     frame: int, required
         The frame to be rendered.
     """
-    hipfile = _expand_path(hipfile)
     rop = str(rop)
     frame = int(frame)
 
