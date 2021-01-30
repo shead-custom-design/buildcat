@@ -37,7 +37,8 @@ def info():
 
     command = [_redshift_executable(), "--version"]
     result = {
-        "version": subprocess.check_output(command),
+        "redshift": _redshift_executable(),
+        "redshift-version": subprocess.check_output(command),
         }
     return result
 

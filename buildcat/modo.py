@@ -15,13 +15,8 @@
 """Functionality for integration with Foundry Modo.
 """
 
-import getpass
-import os
 import re
-import socket
 import subprocess
-import sys
-import time
 
 import rq
 
@@ -54,15 +49,8 @@ def info():
     version = re.search("> : (\d+)", stdout).group(1)
 
     return {
-        "host": socket.gethostname(),
         "modo": _modo_executable(),
         "modo-version": version,
-        "pid": os.getpid(),
-        "platform": sys.platform,
-        "python": sys.version,
-        "prefix": sys.prefix,
-        "root": os.getcwd(),
-        "user": getpass.getuser(),
     }
 
 info.code = """
