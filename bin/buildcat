@@ -149,7 +149,6 @@ if arguments.command == "server":
         process = subprocess.Popen(command)
         process.wait()
     except KeyboardInterrupt:
-        #process.send_signal(signal.SIGINT)
         process.wait()
 
 # worker
@@ -160,7 +159,6 @@ if arguments.command == "worker":
         process = subprocess.Popen(command)
         process.wait()
     except KeyboardInterrupt:
-        process.send_signal(signal.SIGINT)
         process.wait()
 
 # worker-info
