@@ -79,7 +79,7 @@ def executable(name):
 
 
 def is_wsl():
-    return "Microsoft" in platform.uname().release
+    return "microsoft" in platform.uname().release.lower()
 
 
 def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
