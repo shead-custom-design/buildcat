@@ -28,18 +28,26 @@ def _modo_executable():
 
 
 def info():
-    """Return version and path information describing the worker's local Modo installation.
+    """Return information describing the worker's local Modo installation.
+
+    .. note::
+        You *must* configure your PATH environment variable so that the worker
+        can find the `modo_cl` executable.
 
     Returns
     -------
-    metadata: dict
+    metadata: :class:`dict`
         A collection of key-value pairs containing information describing the
         local Houdini installation.
     """
 
+    code = """
+query platformservice appversion ?
+app.quit
+"""
     command = [_modo_executable()]
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
-    stdout, stderr = process.communicate(info.code)
+    stdout, stderr = process.communicate(code)
     version = re.search("> : (\d+)", stdout).group(1)
 
     return {
@@ -49,19 +57,50 @@ def info():
         },
     }
 
-info.code = """
-query platformservice appversion ?
-app.quit
-"""
+def render_frames(lxofile, frames):
+    """Render a half-open range of frames from a Modo .lxo file.
 
-def split_frames(lxofile, frames):
-    """Render individual frames from a Modo .lxo file.
+    .. note::
+        You *must* configure your PATH environment variable so that the worker
+        can find the `modo_cl` executable.
 
     Parameters
     ----------
-    lxofile: str, required
+    lxofile: :class:`str`, required
         Path to the file to be rendered.
-    frames: tuple, required
+    frames: :class:`tuple` of three integers, required
+        Contains the half-open (start, stop, step) range of frames to be rendered.
+    """
+    lxofile = str(lxofile)
+    start = int(frames[0])
+    stop = int(frames[1])
+    step = int(frames[2])
+
+    code = f"""
+log.toConsole true
+log.toConsoleRolling true
+scene.open "{lxofile}"
+pref.value render.threads auto
+select.Item Render
+item.channel first {start}
+item.channel last {stop-1}
+item.channel step {step}
+render.animation {{*}}
+app.quit
+"""
+    command = [_modo_executable()]
+    process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
+    stdout, stderr = process.communicate(code)
+
+
+def split_frames(lxofile, frames):
+    """Render a range of frames from a Modo .lxo file as individual jobs.
+
+    Parameters
+    ----------
+    lxofile: :class:`str`, required
+        Path to the file to be rendered.
+    frames: :class:`tuple` of three integers, required
         Contains the half-open (start, end, step) of frames to be rendered.
     """
     lxofile = str(lxofile)
@@ -74,34 +113,3 @@ def split_frames(lxofile, frames):
         q.enqueue("buildcat.modo.render_frames", lxofile, (frame, frame+1, 1))
 
 
-def render_frames(lxofile, frames):
-    """Render a range of frames from a Modo .lxo file.
-
-    Parameters
-    ----------
-    lxofile: str, required
-        Path to the file to be rendered.
-    frames: tuple, required
-        Contains the half-open (start, stop, step) range of frames to be rendered.
-    """
-    start = int(frames[0])
-    stop = int(frames[1])
-    step = int(frames[2])
-
-    code = render_frames.code.format(lxofile=lxofile, start=start, stop=stop-1, step=step)
-    command = [_modo_executable()]
-    process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
-    stdout, stderr = process.communicate(code)
-
-render_frames.code = """
-log.toConsole true
-log.toConsoleRolling true
-scene.open "{lxofile}"
-pref.value render.threads auto
-select.Item Render
-item.channel first {start}
-item.channel last {stop}
-item.channel step {step}
-render.animation {{*}}
-app.quit
-"""

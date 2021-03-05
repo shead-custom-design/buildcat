@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Provides the Buildcat public API."""
+"""Provides the Buildcat public API, for use by clients and integrations."""
 
 __version__ = "0.3.0-dev"
 
@@ -53,6 +53,28 @@ class Error(Exception):
 
 
 def connect(*, host="127.0.0.1", port=6379, timeout=5):
+    """Connect to a listening Buildcat server.
+
+    Parameters
+    ----------
+    host: str, optional
+        IP address or hostname of the Buildcat server. Defaults to the local loopback adapter.
+    port: int, optional
+        Port number of the Buildcat server.  Defaults to 6379.
+    timeout: number, optional
+        Maximum time to spend waiting for a connection, in seconds.  Default: 5 seconds.
+
+    Returns
+    -------
+    connection: :class:`redis.Redis` instance
+        Persistent connection to the listening server.
+
+    Raises
+    ------
+    :class:`Error`
+        If there are any problems connecting to the server.
+    """
+
     if not host:
         raise Error(
             message="Server host not specified.",
@@ -64,7 +86,7 @@ def connect(*, host="127.0.0.1", port=6379, timeout=5):
     except redis.exceptions.TimeoutError:
         raise Error(
             message="Couldn't connect to server.",
-            description="Verify that the Buildcat server is listening at {} port {}.".format(host, port),
+            description=f"Verify that the Buildcat server is listening at {host} port {port}.",
             )
     except Exception as e:
         raise Error(
@@ -75,10 +97,23 @@ def connect(*, host="127.0.0.1", port=6379, timeout=5):
 
 
 def executable(name):
+    """Return the platform-specific name of an executable.
+
+    Parameters
+    ----------
+    name: :class:`str`, required
+        Name of the executable.
+
+    Returns
+    -------
+    name: :class:`str`
+        The executable name, with platform-specific additions (such as `.exe` on Windows).
+    """
     return f"{name}.exe" if is_wsl() else name
 
 
 def is_wsl():
+    """Return :any:`True` if the current platform is WSL."""
     return "microsoft" in platform.uname().release.lower()
 
 

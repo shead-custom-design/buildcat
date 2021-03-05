@@ -26,7 +26,11 @@ def _redshift_executable():
 
 
 def info():
-    """Return version and path information describing the worker's local Redshift installation.
+    """Return information describing the worker's local Redshift installation.
+
+    .. note::
+        You *must* configure your PATH environment variable so that the worker
+        can find the `redshiftCmdLine` executable.
 
     Returns
     -------
@@ -46,7 +50,18 @@ def info():
 
 
 def render(rsfile):
+    """Render a Redshift archive (.rs) file.
+
+    .. note::
+        You *must* configure your PATH environment variable so that the worker
+        can find the `redshiftCmdLine` executable.
+
+    Parameters
+    ----------
+    rsfile: :class:`str`, required
+        Relative path of the file to be rendered.
+    """
+
     command = [_redshift_executable(), rsfile]
     subprocess.check_call(command)
-    return True
 

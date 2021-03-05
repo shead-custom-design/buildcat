@@ -29,11 +29,13 @@ import buildcat
 def info():
     """Returns information about a worker.
 
-    Useful for testing that the system is functioning::
+    Useful for testing that the system is functioning.
 
-        q = buildcat.queue.Queue()
-        job = q.submit("buildcat.worker.info")
-        print(job.wait())
+    Returns
+    -------
+    metadata: :class:`dict`
+        A collection of key-value pairs containing information describing the
+        local worker.
     """
     uname = platform.uname()
 
@@ -59,65 +61,3 @@ def info():
             "version": buildcat.__version__,
         },
     }
-
-
-#def message(msg):
-#    """Logs a message on a worker.
-#
-#    Useful for testing that the system is functioning::
-#
-#        q = buildcat.queue.Queue()
-#        q.submit("buildcat.test.log", "Hello, World!")
-#
-#    After which the given message will appear in the output of the worker that
-#    handles the job.
-#
-#    Parameters
-#    ----------
-#    msg: str, required
-#        The message to be logged.
-#    """
-#
-#    buildcat.log.info(msg)
-#
-#
-#def spawn(count):
-#    """Spawns additional jobs from a worker.
-#
-#    Useful for verifying that a job handler can spawn additional jobs::
-#
-#        q = buildcat.queue.Queue()
-#        q.submit("buildcat.test.spawn", 3)
-#
-#    The spawn job will be handled by a worker, which will spawn 3 additional
-#    :func:`buildcat.test.log` jobs, which will be handled subsequently.
-#
-#    Parameters
-#    ----------
-#    count: int, required
-#        Number of new jobs to create.
-#    """
-#
-#    for index in range(count):
-#        rq.Queue(connection=rq.get_current_connection()).enqueue("buildcat.test.log", "Job-{}".format(index))
-#
-#
-#def raise_exception(e):
-#    """Raise an exception.
-#
-#    Useful for testing the reliability of workers::
-#
-#        q = buildcat.queue.Queue()
-#        q.submit("buildcat.test.raise_exception", NotImplementedError())
-#
-#    The worker that handles this job will raise the given exception and move
-#    the job to the failed queue, but should continue running.
-#
-#    Parameters
-#    ----------
-#    e: exception object, required
-#        The exception to be raised.
-#    """
-#
-#    raise e
-#
