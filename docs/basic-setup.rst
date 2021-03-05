@@ -121,8 +121,10 @@ previous step, there's nothing to do except fire it up::
 The worker will print a startup message, begin communicating with the server,
 and wait for jobs to work on::
 
-    16:11:42 RQ worker 'rq:worker:b9031b3c338b4307b9764fe36e7de13a' started, version 1.0
-    16:11:42 *** Listening on default...
+    13:23:51 Worker rq:worker:87138a93131c4b33a2ebe7d8a3c9c528: started, version 1.7.0
+    13:23:51 Subscribing to channel rq:pubsub:87138a93131c4b33a2ebe7d8a3c9c528
+    13:23:51 *** Listening on default...
+    13:23:51 Cleaning registries for queue: default
 
 Note that we didn't have to specify the server address because the worker
 defaults to `127.0.0.1` too.  Also, before starting the worker we changed the
@@ -137,20 +139,20 @@ Now it's time to test the farm.  To keep things simple, we're going to send a
 command to the server from the command line, as this is the easiest way to
 ensure that everything's working::
 
-    $ buildcat ping
+    $ buildcat worker-info
 
 This command submits a `buildcat.test.ping` job to the server, which hands it off to any
 available worker.  If you check the console where we left our worker running, you'll see that it
 accepted the job and ran it::
 
-    21:52:49 default: buildcat.test.ping() (4b5c9b65-03ec-48f1-95b8-7c382604a0d3)
-    21:52:49 default: Job OK (4b5c9b65-03ec-48f1-95b8-7c382604a0d3)
-    21:52:49 Result is kept for 500 seconds
+    13:25:53 default: buildcat.worker.info() (b8de2065-9fd7-4018-b77c-dd930f388880)
+    13:25:53 default: Job OK (b8de2065-9fd7-4018-b77c-dd930f388880)
+    13:25:53 Result is kept for 500 seconds
 
 ... and in the console where you sent the command, some information about the worker
 is printed out::
 
-    {'host': 'aurora.local', 'user': 'fred', 'root': '/Volumes/Buildcat', 'pid': 52928}
+    {'os': {'host': 'aurora.local', 'machine': 'x86_64', 'processor': 'i386', 'release': '19.6.0', 'system': 'Darwin', 'version': 'Darwin Kernel Version 19.6.0: Tue Jan 12 22:13:05 PST 2021; root:xnu-6153.141.16~1/RELEASE_X86_64'}, 'python': {'version': '3.8.2 (default, Mar 26 2020, 10:43:30) \n[Clang 4.0.1 (tags/RELEASE_401/final)]', 'prefix': '/Users/fred/miniconda3'}, 'worker': {'pid': 78322, 'root': '/Users/fred/src/buildcat/docs', 'user': 'fred', 'version': '0.3.0-dev'}}
 
 This confirms that the client, server, and worker are all communicating and
 ready to render.

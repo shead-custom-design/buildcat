@@ -75,7 +75,7 @@ Testing
 
 Similarly, our testing code needs the new server address to function::
 
-    $ buildcat ping --host 192.168.2.1
+    $ buildcat worker-info --host 192.168.2.1
 
 Keep in mind that, now that we're running multiple workers, the job may
 be run on any one of them, so that the ping job results will vary
