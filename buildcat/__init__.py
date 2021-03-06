@@ -39,9 +39,9 @@ class Error(Exception):
 
     Parameters
     ----------
-    message: str, required
+    message: :class:`str` required
         Short message describing the failure.
-    description: str, required
+    description: :class:`str` required
         Detailed description of the failure, including possible remediations.
     """
     def __init__(self, message, description):
@@ -57,9 +57,9 @@ def connect(*, host="127.0.0.1", port=6379, timeout=5):
 
     Parameters
     ----------
-    host: str, optional
+    host: :class:`str` optional
         IP address or hostname of the Buildcat server. Defaults to the local loopback adapter.
-    port: int, optional
+    port: :class:`int`, optional
         Port number of the Buildcat server.  Defaults to 6379.
     timeout: number, optional
         Maximum time to spend waiting for a connection, in seconds.  Default: 5 seconds.
@@ -109,15 +109,40 @@ def executable(name):
     name: :class:`str`
         The executable name, with platform-specific additions (such as `.exe` on Windows).
     """
-    return f"{name}.exe" if is_wsl() else name
+    return f"{name}.exe" if _is_wsl() else name
 
 
-def is_wsl():
+def _is_wsl():
     """Return :any:`True` if the current platform is WSL."""
     return "microsoft" in platform.uname().release.lower()
 
 
 def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
+    """Connect to a Buildcat server queue.
+
+    Parameters
+    ----------
+    queue: :class:`str`, optional
+        Name of the queue to connect.
+    host: :class:`str`, optional
+        IP address or hostname of the Buildcat server. Defaults to the local loopback adapter.
+    port: :class:`int`, optional
+        Port number of the Buildcat server.  Defaults to 6379.
+    timeout: number, optional
+        Maximum time to spend waiting for a connection, in seconds.  Default: 5 seconds.
+
+    Returns
+    -------
+    connection: :class:`redis.Redis` instance
+        Persistent connection to the listening server.
+    queue: :class:`rq.Queue` instance
+        Queue object.
+
+    Raises
+    ------
+    :class:`Error`
+        If there are any problems connecting to the server.
+    """
     if not queue:
         raise Error(
             message="Server queue not specified.",
@@ -129,12 +154,38 @@ def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
 
 
 def require_relative_path(path, description):
+    """Raise an exception if a path isn't relative.
+
+    Parameters
+    ----------
+    path: :class:`str`, required
+        Path to check.
+    description: :class:`str`, required
+        Description of the path, used for raised exceptions.
+
+    Returns
+    -------
+    path: :class:`str` instance
+        The path.
+
+    Raises
+    ------
+    :class:`Error`
+        If the path isn't relative.
+    """
     if os.path.isabs(path):
         raise Error("Path must be relative.", description)
     return path
 
 
 def root():
+    """Return the worker root directory.
+
+    Returns
+    -------
+    root: :class:`str`
+        The worker's root directory.
+    """
     return os.getcwd()
 
 
