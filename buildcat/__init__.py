@@ -19,6 +19,7 @@ __version__ = "0.3.0-dev"
 import logging
 import platform
 import os
+import subprocess
 import time
 
 import redis
@@ -33,6 +34,12 @@ handler.setFormatter(formatter)
 log = logging.getLogger(__name__)
 log.setLevel(os.environ.get("BUILDCAT_LOG_LEVEL", logging.INFO))
 log.addHandler(handler)
+
+
+def _is_wsl():
+    """Return :any:`True` if the current platform is WSL."""
+    return "microsoft" in platform.uname().release.lower()
+
 
 class Error(Exception):
     """Base class for all Buildcat exceptions.
@@ -50,6 +57,20 @@ class Error(Exception):
 
     def __repr__(self):
         return "<buildcat.Error message={!r} description={!r}>".format(self.message, self.description)
+
+
+def check_call(command):
+    """Run a command using :func:`subprocess.check_call`.
+    """
+    log.info(" ".join(command))
+    return subprocess.check_call(command)
+
+
+def check_output(command):
+    """Run a command using :func:`subprocess.check_output`.
+    """
+    log.info(" ".join(command))
+    return subprocess.check_output(command)
 
 
 def connect(*, host="127.0.0.1", port=6379, timeout=5):
@@ -110,11 +131,6 @@ def executable(name):
         The executable name, with platform-specific additions (such as `.exe` on Windows).
     """
     return f"{name}.exe" if _is_wsl() else name
-
-
-def _is_wsl():
-    """Return :any:`True` if the current platform is WSL."""
-    return "microsoft" in platform.uname().release.lower()
 
 
 def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):

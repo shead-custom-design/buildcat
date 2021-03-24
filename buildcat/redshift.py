@@ -28,9 +28,11 @@ def _redshift_executable():
 def info():
     """Return information describing the worker's local Redshift installation.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `redshiftCmdLine` executable.
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `redshiftCmdLine` executable.
 
     Returns
     -------
@@ -43,7 +45,7 @@ def info():
     result = {
         "redshift": {
             "executable": _redshift_executable(),
-            "version": subprocess.check_output(command),
+            "version": buildcat.check_output(command),
         },
     }
     return result
@@ -60,8 +62,19 @@ def render(rsfile):
     ----------
     rsfile: :class:`str`, required
         Relative path of the file to be rendered.
+
+    Environment Variables
+    ---------------------
+    BUILDCAT_REDSHIFT_GPU: optional
+        Whitespace-delimited list of GPU indices to use for rendering.  Default: use all GPUs.
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `redshiftCmdLine` executable.
     """
 
     command = [_redshift_executable(), rsfile]
-    subprocess.check_call(command)
+    for gpu in os.environ.get("BUILDCAT_REDSHIFT_GPU", "").split():
+        command += ["-gpu", gpu]
+
+    buildcat.check_call(command)
 

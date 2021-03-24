@@ -58,6 +58,7 @@ intersphinx_mapping = {
     "redis": ("https://redis-py.readthedocs.io/en/stable", None),
     }
 
+napoleon_custom_sections = [("Environment Variables", "params_style")]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 

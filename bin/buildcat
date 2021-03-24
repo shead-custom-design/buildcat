@@ -66,6 +66,7 @@ subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Def
 # worker
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--redshift-gpu", default=[], nargs="*", help="Specify GPU indices to use for Redshift rendering.  Default: all")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
 
 # worker-info
@@ -155,8 +156,12 @@ if arguments.command == "server":
 if arguments.command == "worker":
     address = "redis://{}".format(arguments.host)
     command = ["rq", "worker", "-u", address] + arguments.queues
+    environment = dict(os.environ)
+    if arguments.redshift_gpu:
+        environment["BUILDCAT_REDSHIFT_GPU"] = " ".join(arguments.redshift_gpu)
+
     try:
-        process = subprocess.Popen(command)
+        process = subprocess.Popen(command, env=environment)
         process.wait()
     except KeyboardInterrupt:
         process.wait()

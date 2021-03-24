@@ -1,3 +1,4 @@
 nbsphinx
+sphinx >= 3.5
 sphinx-gallery
 sphinx_rtd_theme
