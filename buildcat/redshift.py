@@ -54,10 +54,6 @@ def info():
 def render(rsfile):
     """Render a Redshift archive (.rs) file.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `redshiftCmdLine` executable.
-
     Parameters
     ----------
     rsfile: :class:`str`, required
