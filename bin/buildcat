@@ -66,7 +66,7 @@ subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Def
 # worker
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--redshift-gpu", default=[], nargs="*", help="Specify GPU indices to use for Redshift rendering.  Default: all")
+subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering.  Default: use all GPUs.")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
 
 # worker-info
