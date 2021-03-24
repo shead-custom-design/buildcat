@@ -7,27 +7,36 @@ import shutil
 import signal
 import subprocess
 import sys
+import time
 import uuid
 
+import arrow
+import blessings
 import buildcat
 
 parser = argparse.ArgumentParser(description="Command line client for Buildcat: the portable, lightweight render farm.")
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
+# eta
+subparser = subparsers.add_parser("eta", help="Provide a running estimate of when a queue will empty.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--interval", type=float, default=1, help="Update interval in seconds. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
+
 # houdini-info
 subparser = subparsers.add_parser("houdini-info", help="Retrieve Houdini information from a worker.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # houdini-render
 subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini render job.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
-subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering.  Default: %(default)s")
-subparser.add_argument("--start", type=int, default=0, help="First frame to render.  Default: %(default)s")
-subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval between rendered frames.  Default: %(default)s.")
-subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
+subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
+subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
+subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval between rendered frames. Default: %(default)s.")
+subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render. Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
 # install
@@ -35,44 +44,44 @@ subparser = subparsers.add_parser("install", help="Install buildcat integrations
 
 # modo-info
 subparser = subparsers.add_parser("modo-info", help="Retrieve Modo information from a worker.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # modo-render
 subparser = subparsers.add_parser("modo-render", help="Submit a Modo render job.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
-subparser.add_argument("--start", type=int, default=0, help="First frame to render.  Default: %(default)s")
-subparser.add_argument("--step", type=int, default=1, help="Interval between rendered frames.  Default: %(default)s.")
-subparser.add_argument("--stop", type=int, default=1, help="One past the last frame to render.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
+subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
+subparser.add_argument("--step", type=int, default=1, help="Interval between rendered frames. Default: %(default)s.")
+subparser.add_argument("--stop", type=int, default=1, help="One past the last frame to render. Default: %(default)s")
 subparser.add_argument("lxofile", help="Modo .lxo file to render.")
 
 # redshift-info
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to ping.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # redshift-render
 subparser = subparsers.add_parser("redshift-render", help="Submit a Redshift render job.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to use for rendering.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("--wait", action="store_true", help="Wait until the render is complete.")
 subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 
 # server
 subparser = subparsers.add_parser("server", help="Start a buildcat server.")
-subparser.add_argument("--bind", default="127.0.0.1", help="Server address.  Default: %(default)s")
+subparser.add_argument("--bind", default="127.0.0.1", help="Server address. Default: %(default)s")
 
 # worker
 subparser = subparsers.add_parser("worker", help="Start a buildcat worker.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering.  Default: use all GPUs.")
-subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering. Default: use all GPUs.")
+subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle. Default: %(default)s")
 
 # worker-info
 subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address.  Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue.  Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue. Default: %(default)s")
 
 # version
 subparser = subparsers.add_parser("version", help="Print the version of this client.")
@@ -85,6 +94,32 @@ if arguments.command is None:
 logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
 log = logging.getLogger()
 log.name = os.path.basename(sys.argv[0])
+
+#eta
+if arguments.command == "eta":
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    term = blessings.Terminal()
+
+    with term.fullscreen():
+        try:
+            first_count = len(queue)
+            first_timestamp = time.time()
+            print(f"{term.clear()}Jobs remaining: {term.bold_bright_white}{first_count}{term.normal}")
+
+            while True:
+                time.sleep(arguments.interval)
+
+                count = len(queue)
+                timestamp = time.time()
+
+                rate = (first_count - count) / (timestamp - first_timestamp) # "jobs per second"
+                if rate > 0:
+                    eta = arrow.now().shift(seconds=count / rate).format("YYYY-MM-DD HH:mm:ss ZZ")
+                else:
+                    eta = ""
+                print(f"{term.clear()}Jobs remaining: {term.bold_bright_white}{count}{term.normal} ETA: {term.bold_bright_red}{eta}{term.normal}")
+        except KeyboardInterrupt:
+            pass
 
 # houdini-info
 if arguments.command == "houdini-info":

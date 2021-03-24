@@ -37,6 +37,8 @@ setup(
     ],
     description="Elegant, simple render farm based on rq.",
     install_requires=[
+        "arrow",
+        "blessings",
         "redis",
         "rq",
     ],
