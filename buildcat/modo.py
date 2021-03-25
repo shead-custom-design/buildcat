@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functionality for integration with Foundry Modo.
+"""Integration with Modo, https://www.foundry.com/products/modo.
 """
 
 import re
@@ -30,15 +30,17 @@ def _modo_executable():
 def info():
     """Return information describing the worker's local Modo installation.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `modo_cl` executable.
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `modo_cl` executable.
 
     Returns
     -------
     metadata: :class:`dict`
-        A collection of key-value pairs containing information describing the
-        local Houdini installation.
+        A collection of key-value pairs containing a description of the
+        Modo installation on the machine where the job was run.
     """
 
     code = """
@@ -60,9 +62,11 @@ app.quit
 def render_frames(lxofile, frames):
     """Render a half-open range of frames from a Modo .lxo file.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `modo_cl` executable.
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `modo_cl` executable.
 
     Parameters
     ----------

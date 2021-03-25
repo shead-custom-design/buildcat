@@ -7,14 +7,36 @@
 Basic Setup
 ===========
 
-Follow these instructions to quickly setup a minimal-but-complete Buildcat
-render farm on a single machine. Once you've gone through the process on a
-single machine, the :ref:`advanced-setup` section will cover configuring a
-full-fledged render farm spread across multiple machines.
+We strongly recommend you follow these instructions to quickly setup a
+minimal-but-complete Buildcat render farm on a single machine. Once you've gone
+through the process with one machine, you'll have a good feel for the process,
+and the :ref:`advanced-setup` section will discuss how to install a full-fledged
+render farm spread across multiple machines.
 
 .. tip::
     Make sure you read :ref:`design` and understand how the parts of a Buildcat
     farm work together before you start!
+
+Platform Notes
+--------------
+
+.. tabs::
+
+   .. group-tab:: Linux
+
+      You made the right choice! Proceed to the next section.
+
+   .. group-tab:: MacOS
+
+      You made the right choice! Proceed to the next section.
+
+   .. group-tab:: Windows
+
+      Due to platform limitations, Buildcat workers currently can't be run on Windows.
+      However, you can use `WSL <https://docs.microsoft.com/en-us/windows/wsl>`_
+      to setup a very lightweight Linux VM on your Windows machine and run Buildcat
+      within it, without limitation.  Even better, you'll be able to run all of
+      the following commands without modification!
 
 Shared Storage
 --------------
@@ -27,7 +49,7 @@ that BUILDCAT_ROOT must have enough storage for your projects, their assets
 you'll want to pick a location on a disk with as much free space as possible.
 
 For these examples, we'll assume that our BUILDCAT_ROOT is an external drive
-on a Mac, and the path is `/Volumes/Buildcat`.
+on a Mac, and the path is `/Volumes/Farm`.
 
 Network Communication
 ---------------------
@@ -50,7 +72,7 @@ the things that makes installing render farm software difficult.
 
 Instead, whether you’re new to Python or an old hand, we strongly recommend
 installing `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_, a
-minimalist subset of Anaconda.  Anaconda is a portable (OSX, Linux, and
+minimalist subset of Anaconda.  Anaconda is a portable (MacOS, Linux, and
 Windows) Python distribution that you can use to conveniently install Python in
 your home directory.  This is incredibly useful because installing the rest of
 Buildcat's dependencies is easy and consistent across platforms, and you will
@@ -115,7 +137,7 @@ Worker
 Now we're ready to run a worker.  Since we already installed Buildcat in the
 previous step, there's nothing to do except fire it up::
 
-    $ cd /Volumes/Buildcat
+    $ cd /Volumes/Farm
     $ buildcat worker
 
 The worker will print a startup message, begin communicating with the server,
@@ -126,44 +148,43 @@ and wait for jobs to work on::
     13:23:51 *** Listening on default...
     13:23:51 Cleaning registries for queue: default
 
-Note that we didn't have to specify the server address because the worker
-defaults to `127.0.0.1` too.  Also, before starting the worker we changed the
-working directory to BUILDCAT_ROOT.  This way, the worker knows where
-BUILDCAT_ROOT is located, without having to configure it.  Like before, leave
-the worker running and open another command line for the following steps.
+Note that we didn't have to specify the server address because it defaults to
+to `127.0.0.1` for the worker, too.  Also, before starting the worker we
+changed the working directory to BUILDCAT_ROOT.  This is how the worker knows
+where BUILDCAT_ROOT is located without having to configure it.  Leave the
+worker running and open another command line for the following steps.
 
-Testing
--------
+Client
+------
 
-Now it's time to test the farm.  To keep things simple, we're going to send a
-command to the server from the command line, as this is the easiest way to
-ensure that everything's working::
+Now it's time to test the farm, by submitting a job to the server.  To keep
+things simple, we're going to use Buildcat's builtin command line client, as
+this is the easiest way to confirm that everything's working::
 
     $ buildcat worker-info
 
-This command submits a `buildcat.test.ping` job to the server, which hands it off to any
+This command submits a `buildcat.worker.info` job to the server, which hands it off to any
 available worker.  If you check the console where we left our worker running, you'll see that it
-accepted the job and ran it::
+accepts the job and runs it::
 
     13:25:53 default: buildcat.worker.info() (b8de2065-9fd7-4018-b77c-dd930f388880)
     13:25:53 default: Job OK (b8de2065-9fd7-4018-b77c-dd930f388880)
     13:25:53 Result is kept for 500 seconds
 
-... and in the console where you sent the command, some information about the worker
+... and in the console where you submitted the job, some information about the worker
 is printed out::
 
-    {'os': {'host': 'aurora.local', 'machine': 'x86_64', 'processor': 'i386', 'release': '19.6.0', 'system': 'Darwin', 'version': 'Darwin Kernel Version 19.6.0: Tue Jan 12 22:13:05 PST 2021; root:xnu-6153.141.16~1/RELEASE_X86_64'}, 'python': {'version': '3.8.2 (default, Mar 26 2020, 10:43:30) \n[Clang 4.0.1 (tags/RELEASE_401/final)]', 'prefix': '/Users/fred/miniconda3'}, 'worker': {'pid': 78322, 'root': '/Users/fred/src/buildcat/docs', 'user': 'fred', 'version': '0.3.0-dev'}}
+    {'os': {'host': 'aurora.local', 'machine': 'x86_64', 'processor': 'i386', 'release': '19.6.0', 'system': 'Darwin', 'version': 'Darwin Kernel Version 19.6.0: Tue Jan 12 22:13:05 PST 2021; root:xnu-6153.141.16~1/RELEASE_X86_64'}, 'python': {'version': '3.8.2 (default, Mar 26 2020, 10:43:30) \n[Clang 4.0.1 (tags/RELEASE_401/final)]', 'prefix': '/Users/fred/miniconda3'}, 'worker': {'pid': 78322, 'root': '/Volumes/Farm', 'user': 'fred', 'version': '0.3.0-dev'}}
 
 This confirms that the client, server, and worker are all communicating and
-ready to render.
+ready to go to work!
 
 Summary
 -------
 
 That's it!  Your single-machine render farm is up-and-running.  Of course,
 there are many details we've skipped in this section, such as how to submit
-render jobs from your DCC client and how to start the farm automatically when
-your machine boots.  In the :ref:`next section <advanced-setup>` we'll make
-suggestions on how to setup a multi-machine farm and handle boot time startup,
-and the section on :ref:`integrations <integrations>` will cover how to use
-Buildcat with specific DCC tools.
+real render jobs and how to start the farm automatically when your machine
+boots.  In the following sections we'll make suggestions on how to setup a
+multi-machine farm, and how to use Buildcat with specific DCC tools.
+

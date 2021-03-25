@@ -51,6 +51,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_gallery.load_style",
     "sphinx_rtd_theme",
+    "sphinx_tabs.tabs",
 ]
 
 intersphinx_mapping = {

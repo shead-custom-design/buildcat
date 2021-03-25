@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functionality for integration with SideFX Houdini.
+"""Integration with SideFX Houdini, https://sidefx.com.
 """
 
 import json
@@ -30,17 +30,19 @@ def _hython_executable():
 
 
 def info():
-    """Return version and path information describing the worker's local Houdini installation.
+    """Return information describing the worker's local Houdini installation.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `hython` executable.
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `hython` executable.
 
     Returns
     -------
     metadata: :class:`dict`
-        A collection of key-value pairs containing information describing the
-        local Houdini installation.
+        A collection of key-value pairs containing a description of the
+        Houdini installation on the machine where the job was run.
     """
 
     code = """from __future__ import print_function; print("buildcat-houdini-version:", hou.applicationVersionString())"""
@@ -60,9 +62,11 @@ def info():
 def render_frames(hipfile, rop, frames):
     """Render a range of frames from a Houdini .hip file.
 
-    .. note::
-        You *must* configure your PATH environment variable so that the worker
-        can find the `hython` executable.
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `hython` executable.
 
     Parameters
     ----------
@@ -71,7 +75,7 @@ def render_frames(hipfile, rop, frames):
     rop: :class:`str`, required
         Absolute path of the ROP node to use for rendering.
     frames: :class:`tuple` of threeintegers, required
-        Contains the half-open range of frames to be rendered.
+        Contains the half-open (start, end, step) of frames to be rendered.
     """
     hipfile = str(hipfile)
     rop = str(rop)
@@ -91,7 +95,7 @@ rop.render(frame_range=({start},{end-1},{step}), verbose=False, output_progress=
 
 
 def split_frames(hipfile, rop, frames):
-    """Render individual frames from a Houdini .hip file.
+    """Render a range of frames from a Houdini .hip file as individual jobs.
 
     Parameters
     ----------

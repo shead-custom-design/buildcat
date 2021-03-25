@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Functionality for integration with Redshift, https://redshift3d.com.
+"""Integration with Redshift, https://redshift3d.com.
 """
 
 import os
@@ -37,8 +37,8 @@ def info():
     Returns
     -------
     metadata: dict
-        A collection of key-value pairs containing information describing the
-        local Redshift installation.
+        A collection of key-value pairs containing a description of the
+        Redshift installation on the machine where the job was run.
     """
 
     command = [_redshift_executable(), "--version"]

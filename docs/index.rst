@@ -10,10 +10,11 @@
 Welcome!
 ========
 
-Buildcat is a portable, lightweight, elegant render farm based on `RQ
-<http://python-rq.org>`_ and `Redis <https://redis.io>`_.  It runs on OSX,
-Linux, and Windows, includes integration with `SideFX Houdini <http://sidefx.com>`_,
-and can be easily extended to support other tools.
+Buildcat is a portable, lightweight, elegant render farm based on `RQ <http://python-rq.org>`_
+and `Redis <https://redis.io>`_.  It runs on MacOS, Linux, and Windows (WSL), includes integrations
+for `Modo <https://www.foundry.com/products/modo>`_,
+`Redshift <https://www.redshift3d.com>`_, and `SideFX Houdini <https://sidefx.com>`_, and
+can be easily extended to support other tools.
 
 Documentation
 =============

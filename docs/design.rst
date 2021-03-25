@@ -7,11 +7,11 @@
 Design
 ======
 
-We created Buildcat because we were frustrated with opaque render farm software
-that was needlessly complex.  Buildcat is written in Python for portability,
-simplicity, and flexibility.  It runs on OSX, Linux, and Windows, and uses uses
-existing open source software wherever possible instead of reinventing the
-wheel.
+We created Buildcat because we were frustrated with the complexity and builtin
+assumptions with other render farm systems.  Buildcat is written in Python for
+portability, simplicity, and flexibility.  It runs on MacOS, Linux, and Windows
+(using WSL), and uses existing open source software wherever possible instead
+of reinventing wheels.
 
 .. tip::
     While Buildcat is as simple as we could possibly make it, there are still
@@ -23,22 +23,31 @@ Your Buildcat render farm will have all of the following:
 Server
     The server keeps track of your render jobs, dispatching them to
     workers as the workers become available.  In Buildcat, the server
-    is actually an instance of the widely used `Redis <https://redis.io>`_
-    open source key-value store.
+    is actually an instance of the widely used open source `Redis <https://redis.io>`_
+    key-value store.
 
 Workers
     Workers are the processes that carry out the actual work of rendering.
-    Idle workers request jobs from the server and turn them into commands to
-    your CG tools, typically (but not necessarily) instructions to render an
-    animation frame.  Buildcat workers are instances of `RQ <http://python-rq.org>`_
-    workers that have been customized to handle rendering jobs.
+    Idle workers receive jobs from the server and execute commands with your
+    DCC tools, typically (but not necessarily) instructions to render an image
+    from an animation.  Buildcat workers are actually instances of `RQ <https://python-rq.org>`_
+    workers executing Buildcat integrations written for rendering.
+
+Integrations
+    Integrations are the DCC-tool-specific code provided by Buildcat for
+    rendering.  Technically, integrations are Python functions that are called
+    when a job is executed by a worker.  You can easily use your own functions
+    with Buildcat workers, written to work with your own tools for any purpose,
+    not just rendering.
 
 Clients
-    Clients submit jobs to the server to be rendered by workers.  In Buildcat,
-    the client is typically an integration with your DCC tool that uses `RQ <http://python-rq.org>`_
-    to communicate with the server.  For example, the Buildcat `Houdini <https://sidefx.com>`_
-    integration is a special Houdini ROP that communicates with the server to submit
-    a render or simulation job.
+    Clients submit jobs to the server to be rendered by workers.  Any Python
+    code can use the `RQ <https://python-rq.org>`_ API to submit a job to the
+    server, and Buildcat provides API to make job submissions even easier.
+    Buildcat also provides a command-line client that can be used to submit
+    jobs using any of Buildcat's builtin integrations.  Using the API or the
+    command line tool, jobs can  be submitted from within your DCC tool using
+    scripting.
 
 Shared Storage.
     Typically, a render job includes just the name of a scene file and a range
