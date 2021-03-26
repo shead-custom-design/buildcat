@@ -20,8 +20,9 @@ subparsers = parser.add_subparsers(title="commands (choose one)", dest="command"
 
 # eta
 subparser = subparsers.add_parser("eta", help="Provide a running estimate of when a queue will empty.")
+subparser.add_argument("--count", type=int, default=60, help="Number of intervals to retain for the moving average. Default: %(default)s")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
-subparser.add_argument("--interval", type=float, default=1, help="Update interval in seconds. Default: %(default)s")
+subparser.add_argument("--interval", type=float, default=5, help="Update interval in seconds. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # houdini-info
@@ -102,22 +103,42 @@ if arguments.command == "eta":
 
     with term.fullscreen():
         try:
-            first_count = len(queue)
-            first_timestamp = time.time()
-            print(f"{term.clear()}Jobs remaining: {term.bold_bright_white}{first_count}{term.normal}")
+            samples = []
+            samples.append((len(queue), time.time()))
+            count, timestamp = samples[-1]
+
+            line = term.clear()
+            line += f" queue: {term.bold_bright_green}{arguments.queue}{term.normal}"
+            line += f" jobs: {term.bold_bright_white}{count}{term.normal}"
+            print(line)
 
             while True:
                 time.sleep(arguments.interval)
 
-                count = len(queue)
-                timestamp = time.time()
+                samples.append((len(queue), time.time()))
+                samples = samples[-arguments.count:]
+                start_count, start_timestamp = samples[0]
+                count, timestamp = samples[-1]
 
-                rate = (first_count - count) / (timestamp - first_timestamp) # "jobs per second"
+                rate = (start_count - count) / (timestamp - start_timestamp) # "jobs per second"
+
+                line = term.clear()
+                line += f" queue: {term.bold_bright_green}{arguments.queue}{term.normal}"
+                line += f" jobs: {term.bold_bright_white}{count}{term.normal}"
+
+                if rate > 0:
+                    line += f" ({term.bold_bright_white}-{abs(rate):.2f}{term.normal} jobs/sec)"
+                else:
+                    line += f" ({term.bold_bright_red}+{abs(rate):.2f}{term.normal} jobs/sec)"
+
                 if rate > 0:
                     eta = arrow.now().shift(seconds=count / rate).format("YYYY-MM-DD HH:mm:ss ZZ")
+                    line += f" ETA: {term.bold_bright_red}{eta}{term.normal}"
                 else:
-                    eta = ""
-                print(f"{term.clear()}Jobs remaining: {term.bold_bright_white}{count}{term.normal} ETA: {term.bold_bright_red}{eta}{term.normal}")
+                    line += f" ETA: {term.bold_bright_red}unknown{term.normal}"
+
+                print(line)
+
         except KeyboardInterrupt:
             pass
 
