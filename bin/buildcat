@@ -13,6 +13,7 @@ import uuid
 import arrow
 import blessings
 import buildcat
+import rq
 
 parser = argparse.ArgumentParser(description="Command line client for Buildcat: the portable, lightweight render farm.")
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
@@ -210,17 +211,13 @@ if arguments.command == "server":
 
 # worker
 if arguments.command == "worker":
-    address = "redis://{}".format(arguments.host)
-    command = ["rq", "worker", "-u", address] + arguments.queues
-    environment = dict(os.environ)
     if arguments.redshift_gpu:
-        environment["BUILDCAT_REDSHIFT_GPU"] = " ".join(arguments.redshift_gpu)
+        os.environ["BUILDCAT_REDSHIFT_GPU"] = " ".join(arguments.redshift_gpu)
 
-    try:
-        process = subprocess.Popen(command, env=environment)
-        process.wait()
-    except KeyboardInterrupt:
-        process.wait()
+    connection = buildcat.connect(host=arguments.host)
+    worker = rq.Worker(arguments.queues, connection=connection, serializer=buildcat.Serializer)
+    worker.work()
+
 
 # worker-info
 if arguments.command == "worker-info":

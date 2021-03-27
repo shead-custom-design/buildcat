@@ -16,7 +16,9 @@
 
 __version__ = "0.3.0-dev"
 
+import functools
 import logging
+import pickle
 import platform
 import os
 import subprocess
@@ -59,6 +61,16 @@ class Error(Exception):
         return "<buildcat.Error message={!r} description={!r}>".format(self.message, self.description)
 
 
+class Serializer:
+    """RQ serializer that uses Python pickle version 2.
+
+    We use this serializer with workers / queues, so Python 2 clients can be
+    used with Python 3 workers.
+    """
+    dumps = functools.partial(pickle.dumps, protocol=2)
+    loads = pickle.loads
+
+
 def check_call(command):
     """Run a command using :func:`subprocess.check_call`.
     """
@@ -73,7 +85,7 @@ def check_output(command):
     return subprocess.check_output(command)
 
 
-def connect(*, host="127.0.0.1", port=6379, timeout=5):
+def connect(*, host="127.0.0.1", port=6379, timeout=None):
     """Connect to a listening Buildcat server.
 
     Parameters
@@ -83,7 +95,7 @@ def connect(*, host="127.0.0.1", port=6379, timeout=5):
     port: :class:`int`, optional
         Port number of the Buildcat server.  Defaults to 6379.
     timeout: number, optional
-        Maximum time to spend waiting for a connection, in seconds.  Default: 5 seconds.
+        Maximum time to spend waiting for a connection, in seconds.  Default: never timeout.
 
     Returns
     -------
@@ -166,7 +178,7 @@ def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
             )
 
     connection = connect(host=host, port=port, timeout=timeout)
-    return connection, rq.Queue(queue, connection=connection)
+    return connection, rq.Queue(queue, connection=connection, serializer=Serializer())
 
 
 def require_relative_path(path, description):
