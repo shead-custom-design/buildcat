@@ -7,6 +7,18 @@
 Release Notes
 =============
 
+Buildcat 0.3.0 - March 30th, 2021
+---------------------------------
+
+* Create a single command-line client with subcommands for starting the server, starting workers, and submitting jobs.
+* Added integrations for Modo and Redshift.
+* Removed support for Python 2 in the Buildcat module.
+* Removed support for Windows, use WSL instead.
+* Eliminated the need for custom worker code, so we can use vanilla RQ workers instead.
+* Completely reorganized and harmonized behavior among integrations.
+* Added a command to estimate when a queue will be empty.
+* Explicitly use pickle protocol 2 for serialization, so (non-Buildcat) Python 2 clients can submit jobs.
+
 Buildcat 0.2.0 - July 8th, 2019
 -------------------------------
 
