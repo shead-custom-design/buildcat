@@ -20,7 +20,7 @@ parser.add_argument("--debug", action="store_true", help="Verbose logging output
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
 # eta
-subparser = subparsers.add_parser("eta", help="Provide a running estimate of when a queue will empty.")
+subparser = subparsers.add_parser("eta", help="Estimate when a queue will empty.")
 subparser.add_argument("--count", type=int, default=60, help="Number of intervals to retain for the moving average. Default: %(default)s")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--interval", type=float, default=5, help="Update interval in seconds. Default: %(default)s")
