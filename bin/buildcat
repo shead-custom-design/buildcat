@@ -64,7 +64,6 @@ subparser.add_argument("--queue", default="default", help="Server queue to ping.
 subparser = subparsers.add_parser("redshift-render", help="Submit a Redshift render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
-subparser.add_argument("--wait", action="store_true", help="Wait until the render is complete.")
 subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 
 # server
@@ -154,7 +153,7 @@ if arguments.command == "houdini-render":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
     job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
-    print("Job submitted: {}".format(job))
+    print(f"Submitted job {job.id}")
 
 
 # modo-info
@@ -169,7 +168,7 @@ if arguments.command == "modo-render":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     lxofile = buildcat.require_relative_path(arguments.lxofile, "Modo .lxo file must be a relative path.")
     job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop, arguments.step))
-    print("Job submitted: {}".format(job))
+    print(f"Submitted job {job.id}")
 
 
 # redshift-info
@@ -184,9 +183,7 @@ if arguments.command == "redshift-render":
     rsfile = buildcat.require_relative_path(arguments.rsfile, "Redshift .rs file must be a relative path.")
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     job = buildcat.submit(queue, "buildcat.redshift.render", rsfile)
-    print("Job submitted: {}".format(job))
-    if arguments.wait:
-        print(buildcat.wait(connection=connection, job=job))
+    print(f"Submitted job {job.id}")
 
 
 # server
@@ -218,5 +215,5 @@ if arguments.command == "worker-info":
 
 # version
 if arguments.command == "version":
-    print(f"Version: {buildcat.__version__}")
+    print(buildcat.__version__)
 
