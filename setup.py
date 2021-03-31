@@ -42,14 +42,6 @@ setup(
     maintainer="Timothy M. Shead",
     maintainer_email="tim@shead-custom-design.gov",
     packages=find_packages(),
-    package_dir={"buildcat": "buildcat"},
-    package_data={
-        "buildcat": [
-            "integrations/houdini/scd__buildcat.hdalc",
-            "integrations/houdini/demo.hiplc",
-            "integrations/modo/demo.lxo",
-            ],
-        },
     project_urls={
         "Chat": "https://buildcat.zulipchat.com",
         "Coverage": "https://coveralls.io/r/shead-custom-design/buildcat",

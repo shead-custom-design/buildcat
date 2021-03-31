@@ -41,9 +41,6 @@ subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval 
 subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render. Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
-# install
-subparser = subparsers.add_parser("install", help="Install buildcat integrations.")
-
 # modo-info
 subparser = subparsers.add_parser("modo-info", help="Retrieve Modo information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
@@ -97,6 +94,7 @@ logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
 log = logging.getLogger()
 log.name = os.path.basename(sys.argv[0])
 
+
 #eta
 if arguments.command == "eta":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
@@ -143,11 +141,13 @@ if arguments.command == "eta":
         except KeyboardInterrupt:
             pass
 
+
 # houdini-info
 if arguments.command == "houdini-info":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     job = buildcat.submit(queue, "buildcat.hou.info")
     print(buildcat.wait(connection=connection, job=job))
+
 
 # houdini-render
 if arguments.command == "houdini-render":
@@ -156,27 +156,13 @@ if arguments.command == "houdini-render":
     job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
     print("Job submitted: {}".format(job))
 
-# install
-if arguments.command == "install":
-    buildcat_dir = os.path.dirname(buildcat.__file__)
-    integrations_dir = os.path.join(buildcat_dir, "integrations")
-    target_dir = os.getcwd()
-
-    log.info("Copying files from {}".format(integrations_dir))
-    for dirpath, dirnames, filenames in os.walk(integrations_dir):
-        for filename in filenames:
-            relative_path = os.path.join(os.path.basename(dirpath), filename)
-            log.info("Copying {}".format(relative_path))
-            if not os.path.exists(os.path.basename(dirpath)):
-                os.makedirs(os.path.basename(dirpath))
-            shutil.copy2(os.path.join(dirpath, filename), relative_path)
-    log.info("Installation complete.")
 
 # modo-info
 if arguments.command == "modo-info":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     job = buildcat.submit(queue, "buildcat.modo.info")
     print(buildcat.wait(connection=connection, job=job))
+
 
 # modo-render
 if arguments.command == "modo-render":
@@ -185,11 +171,13 @@ if arguments.command == "modo-render":
     job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop, arguments.step))
     print("Job submitted: {}".format(job))
 
+
 # redshift-info
 if arguments.command == "redshift-info":
     connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
     job = buildcat.submit(queue, "buildcat.redshift.info")
     print(buildcat.wait(connection=connection, job=job))
+
 
 # redshift-render
 if arguments.command == "redshift-render":
@@ -200,6 +188,7 @@ if arguments.command == "redshift-render":
     if arguments.wait:
         print(buildcat.wait(connection=connection, job=job))
 
+
 # server
 if arguments.command == "server":
     command = ["redis-server", "--bind", arguments.bind]
@@ -208,6 +197,7 @@ if arguments.command == "server":
         process.wait()
     except KeyboardInterrupt:
         process.wait()
+
 
 # worker
 if arguments.command == "worker":
