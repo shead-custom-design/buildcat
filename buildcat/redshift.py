@@ -16,7 +16,6 @@
 """
 
 import os
-import subprocess
 
 import buildcat
 

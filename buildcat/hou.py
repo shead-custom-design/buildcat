@@ -17,7 +17,6 @@
 
 import json
 import os
-import subprocess
 import time
 
 import rq
@@ -48,7 +47,7 @@ def info():
     code = """from __future__ import print_function; print("buildcat-houdini-version:", hou.applicationVersionString())"""
     command = [_hython_executable(), "-c", code]
     version = ""
-    for line in subprocess.check_output(command).decode("UTF8").splitlines():
+    for line in buildcat.check_output(command).decode("UTF8").splitlines():
         if line.startswith("buildcat-houdini-version: "):
             version = line.split(sep=" ", maxsplit=1)[1]
     return {
@@ -91,7 +90,7 @@ rop = hou.node({rop!r})
 rop.render(frame_range=({start},{end-1},{step}), verbose=False, output_progress=False)
 """
     command = [_hython_executable(), "-c", code]
-    subprocess.check_call(command)
+    buildcat.check_call(command)
 
 
 def split_frames(hipfile, rop, frames):

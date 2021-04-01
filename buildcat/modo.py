@@ -95,6 +95,7 @@ app.quit
     command = [_modo_executable()]
     process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, universal_newlines=True)
     stdout, stderr = process.communicate(code)
+    print(stdout, stderr)
 
 
 def split_frames(lxofile, frames):
