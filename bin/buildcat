@@ -24,16 +24,19 @@ subparser = subparsers.add_parser("eta", help="Estimate when a queue will empty.
 subparser.add_argument("--count", type=int, default=60, help="Number of intervals to retain for the moving average. Default: %(default)s")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--interval", type=float, default=5, help="Update interval in seconds. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # houdini-info
 subparser = subparsers.add_parser("houdini-info", help="Retrieve Houdini information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # houdini-render
 subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
 subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
@@ -43,15 +46,18 @@ subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
 # keygen
 subparser = subparsers.add_parser("keygen", help="Generate keys and certificates for TLS encryption.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 
 # modo-info
 subparser = subparsers.add_parser("modo-info", help="Retrieve Modo information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # modo-render
 subparser = subparsers.add_parser("modo-render", help="Submit a Modo render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
 subparser.add_argument("--step", type=int, default=1, help="Interval between rendered frames. Default: %(default)s.")
@@ -61,33 +67,48 @@ subparser.add_argument("lxofile", help="Modo .lxo file to render.")
 # redshift-info
 subparser = subparsers.add_parser("redshift-info", help="Retrieve Redshift information from a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
 # redshift-render
 subparser = subparsers.add_parser("redshift-render", help="Submit a Redshift render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 
 # server
 subparser = subparsers.add_parser("server", help="Start a Buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 
 # server-tunnel
 subparser = subparsers.add_parser("server-tunnel", help="Create a TLS tunnel for the Buildcat server.")
+subparser.add_argument("--clients", default=os.path.expanduser("~/.buildcat/client.cert"), help="File with allowed client certificates. Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
+subparser.add_argument("--server", default=os.path.expanduser("~/.buildcat/server.pem"), help="File with server private key and certificate. Default: %(default)s")
+subparser.add_argument("--tunnel-port", type=int, default=4443, help="Listening port. Default: %(default)s")
 
 # tunnel
 subparser = subparsers.add_parser("tunnel", help="Create a TLS tunnel for Buildcat workers and clients.")
+subparser.add_argument("--client", default=os.path.expanduser("~/.buildcat/client.pem"), help="File with client private key and certificate. Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=4443, help="Server port. Default: %(default)s")
+subparser.add_argument("--server", default=os.path.expanduser("~/.buildcat/server.cert"), help="File with server certificate. Default: %(default)s")
+subparser.add_argument("--tunnel-port", type=int, default=6379, help="Listening port. Default: %(default)s")
 
 # worker
 subparser = subparsers.add_parser("worker", help="Start a Buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering. Default: use all GPUs.")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle. Default: %(default)s")
 
 # worker-info
 subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue. Default: %(default)s")
 
 # version
@@ -105,7 +126,7 @@ log.name = os.path.basename(sys.argv[0])
 
 #eta
 if arguments.command == "eta":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     term = blessings.Terminal()
 
     with term.fullscreen():
@@ -152,14 +173,14 @@ if arguments.command == "eta":
 
 # houdini-info
 if arguments.command == "houdini-info":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     job = buildcat.submit(queue, "buildcat.hou.info")
     print(buildcat.wait(connection=connection, job=job))
 
 
 # houdini-render
 if arguments.command == "houdini-render":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
     job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
     print(f"Submitted job {job.id}")
@@ -167,16 +188,30 @@ if arguments.command == "houdini-render":
 
 # keygen
 if arguments.command == "keygen":
-    subprocess.check_call(["openssl", "genrsa", "-out", "server.key", "2048"])
-    subprocess.check_call(["openssl", "req", "-new", "-key", "server.key", "-x509", "-batch", "-out", "server.cert"])
+    buildcat.check_call([
+        "openssl",
+        "genrsa",
+        "-out", "server.key",
+        "2048",
+        ])
+    buildcat.check_call([
+        "openssl",
+        "req",
+        "-new",
+        "-key", "server.key",
+        "-x509",
+        "-subj", f"/CN={arguments.host}",
+#        "-batch",
+        "-out", "server.cert",
+        ])
     with open("server.pem", "wb") as output:
         with open("server.key", "rb") as input:
             output.write(input.read())
         with open("server.cert", "rb") as input:
             output.write(input.read())
 
-    subprocess.check_call(["openssl", "genrsa", "-out", "client.key", "2048"])
-    subprocess.check_call(["openssl", "req", "-new", "-key", "client.key", "-x509", "-batch", "-out", "client.cert"])
+    buildcat.check_call(["openssl", "genrsa", "-out", "client.key", "2048"])
+    buildcat.check_call(["openssl", "req", "-new", "-key", "client.key", "-x509", "-batch", "-out", "client.cert"])
     with open("client.pem", "wb") as output:
         with open("client.key", "rb") as input:
             output.write(input.read())
@@ -186,14 +221,14 @@ if arguments.command == "keygen":
 
 # modo-info
 if arguments.command == "modo-info":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     job = buildcat.submit(queue, "buildcat.modo.info")
     print(buildcat.wait(connection=connection, job=job))
 
 
 # modo-render
 if arguments.command == "modo-render":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     lxofile = buildcat.require_relative_path(arguments.lxofile, "Modo .lxo file must be a relative path.")
     job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop, arguments.step))
     print(f"Submitted job {job.id}")
@@ -201,7 +236,7 @@ if arguments.command == "modo-render":
 
 # redshift-info
 if arguments.command == "redshift-info":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     job = buildcat.submit(queue, "buildcat.redshift.info")
     print(buildcat.wait(connection=connection, job=job))
 
@@ -209,7 +244,7 @@ if arguments.command == "redshift-info":
 # redshift-render
 if arguments.command == "redshift-render":
     rsfile = buildcat.require_relative_path(arguments.rsfile, "Redshift .rs file must be a relative path.")
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     job = buildcat.submit(queue, "buildcat.redshift.render", rsfile)
     print(f"Submitted job {job.id}")
 
@@ -228,11 +263,12 @@ if arguments.command == "server":
 if arguments.command == "server-tunnel":
     command = [
         "socat",
-        "OPENSSL-LISTEN:4443,cert=~/.buildcat/server.pem,cafile=~/.buildcat/client.cert,reuseaddr,fork",
-        "TCP4:127.0.0.1:6379",
+        f"OPENSSL-LISTEN:{arguments.tunnel_port},cert={arguments.server},cafile={arguments.clients},reuseaddr,fork",
+        f"TCP4:{arguments.host}:{arguments.port}",
         ]
     try:
         process = subprocess.Popen(command)
+        log.info(f"Tunnel forwarding connections from port {arguments.tunnel_port} to server at {arguments.host}:{arguments.port}.")
         process.wait()
     except KeyboardInterrupt:
         process.wait()
@@ -242,11 +278,12 @@ if arguments.command == "server-tunnel":
 if arguments.command == "tunnel":
     command = [
         "socat",
-        "TCP4-LISTEN:6379,bind=127.0.0.1,reuseaddr,fork",
-        "OPENSSL:127.0.0.1:4443,cert=~/.buildcat/client.pem,cafile=~/.buildcat/server.cert",
+        f"TCP4-LISTEN:{arguments.tunnel_port},bind=127.0.0.1,reuseaddr,fork",
+        f"OPENSSL:{arguments.host}:{arguments.port},cert={arguments.client},cafile={arguments.server}",
         ]
     try:
         process = subprocess.Popen(command)
+        log.info(f"Tunnel forwarding connections from port {arguments.tunnel_port} to server at {arguments.host}:{arguments.port}.")
         process.wait()
     except KeyboardInterrupt:
         process.wait()
@@ -257,14 +294,14 @@ if arguments.command == "worker":
     if arguments.redshift_gpu:
         os.environ["BUILDCAT_REDSHIFT_GPU"] = " ".join(arguments.redshift_gpu)
 
-    connection = buildcat.connect(host=arguments.host)
+    connection = buildcat.connect(host=arguments.host, port=arguments.port)
     worker = rq.Worker(arguments.queues, connection=connection, serializer=buildcat.Serializer)
     worker.work()
 
 
 # worker-info
 if arguments.command == "worker-info":
-    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host)
+    connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
     job = buildcat.submit(queue, "buildcat.worker.info")
     print(buildcat.wait(connection=connection, job=job))
 
