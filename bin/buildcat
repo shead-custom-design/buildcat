@@ -200,7 +200,7 @@ if arguments.command == "keygen":
         "-new",
         "-key", "server.key",
         "-x509",
-        "-subj", f"/CN={arguments.host}",
+        "-subj", f"/C=US/ST=New Mexico/L=Albuquerque/O=Buildcat/CN={arguments.host}",
 #        "-batch",
         "-out", "server.cert",
         ])
@@ -210,8 +210,21 @@ if arguments.command == "keygen":
         with open("server.cert", "rb") as input:
             output.write(input.read())
 
-    buildcat.check_call(["openssl", "genrsa", "-out", "client.key", "2048"])
-    buildcat.check_call(["openssl", "req", "-new", "-key", "client.key", "-x509", "-batch", "-out", "client.cert"])
+    buildcat.check_call([
+        "openssl",
+        "genrsa",
+        "-out", "client.key",
+        "2048",
+        ])
+    buildcat.check_call([
+        "openssl",
+        "req",
+        "-new",
+        "-key", "client.key",
+        "-x509",
+        "-subj", f"/C=US/ST=New Mexico/L=Albuquerque/O=Buildcat/CN=*",
+        "-out", "client.cert",
+        ])
     with open("client.pem", "wb") as output:
         with open("client.key", "rb") as input:
             output.write(input.read())
