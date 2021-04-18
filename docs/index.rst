@@ -21,11 +21,11 @@ Documentation
 
    design.rst
    basic-setup.rst
-   advanced-setup.rst
-   integrations.rst
+   user-guide.rst
    dependencies.rst
    compatibility.rst
    contributing.rst
+   commands.rst
    reference.rst
    support.rst
    release-notes.rst

@@ -7,11 +7,11 @@
 Design
 ======
 
-We created Buildcat because we were frustrated with the complexity and builtin
-assumptions of other render farm systems.  Buildcat is written in Python for
-portability, simplicity, and flexibility.  It runs on MacOS, Linux, and Windows
-(using WSL), and uses existing open source software wherever possible instead
-of reinventing wheels.
+We created Buildcat because we were frustrated with the complexity and certain
+builtin assumptions of other render farm systems.  Buildcat is written in
+Python for portability, simplicity, and flexibility.  It runs on MacOS, Linux,
+and Windows (using WSL), requires little-to-no configuration, and uses existing
+open source software wherever possible instead of reinventing wheels.
 
 .. tip::
     While Buildcat is as simple as we could possibly make it, there are still
