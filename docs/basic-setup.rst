@@ -8,10 +8,11 @@ Basic Setup
 ===========
 
 We strongly recommend you follow these instructions to quickly setup a
-minimal-but-complete Buildcat render farm on a single machine. Once you've gone
-through the process with one machine, you'll have a good feel for the process,
-and the :ref:`advanced-setup` section will discuss how to install a full-fledged
-render farm spread across multiple machines.
+minimal-but-complete Buildcat render farm on a single machine. It's quick and
+easy, and once you've done it on one machine, you'll have a good feel for the
+process.  Then, individual articles in the :ref:`user_guide` will
+discuss how to setup a full-fledged render farm deployed on multiple
+hosts.
 
 .. tip::
     Make sure you read :ref:`design` and understand how the parts of a Buildcat
@@ -32,11 +33,20 @@ Platform Notes
 
    .. group-tab:: Windows
 
-      Due to platform limitations, Buildcat workers currently can't be run on Windows.
-      However, you can use `WSL <https://docs.microsoft.com/en-us/windows/wsl>`_
-      to setup a very lightweight Linux VM on your Windows machine and run Buildcat
-      within it, without limitation.  Even better, you'll be able to run all of
-      the following commands without modification!
+      Due to platform limitations, Buildcat workers currently won't run on
+      Windows.  However, you can use the `Windows Subsystem for Linux (WSL) <https://docs.microsoft.com/en-us/windows/wsl>`_
+      to setup a very lightweight Linux VM on your Windows machine and run all
+      of Buildcat's tools there.
+
+      To install WSL, choose Start > Microsoft Store, and install "Ubuntu".  Once you've
+      installed Ubuntu and enabled WSL using the instructions in the Microsoft Store app,
+      you can continue on to the next section.
+
+      .. note::
+
+        Throughout the rest of this documentation, all references to a "command
+        line" mean the WSL Ubuntu command line, **not** the Windows command
+        prompt, Power Shell, or other Windows-specific shells.
 
 Shared Storage
 --------------
@@ -48,18 +58,34 @@ that BUILDCAT_ROOT must have enough storage for your projects, their assets
 (geometry, textures, simulations, etc), and all of their rendered outputs, so
 you'll want to pick a location on a disk with as much free space as possible.
 
-For these examples, we'll assume that our BUILDCAT_ROOT is an external drive
-on a Mac, and the path is `/Volumes/Farm`.
+.. tabs::
+
+   .. group-tab:: Linux
+
+      For these examples, we'll assume that BUILDCAT_ROOT is located in an
+      external drive mounted on the path `/mnt/farm`.
+
+   .. group-tab:: MacOS
+
+      For these examples, we'll assume that BUILDCAT_ROOT is an
+      external drive named `Farm` and accessible from the path `/Volumes/Farm`.
+
+   .. group-tab:: Windows
+
+      For these examples, we'll assume that BUILDCAT_ROOT is located on the
+      Windows D: drive in a folder named `farm`.  To access Windows files within
+      WSL, you use the path `/mnt/<drive letter>/<folder>/...`, or in this case:
+      `/mnt/d/farm`.
 
 Network Communication
 ---------------------
 
-The next step in setting-up a render farm is identifying how your server, workers,
+The next step in setting-up any render farm is knowing how your server, workers,
 and clients will communicate with one another.  In particular, you need to know
 the network address of the machine running your server.
 
 Since our sample render farm will be running on one machine, we'll use the
-loopback address - `127.0.0.1` as our server address throughout the rest of
+loopback address - `127.0.0.1` - as our server address throughout the rest of
 this section.
 
 Anaconda
@@ -81,6 +107,28 @@ be leaving your system-provided Python in pristine condition.
 The remainder of this documentation will assume that you have Anaconda
 installed.  You can still obtain Buildcat's dependencies using other methods,
 but you'll need to handle those details on your own.
+
+.. tabs::
+
+   .. group-tab:: Linux
+
+      Use the "Python 3.9 Miniconda3 Linux 64-bit" installer from
+      https://docs.conda.io/en/latest/miniconda.html to install Anaconda in
+      your home directory.
+
+   .. group-tab:: MacOS
+
+      Use the "Python 3.9 Miniconda3 MacOSX 64-bit" installer from
+      https://docs.conda.io/en/latest/miniconda.html to install Anaconda in
+      your home directory.
+
+   .. group-tab:: Windows
+
+      Use the **"Python 3.9 Miniconda3 Linux 64-bit"** installer from
+      https://docs.conda.io/en/latest/miniconda.html to install Anaconda in
+      your **WSL** home directory.  Note that this isn't a typo: you're
+      installing Anaconda **for Linux** in WSL, not Anaconda for Windows.
+
 
 Server
 ------
@@ -135,10 +183,30 @@ Worker
 ------
 
 Now we're ready to run a worker.  Since we already installed Buildcat in the
-previous step, there's nothing to do except fire it up::
+previous step, there's nothing to do except fire it up:
 
-    $ cd /Volumes/Farm
-    $ buildcat worker
+.. tabs::
+
+   .. group-tab:: Linux
+
+        .. code-block:: bash
+
+           $ cd /mnt/farm
+           $ buildcat worker
+
+   .. group-tab:: MacOS
+
+        .. code-block:: bash
+
+           $ cd /Volumes/Farm
+           $ buildcat worker
+
+   .. group-tab:: Windows
+
+        .. code-block:: bash
+
+           $ cd /mnt/d/farm
+           $ buildcat worker
 
 The worker will print a startup message, begin communicating with the server,
 and wait for jobs to work on::
@@ -149,10 +217,10 @@ and wait for jobs to work on::
     13:23:51 Cleaning registries for queue: default
 
 Note that we didn't have to specify the server address because it defaults to
-to `127.0.0.1` for the worker, too.  Also, before starting the worker we
-changed the working directory to BUILDCAT_ROOT.  This is how the worker knows
-where BUILDCAT_ROOT is located without having to configure it.  Leave the
-worker running and open another command line for the following steps.
+to `127.0.0.1` for the worker, too.  Also, before starting the worker we used
+the `cd` command to change the working directory to BUILDCAT_ROOT.  This is how
+the worker knows where BUILDCAT_ROOT is located without having to configure it.
+Leave the worker running and open another command line for the following steps.
 
 Client
 ------
@@ -183,8 +251,7 @@ Summary
 -------
 
 That's it!  Your single-machine render farm is up-and-running.  Of course,
-there are many details we've skipped in this section, such as how to submit
-real render jobs and how to start the farm automatically when your machine
-boots.  In the following sections we'll make suggestions on how to setup a
-multi-machine farm, and how to use Buildcat with specific DCC tools.
-
+there are many details we've skipped in this section, such as how to run
+workers on multiple machines, submit real render jobs, and how to secure your
+farm's network connections.  The articles in the :ref:`user_guide` will address
+these problems in detail.
