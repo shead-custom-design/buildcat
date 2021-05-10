@@ -22,6 +22,7 @@ subparsers = parser.add_subparsers(title="commands (choose one)", dest="command"
 # client-keygen
 subparser = subparsers.add_parser("client-keygen", help="Generate client key and certificate for TLS encryption.")
 subparser.add_argument("--country", default="US", help="Certificate country.  Default: %(default)s")
+subparser.add_argument("--days", type=int, default=365, help="Length of time the certificate will be valid.  Default: %(default)s")
 subparser.add_argument("--locality", default="Albuquerque", help="Certificate locality.  Default: %(default)s")
 subparser.add_argument("--name", default="*", help="Client name. Default: %(default)s")
 subparser.add_argument("--organization", default="Buildcat", help="Certificate organization.  Default: %(default)s")
@@ -97,6 +98,7 @@ subparser.add_argument("--port", type=int, default=6379, help="Server port. Defa
 # server-keygen
 subparser = subparsers.add_parser("server-keygen", help="Generate server key and certificate for TLS encryption.")
 subparser.add_argument("--country", default="US", help="Certificate country.  Default: %(default)s")
+subparser.add_argument("--days", type=int, default=365, help="Length of time the certificate will be valid.  Default: %(default)s")
 subparser.add_argument("--locality", default="Albuquerque", help="Certificate locality.  Default: %(default)s")
 subparser.add_argument("--name", default="127.0.0.1", help="Server name. Default: %(default)s")
 subparser.add_argument("--organization", default="Buildcat", help="Certificate organization.  Default: %(default)s")
@@ -146,7 +148,7 @@ if __name__ == "__main__":
         subj += f"/CN={arguments.name}"
 
         buildcat.check_call(["openssl", "genrsa", "-out", "client.key", "2048"])
-        buildcat.check_call(["openssl", "req", "-new", "-key", "client.key", "-x509", "-subj", subj, "-out", "client.cert"])
+        buildcat.check_call(["openssl", "req", "-new", "-key", "client.key", "-x509", "-subj", subj, "-out", "client.cert", "-days", str(arguments.days)])
         with open("client.pem", "wb") as output:
             with open("client.key", "rb") as input:
                 output.write(input.read())
@@ -281,7 +283,7 @@ if __name__ == "__main__":
         subj += f"/CN={arguments.name}"
 
         buildcat.check_call(["openssl", "genrsa", "-out", "server.key", "2048"])
-        buildcat.check_call(["openssl", "req", "-new", "-key", "server.key", "-x509", "-subj", subj, "-out", "server.cert"])
+        buildcat.check_call(["openssl", "req", "-new", "-key", "server.key", "-x509", "-subj", subj, "-out", "server.cert", "-days", arguments.days])
         with open("server.pem", "wb") as output:
             with open("server.key", "rb") as input:
                 output.write(input.read())
