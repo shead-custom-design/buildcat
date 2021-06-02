@@ -96,6 +96,7 @@ subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 subparser = subparsers.add_parser("server", help="Start a Buildcat server.")
 subparser.add_argument("--bind", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
+subparser.add_argument("--storage", default="buildcat.aof", help="Persistent storage location. Default: %(default)s")
 
 # server-keygen
 subparser = subparsers.add_parser("server-keygen", help="Generate server key and certificate for TLS encryption.")
@@ -177,7 +178,7 @@ if __name__ == "__main__":
             process.wait()
 
 
-    #eta
+    # eta
     if arguments.command == "eta":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         term = blessings.Terminal()
@@ -271,7 +272,13 @@ if __name__ == "__main__":
 
     # server
     if arguments.command == "server":
-        command = ["redis-server", "--bind", arguments.bind]
+        command = [
+            "redis-server",
+            "--bind", arguments.bind,
+            "--port", str(arguments.port),
+            "--appendonly", "yes",
+            "--appendfilename", arguments.storage,
+            ]
         try:
             process = subprocess.Popen(command)
             process.wait()
