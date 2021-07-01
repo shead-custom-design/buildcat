@@ -18,8 +18,8 @@ To use the Houdini integrations, each worker must be able to run the `hython`
 executable provided by Houdini.  Typically, this means that you will have to
 install Houdini on the worker host, locate the `hython` (or `hython.exe` on
 Windows) executable, and add that location to the `PATH` environment variable
-before starting the worker.  See https://www.sidefx.com/docs/houdini/hom/commandline.html#hython
-for details on how to locate `hython`.
+before starting the worker.  See the `Houdini Documentation <https://www.sidefx.com/docs/>`_
+for details on where `hython` is located for specific platforms.
 
 Production
 ----------
