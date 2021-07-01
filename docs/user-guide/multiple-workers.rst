@@ -41,14 +41,14 @@ wireless interface on the machine where the server is running.  You should
 verify that all of your workers and clients can ping the server at that
 address.
 
-We'll use the address `192.168.2.1` throughout the rest of this section.
+We'll use the address `192.168.2.1` for our server throughout the rest of this section.
 
 Server
 ------
 
-When we ran the Buildcat server previously, it defaulted to the loopback
-address `127.0.0.1`, which meant that it would only accept connections from
-workers and clients running on the same host.  Now, we need the server to
+When we ran the Buildcat server in :ref:`basic-setup`, it defaulted to the
+loopback address `127.0.0.1`, which meant that it would only accept connections
+from workers and clients running on the same host.  Now, we need the server to
 accept connections from other machines, using a public server address.  To do
 so, just specify the server's network address at startup::
 
@@ -78,7 +78,7 @@ Similarly, clients will need to specify the server address to submit jobs::
 
     $ buildcat worker-info --host 192.168.2.1
 
-Keep in mind that, now that we're running multiple workers, the job may
-be run on any one of them, so that the information returned by the worker-info
-job will change depending on the host and worker where it was handled.
+Keep in mind that, now that we're running multiple workers, the job may be run
+on any one of them, so that the information returned by the worker-info job in
+this example will change depending on the host and worker where it was handled.
 
