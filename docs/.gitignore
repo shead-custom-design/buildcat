@@ -1,6 +1,3 @@
 _build
-_static
 _templates
 _test
-*_files
-charger.pickle
