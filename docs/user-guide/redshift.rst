@@ -26,7 +26,22 @@ To query for information about a worker's Redshift installation from the command
 line, use the :ref:`buildcat` command::
 
     $ buildcat redshift-info
-    {'redshift': {'executable': 'redshiftCmdLine.exe', 'version': b'Redshift Command-Line Renderer (version 3.0.45 - API: 3027)\r\r\nCopyright 2021 Redshift Rendering Technologies\r\r\n'}}
+    {'os': {'host': 'tim-aurora',
+            'machine': 'x86_64',
+            'processor': 'x86_64',
+            'release': '4.4.0-19041-Microsoft',
+            'system': 'Linux',
+            'version': '#488-Microsoft Mon Sep 01 13:43:00 PST 2020'},
+     'python': {'prefix': '/home/tshead/miniconda3',
+                'version': '3.8.5 (default, Sep  4 2020, 07:30:14) \n[GCC 7.3.0]'},
+     'redshift': {'executable': 'redshiftCmdLine.exe',
+                  'version': b'Redshift Command-Line Renderer (version 3.0.45 - API'
+                             b': 3027) Copyright 2021 Redshift Rendering Technologi'
+                             b'es '},
+     'worker': {'pid': 302,
+                'root': '/home/tshead',
+                'user': 'tshead',
+                'version': '0.4.0-dev'}}
 
 Note that `redshift-info` will block until the results are received, and that
 the results could vary depending on which worker handled the request.

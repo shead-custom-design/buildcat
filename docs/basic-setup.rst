@@ -239,10 +239,21 @@ accepts the job and runs it::
     13:25:53 default: Job OK (b8de2065-9fd7-4018-b77c-dd930f388880)
     13:25:53 Result is kept for 500 seconds
 
-... and in the console where you submitted the job, some information about the worker
+... and in the console where you submitted the job, information about the worker
 is printed out::
 
-    {'os': {'host': 'aurora.local', 'machine': 'x86_64', 'processor': 'i386', 'release': '19.6.0', 'system': 'Darwin', 'version': 'Darwin Kernel Version 19.6.0: Tue Jan 12 22:13:05 PST 2021; root:xnu-6153.141.16~1/RELEASE_X86_64'}, 'python': {'version': '3.8.2 (default, Mar 26 2020, 10:43:30) \n[Clang 4.0.1 (tags/RELEASE_401/final)]', 'prefix': '/Users/fred/miniconda3'}, 'worker': {'pid': 78322, 'root': '/Volumes/Farm', 'user': 'fred', 'version': '0.3.0-dev'}}
+    {'os': {'host': 'tim-aurora',
+            'machine': 'x86_64',
+            'processor': 'x86_64',
+            'release': '4.4.0-19041-Microsoft',
+            'system': 'Linux',
+            'version': '#488-Microsoft Mon Sep 01 13:43:00 PST 2020'},
+     'python': {'prefix': '/home/tshead/miniconda3',
+                'version': '3.8.5 (default, Sep  4 2020, 07:30:14) \n[GCC 7.3.0]'},
+     'worker': {'pid': 224,
+                'root': '/home/tshead',
+                'user': 'tshead',
+                'version': '0.4.0-dev'}}
 
 This confirms that the client, server, and worker are all communicating and
 ready to go to work!

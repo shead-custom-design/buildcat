@@ -28,7 +28,20 @@ To query for information about a worker's Houdini installation from the command
 line, use the :ref:`buildcat` command::
 
     $ buildcat houdini-info
-    {'houdini': {'executable': 'hython', 'version': '18.5.408'}}
+    {'houdini': {'executable': 'hython.exe', 'version': '18.5.408'},
+     'os': {'host': 'tim-aurora',
+        'machine': 'x86_64',
+        'processor': 'x86_64',
+        'release': '4.4.0-19041-Microsoft',
+        'system': 'Linux',
+        'version': '#488-Microsoft Mon Sep 01 13:43:00 PST 2020'},
+     'python': {'prefix': '/home/tshead/miniconda3',
+                'version': '3.8.5 (default, Sep  4 2020, 07:30:14) \n[GCC 7.3.0]'},
+     'worker': {'pid': 225,
+                'root': '/home/tshead',
+                'user': 'tshead',
+                'version': '0.4.0-dev'}}
+
 
 Note that `houdini-info` will block until the results are received, and that
 the results could vary depending on which worker handled the request.

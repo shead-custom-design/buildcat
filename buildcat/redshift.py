@@ -16,6 +16,7 @@
 """
 
 import os
+import re
 
 import buildcat
 
@@ -46,7 +47,7 @@ def info():
     result.update({
         "redshift": {
             "executable": _redshift_executable(),
-            "version": buildcat.check_output(command),
+            "version": re.sub(b"\s+", b" ", buildcat.check_output(command)),
         },
     })
     return result
