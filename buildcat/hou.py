@@ -50,12 +50,15 @@ def info():
     for line in buildcat.check_output(command).decode("UTF8").splitlines():
         if line.startswith("buildcat-houdini-version: "):
             version = line.split(sep=" ", maxsplit=1)[1]
-    return {
+
+    result = buildcat.info()
+    result.update({
         "houdini": {
             "executable": _hython_executable(),
             "version": version,
             },
-        }
+        })
+    return result
 
 
 def render_frames(hipfile, rop, frames):

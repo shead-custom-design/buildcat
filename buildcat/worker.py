@@ -15,14 +15,6 @@
 """Functionality for retrieving information about workers.
 """
 
-import getpass
-import os
-import platform
-import socket
-import sys
-
-import rq
-
 import buildcat
 
 
@@ -37,27 +29,4 @@ def info():
         A collection of key-value pairs containing information describing the
         local worker.
     """
-    uname = platform.uname()
-
-    return {
-        "os": {
-            "host": uname.node,
-            "machine": uname.machine,
-            "processor": uname.processor,
-            "release": uname.release,
-            "system": uname.system,
-            "version": uname.version,
-        },
-
-        "python": {
-            "version": sys.version,
-            "prefix": sys.prefix,
-        },
-
-        "worker": {
-            "pid": os.getpid(),
-            "root": os.getcwd(),
-            "user": getpass.getuser(),
-            "version": buildcat.__version__,
-        },
-    }
+    return buildcat.info()

@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+import pprint
 import shutil
 import signal
 import subprocess
@@ -229,7 +230,7 @@ if __name__ == "__main__":
     if arguments.command == "houdini-info":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         job = buildcat.submit(queue, "buildcat.hou.info")
-        print(buildcat.wait(connection=connection, job=job))
+        pprint.pprint(buildcat.wait(connection=connection, job=job))
 
 
     # houdini-render
@@ -244,7 +245,7 @@ if __name__ == "__main__":
     if arguments.command == "modo-info":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         job = buildcat.submit(queue, "buildcat.modo.info")
-        print(buildcat.wait(connection=connection, job=job))
+        pprint.pprint(buildcat.wait(connection=connection, job=job))
 
 
     # modo-render
@@ -259,7 +260,7 @@ if __name__ == "__main__":
     if arguments.command == "redshift-info":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         job = buildcat.submit(queue, "buildcat.redshift.info")
-        print(buildcat.wait(connection=connection, job=job))
+        pprint.pprint(buildcat.wait(connection=connection, job=job))
 
 
     # redshift-render
@@ -335,7 +336,7 @@ if __name__ == "__main__":
     if arguments.command == "worker-info":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         job = buildcat.submit(queue, "buildcat.worker.info")
-        print(buildcat.wait(connection=connection, job=job))
+        pprint.pprint(buildcat.wait(connection=connection, job=job))
 
 
     # version

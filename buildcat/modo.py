@@ -52,12 +52,14 @@ app.quit
     stdout, stderr = process.communicate(code)
     version = re.search("> : (\d+)", stdout).group(1)
 
-    return {
+    result = buildcat.info()
+    result.update({
         "modo": {
             "executable": _modo_executable(),
             "version": version,
         },
-    }
+    })
+    return result
 
 def render_frames(lxofile, frames):
     """Render a half-open range of frames from a Modo .lxo file.

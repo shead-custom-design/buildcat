@@ -41,12 +41,14 @@ def info():
     """
 
     command = [_redshift_executable(), "--version"]
-    result = {
+
+    result = buildcat.info()
+    result.update({
         "redshift": {
             "executable": _redshift_executable(),
             "version": buildcat.check_output(command),
         },
-    }
+    })
     return result
 
 

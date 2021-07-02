@@ -17,11 +17,13 @@
 __version__ = "0.4.0-dev"
 
 import functools
+import getpass
 import logging
 import pickle
 import platform
 import os
 import subprocess
+import sys
 import time
 
 import redis
@@ -143,6 +145,43 @@ def executable(name):
         The executable name, with platform-specific additions (such as `.exe` on Windows).
     """
     return f"{name}.exe" if _is_wsl() else name
+
+
+def info():
+    """Returns information about the current process.
+
+    The result is intended for use by integrations that return worker information.
+
+    Returns
+    -------
+    metadata: :class:`dict`
+        A collection of key-value pairs containing information describing the
+        current process.
+    """
+    uname = platform.uname()
+
+    return {
+        "os": {
+            "host": uname.node,
+            "machine": uname.machine,
+            "processor": uname.processor,
+            "release": uname.release,
+            "system": uname.system,
+            "version": uname.version,
+        },
+
+        "python": {
+            "version": sys.version,
+            "prefix": sys.prefix,
+        },
+
+        "worker": {
+            "pid": os.getpid(),
+            "root": os.getcwd(),
+            "user": getpass.getuser(),
+            "version": __version__,
+        },
+    }
 
 
 def queue(*, queue="default", host="127.0.0.1", port=6379, timeout=5):
