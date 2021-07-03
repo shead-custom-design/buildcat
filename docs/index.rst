@@ -22,11 +22,11 @@ Documentation
    design.rst
    basic-setup.rst
    user-guide.rst
+   commands.rst
+   reference.rst
    dependencies.rst
    compatibility.rst
    contributing.rst
-   commands.rst
-   reference.rst
    support.rst
    release-notes.rst
 
