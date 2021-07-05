@@ -9,8 +9,8 @@ The Buildcat documentation:
 
 * http://buildcat.readthedocs.io
 
-Visit our GitHub repository for access to source code, continuous integration
-test results, issue tracker, and the wiki:
+Visit our GitHub repository for access to source code, test results, issue
+tracker, and the wiki:
 
 * http://github.com/shead-custom-design/buildcat
 
