@@ -24,9 +24,9 @@ Documentation
    user-guide.rst
    commands.rst
    reference.rst
-   dependencies.rst
    compatibility.rst
-   contributing.rst
+   dependencies.rst
+   developers.rst
    support.rst
    release-notes.rst
 

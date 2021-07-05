@@ -2,15 +2,15 @@
   :width: 200px
   :align: right
 
-.. _contributing:
+.. _developers:
 
-Contributing
-============
+Developers
+==========
 
 Even if you're not in a position to contribute code to Buildcat, there are many
 ways you can help the project out:
 
-* Show us cool stuff that you created using Buildcat!
+* Show us cool stuff that you rendered using Buildcat!
 * Tell us if Buildcat doesn't work for your pipeline.
 * Help us write documentation.
 * Spread the word!
