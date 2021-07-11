@@ -26,7 +26,7 @@ jobs:
         pip install behave coverage coveralls
         python setup.py develop
     - name: Run tests
-      run: coverage run --source buildcat -m behave
+      run: python regression.py
     - name: Coverage report
       run: coverage report
     - name: Upload coverage to Coveralls
