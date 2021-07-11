@@ -273,17 +273,22 @@ if __name__ == "__main__":
 
     # server
     if arguments.command == "server":
+        storage_dir, storage_file = os.path.split(arguments.storage)
+        storage_dir = storage_dir or "."
+
         command = [
             "redis-server",
             "--bind", arguments.bind,
             "--port", str(arguments.port),
             "--appendonly", "yes",
-            "--appendfilename", arguments.storage,
+            "--appendfilename", storage_file,
+            "--dir", storage_dir,
             ]
         try:
             process = subprocess.Popen(command)
             process.wait()
         except KeyboardInterrupt:
+            process.send_signal(signal.SIGINT)
             process.wait()
 
 
