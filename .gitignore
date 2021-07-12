@@ -4,6 +4,7 @@
 .ipynb_checkpoints
 .cover
 .coverage
+.coverage.*
 build
 dist
 dump.rdb

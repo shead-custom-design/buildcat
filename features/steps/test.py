@@ -37,5 +37,11 @@ def assert_sequence_equal(first, second, msg=None, seq_type=None):
 def assert_true(expr, msg=None):
     return unittest.TestCase().assertTrue(expr, msg)
 
+def assert_in(member, container, msg=None):
+    return unittest.TestCase().assertIn(member, container, msg)
+
+def assert_not_in(member, container, msg=None):
+    return unittest.TestCase().assertNotIn(member, container, msg)
+
 # Custom tests.
 

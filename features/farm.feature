@@ -1,10 +1,14 @@
 Feature: Farm
 
-    Scenario Outline: Submit jobs programmatically
-        Given a running buildcat server
-        When submitting a <job> job programmatically
-        Then the server should have <count> jobs in the <queue> queue
+    Scenario Outline: No Workers
+        Given a buildcat server
+        When submitting a "buildcat.worker.info" job
+        Then the job count for the "default" queue should be 1
 
-        Examples:
-            | job                       | count     | queue       |
-            | "buildcat.worker.info"    | 1         | "default"   |
+    Scenario: buildcat.worker.info
+        Given a buildcat server
+        And a buildcat worker
+        When submitting a "buildcat.worker.info" job
+        Then the job should return worker info
+        And the job count for the "default" queue should be 0
+
