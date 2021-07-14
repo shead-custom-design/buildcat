@@ -48,7 +48,7 @@ def step_impl(context):
         context.workers[-1].send_signal(signal.SIGINT)
         context.workers[-1].wait(timeout=5)
 
-    context.workers = [subprocess.Popen(["buildcat", "worker"])]
+    context.workers = [subprocess.Popen(["buildcat", "worker", "--no-fork"])]
     context.add_cleanup(stop_worker, context)
 
 
@@ -79,4 +79,3 @@ def step_impl(context):
         test.assert_in(key, result["python"])
     for key in ["pid", "root", "user"]:
         test.assert_in(key, result["worker"])
-

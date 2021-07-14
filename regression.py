@@ -13,18 +13,21 @@
 # limitations under the License.
 
 import argparse
+import glob
 import os
 import shutil
 import subprocess
+import sys
 
 parser = argparse.ArgumentParser("Run all Buildcat regression tests.")
 arguments = parser.parse_args()
 
-if os.path.exists(".coverage"):
-    os.remove(".coverage")
+for path in glob.glob(".coverage") + glob.glob(".coverage.*"):
+    os.remove(path)
 if os.path.exists(".cover"):
     shutil.rmtree(".cover")
-subprocess.call(["coverage", "run", "--source", "buildcat", "-m", "behave"])
+
+subprocess.call(["coverage", "run", "--parallel-mode", "--source", "buildcat", "-m", "behave"])
 subprocess.call(["coverage", "combine"])
 subprocess.call(["coverage", "report"])
 subprocess.call(["coverage", "html", "--directory", ".cover"])
