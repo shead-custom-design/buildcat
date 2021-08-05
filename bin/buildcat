@@ -53,8 +53,15 @@ subparser.add_argument("--host", default="127.0.0.1", help="Server address. Defa
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to ping. Default: %(default)s")
 
+# houdini-ifd
+subparser = subparsers.add_parser("houdini-render-ifd", help="Submit a Houdini .ifd render job.")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
+subparser.add_argument("ifdfile", help="Houdini .ifd file to render with mantra.")
+
 # houdini-render
-subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini render job.")
+subparser = subparsers.add_parser("houdini-render", help="Submit a Houdini .hip render job.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
@@ -232,6 +239,14 @@ if __name__ == "__main__":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         job = buildcat.submit(queue, "buildcat.hou.info")
         pprint.pprint(buildcat.wait(connection=connection, job=job))
+
+
+    # houdini-render-ifd
+    if arguments.command == "houdini-render-ifd":
+        connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
+        ifdfile = buildcat.require_relative_path(arguments.ifdfile, "Houdini .ifd file must be a relative path.")
+        job = buildcat.submit(queue, "buildcat.hou.render_ifd", ifdfile)
+        print(f"Submitted job {job.id}")
 
 
     # houdini-render

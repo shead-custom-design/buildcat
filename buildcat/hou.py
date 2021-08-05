@@ -28,6 +28,10 @@ def _hython_executable():
     return buildcat.executable("hython")
 
 
+def _mantra_executable():
+    return buildcat.executable("mantra")
+
+
 def info():
     """Return information describing the worker's local Houdini installation.
 
@@ -59,6 +63,26 @@ def info():
             },
         })
     return result
+
+
+def render_ifd(ifdfile):
+    """Render a Houdini .ifd file.
+
+    Environment Variables
+    ---------------------
+    PATH: required
+        Your PATH environment variable *must* be configured so that the worker
+        can run the `mantra` executable.
+
+    Parameters
+    ----------
+    ifdfile: :class:`str`, required
+        Path to the file to be rendered.
+    """
+    ifdfile = str(ifdfile)
+
+    command = [_mantra_executable(), "-f", ifdfile]
+    buildcat.check_call(command)
 
 
 def render_frames(hipfile, rop, frames):
