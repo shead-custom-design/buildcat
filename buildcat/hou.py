@@ -85,7 +85,7 @@ def render_ifd(ifdfile):
     buildcat.check_call(command)
 
 
-def render_frames(hipfile, rop, frames):
+def render_hip(hipfile, rop, frames):
     """Render a range of frames from a Houdini .hip file.
 
     Environment Variables
@@ -140,6 +140,6 @@ def split_frames(hipfile, rop, frames):
 
     q = rq.Queue(rq.get_current_job().origin, connection=rq.get_current_connection())
     for frame in range(start, end, step):
-        q.enqueue("buildcat.hou.render_frames", hipfile, rop, (frame, frame+1, 1))
+        q.enqueue("buildcat.hou.render_hip", hipfile, rop, (frame, frame+1, 1))
 
 
