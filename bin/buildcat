@@ -66,20 +66,7 @@ subparser.add_argument("--host", default="127.0.0.1", help="Server address. Defa
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
-subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
-subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval between rendered frames. Default: %(default)s.")
-subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render. Default: %(default)s")
-subparser.add_argument("hipfile", help="Houdini .hip file to render.")
-
-# houdini-split-frames
-subparser = subparsers.add_parser("houdini-split-frames", help="Split a Houdini .hip file into a set of individual jobs.")
-subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
-subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
-subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
-subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
-subparser.add_argument("--step", type=int, default=1, nargs="?", help="Interval between rendered frames. Default: %(default)s.")
-subparser.add_argument("--stop", type=int, default=1, help="One past last frame to render. Default: %(default)s")
+subparser.add_argument("--frame", type=int, nargs="+", default=[1], help="Frame(s) to render.  Default: 1")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
 # modo-info
@@ -161,6 +148,9 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
     log = logging.getLogger()
     log.name = os.path.basename(sys.argv[0])
+
+    import logging_tree
+    logging_tree.printout()
 
 
     # client-keygen
@@ -262,17 +252,18 @@ if __name__ == "__main__":
 
     # houdini-render-hip
     if arguments.command == "houdini-render-hip":
+        if len(arguments.frame) == 1:
+            start, stop, step = arguments.frame[0], arguments.frame[0] + 1, 1
+        elif len(arguments.frame) == 2:
+            start, stop, step = arguments.frame[0], arguments.frame[1] + 1, 1
+        elif len(arguments.frame) == 3:
+            start, stop, step = arguments.frame[0], arguments.frame[1] + 1, arguments.frame[2]
+        else:
+            arguments.error("--frame must specify start, [stop, [step]] arguments only.")
+
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
-        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
-        print(f"Submitted job {job.id}")
-
-
-    # houdini-split-frames
-    if arguments.command == "houdini-split-frames":
-        connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
-        hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
-        job = buildcat.submit(queue, "buildcat.hou.split_frames", hipfile, arguments.rop, (arguments.start, arguments.stop, arguments.step))
+        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile, arguments.rop, (start, stop, step))
         print(f"Submitted job {job.id}")
 
 

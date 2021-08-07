@@ -30,14 +30,8 @@ import redis
 import rq
 
 
-formatter = logging.Formatter(fmt="%(asctime)s %(levelname)s:%(name)s:%(message)s", datefmt="%H:%M:%S")
-
-handler = logging.StreamHandler()
-handler.setFormatter(formatter)
-
 log = logging.getLogger(__name__)
-log.setLevel(os.environ.get("BUILDCAT_LOG_LEVEL", logging.INFO))
-log.addHandler(handler)
+print(log)
 
 
 def _is_wsl():

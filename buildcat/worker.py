@@ -30,3 +30,10 @@ def info():
         local worker.
     """
     return buildcat.info()
+
+
+def logtree():
+    import logging_tree
+    logging_tree.printout()
+
+

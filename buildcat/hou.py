@@ -100,7 +100,7 @@ def render_hip(hipfile, rop, frames):
         Path to the file to be rendered.
     rop: :class:`str`, required
         Absolute path of the ROP node to use for rendering.
-    frames: :class:`tuple` of threeintegers, required
+    frames: :class:`tuple` of three integers, required
         Contains the half-open (start, end, step) of frames to be rendered.
     """
     hipfile = str(hipfile)
@@ -113,33 +113,12 @@ def render_hip(hipfile, rop, frames):
 import hou
 
 hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=True)
-rop = hou.node({rop!r})
-rop.render(frame_range=({start},{end-1},{step}), verbose=False, output_progress=False)
+ropnode = hou.node({rop!r})
+if ropnode is None:
+    raise ValueError("Missing ROP: {rop}")
+ropnode.render(frame_range=({start},{end-1},{step}), verbose=False, output_progress=False)
 """
     command = [_hython_executable(), "-c", code]
     buildcat.check_call(command)
-
-
-def split_frames(hipfile, rop, frames):
-    """Render a range of frames from a Houdini .hip file as individual jobs.
-
-    Parameters
-    ----------
-    hipfile: str, required
-        Path to the file to be rendered.
-    rop: str, required
-        Absolute path of the ROP node to use for rendering.
-    frames: tuple, required
-        Contains the half-open (start, end, step) of frames to be rendered.
-    """
-    hipfile = str(hipfile)
-    rop = str(rop)
-    start = int(frames[0])
-    end = int(frames[1])
-    step = int(frames[2])
-
-    q = rq.Queue(rq.get_current_job().origin, connection=rq.get_current_connection())
-    for frame in range(start, end, step):
-        q.enqueue("buildcat.hou.render_hip", hipfile, rop, (frame, frame+1, 1))
 
 
