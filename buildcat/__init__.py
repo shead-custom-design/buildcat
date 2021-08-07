@@ -31,7 +31,7 @@ import rq
 
 
 log = logging.getLogger(__name__)
-print(log)
+log.addHandler(logging.NullHandler())
 
 
 def _is_wsl():

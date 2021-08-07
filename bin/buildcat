@@ -149,10 +149,6 @@ if __name__ == "__main__":
     log = logging.getLogger()
     log.name = os.path.basename(sys.argv[0])
 
-    import logging_tree
-    logging_tree.printout()
-
-
     # client-keygen
     if arguments.command == "client-keygen":
         subj = ""
