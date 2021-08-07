@@ -51,10 +51,9 @@ line, use the :ref:`buildcat` command::
                 'version': '0.4.0-dev'}}
 
 
-Note that `houdini-info` will block until the results are received, and that
-the results will vary depending on which worker handles the request.
+Keep in mind that `houdini-info` will block until a worker handles the request, and that the results will vary depending on which worker does so.
 
-Then, you can use the :ref:`buildcat` command to render a .hip file::
+Next, you can use the :ref:`buildcat` command to render a .hip file::
 
     $ buildcat houdini-render-hip path/to/scene.hip
 
@@ -73,11 +72,11 @@ Or to render all of the frames between 1-100 (inclusive)::
 
     $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 100
 
-If you wanted to render every 3rd frame, you can do that too::
+If you want to render every 3rd frame, you can do that too::
 
     $ buildcat houdini-render-hip ProjectFoo/Scene24/Take13.hip --frame 1 100 3
 
-Keep in mind that `houdini-render` assumes that your .hip file has a ROP node named `/out/mantra_ipr` that it
+Be aware that `houdini-render` assumes that your .hip file has a ROP node named `/out/mantra_ipr` that it
 will use for the render. If you want to render with some other ROP, you'll need to specify that too::
 
     $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 100 --rop /out/mantra1
@@ -88,11 +87,11 @@ frames begin to appear.
 Parallelism
 ~~~~~~~~~~~
 
-Keep in mind that `houdini-render-hip` will render frames one-after-the-other
+A limitation of `houdini-render-hip` is that it renders frames one-after-the-other
 as a single job. This is what you want if you're caching the results of a
 simulation or other geometry to a disk, but won't help speed up rendering if
 you want to render frames simultaneously on multiple machines.  To do that,
-there are several possible approaches:
+there are several possible alternatives:
 
 On one hand, you could submit multiple jobs with `houdini-render-hip` that each
 render a subset of frames.  For example, if you had two machines with similar
@@ -101,8 +100,7 @@ resources, you might split your job into two::
     $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 50 --rop /out/mantra1
     $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 51 100 --rop /out/mantra1
 
-As long as you have one worker waiting on each machine, both jobs will run at
-the same time, and the render should complete in roughly half the time.  Note
+As long as you have a worker waiting on each machine, both jobs will run simultaneously, and the render should complete in roughly half the time.  Note
 that this can be an efficient approach because the `hython` processes that do
 the work only have to be started and stopped once.
 
@@ -123,15 +121,13 @@ one job per frame::
     $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 100 --rop /out/mantra1
 
 Because this approach creates many small jobs, there is more overhead from
-`hython` processes starting and stopping, but the fast machine can complete
-many jobs while the slower machine completes less.
+`hython` processes starting and stopping, but both machines can complete
+as many jobs as their resources allow.
 
 The downside to either approach is that every worker that's rendering a .hip
 file consumes a full Houdini license while it runs.  Depending on how many
 workers you have, you may be prevented from using Houdini during rendering, or
-you may run out of licenses altogether.
-
-As an alternative, you can take a slightly more complicated approach:
+you may run out of licenses altogether, and overcoming this requires a more complicated approach:
 
 First, create a Mantra ROP in your .hip file that writes .ifd files to disk, instead of rendering.  As always, make sure the .ifd files and temp storage directories are located within $BUILDCAT_ROOT.
 
@@ -142,17 +138,17 @@ Second, start a job that renders the .ifd-generating ROP in your scene::
 Finally, submit jobs to render each of the .ifd files::
 
     $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0001.ifd
-    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0001.ifd
-    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0001.ifd
+    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0002.ifd
+    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0003.ifd
 
     ...
 
-    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0001.ifd
+    $ buildcat houdini-render-ifd projectfoo/scene24/ifds/take13-0100.ifd
 
-Now, a Houdini license is only consumed while the .ifd files are generated in
-the first job.  The remaining jobs each render a single .ifd file and consume
-only a `mantra` license, allowing you to render with as many workers as you
-have render licensese, and continue using Houdini while rendering progresses.
+Now, a Houdini license is only consumed while the .ifd files are generated by
+the first job.  The remaining jobs render a single .ifd file apiece and each consume
+a single `mantra` license while rendering, allowing you to render with as many workers as you
+have render licenses, and continue using Houdini while they work.
 
 Scripted Integration
 --------------------
@@ -161,8 +157,8 @@ Instead of using the command line, you might want Houdini to automatically
 submit Buildcat jobs for you.  For example, if you have a ROP that generates
 .ifd files as described above, it's useful to have the ROP submit a job for
 each .ifd file as soon as it's written to disk, so rendering can begin
-immediately.  To do so, add a Python Post-Frame Script to your .ifd-generating
-ROP, with contents like the following::
+immediately, instead of idling workers while .ifd generation completes.  To do so, add a Python Post-Frame Script to your .ifd-generating
+ROP, with contents along the lines of the following::
 
     import os
 
@@ -175,7 +171,7 @@ ROP, with contents like the following::
     queue = rq.Queue(connection=redis.Redis())
     queue.enqueue("buildcat.hou.render_ifd", filename)
 
-Now, when you generate .ifd files, render jobs will be automatically created.
+Now when you generate the .ifd files, render jobs will be automatically created.
 Note that this script assumes that you use the $HIP environment variable to
 anchor the .ifd and temporary storage paths, and that $HIP refers to the same
 location as BUILDCAT_ROOT.  It also assumes that you've configured Houdini to
