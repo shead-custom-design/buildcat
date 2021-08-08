@@ -66,20 +66,24 @@ as `//aurora/farm/projectfoo/scene24/take13.hip`, your buildcat command line wou
 By default, the `houdini-render-hip` subcommand will render frame 1 of your
 scene.  To render a different frame, just specify it after the hip file::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 8
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 8
 
 Or to render all of the frames between 1-100 (inclusive)::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 100
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 1-100
 
 If you want to render every 3rd frame, you can do that too::
 
-    $ buildcat houdini-render-hip ProjectFoo/Scene24/Take13.hip --frame 1 100 3
+    $ buildcat houdini-render-hip projectfoo/scene24/Take13.hip --frames 1-100:3
+
+You can combine as many individual frames and ranges as you like, using commas::
+
+    $ buildcat houdini-render-hip projectfoo/scene24/Take13.hip --frames 1,7,9,10-25,75-100:2
 
 Be aware that `houdini-render` assumes that your .hip file has a ROP node named `/out/mantra_ipr` that it
 will use for the render. If you want to render with some other ROP, you'll need to specify that too::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 100 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 1-100 --rop /out/mantra1
 
 After starting the render, keep an eye on the contents of BUILDCAT_ROOT, and you will see rendered
 frames begin to appear.
@@ -97,8 +101,8 @@ On one hand, you could submit multiple jobs with `houdini-render-hip` that each
 render a subset of frames.  For example, if you had two machines with similar
 resources, you might split your job into two::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 50 --rop /out/mantra1
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 51 100 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 1-50 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 51-100 --rop /out/mantra1
 
 As long as you have a worker waiting on each machine, both jobs will run simultaneously, and the render should complete in roughly half the time.  Note
 that this can be an efficient approach because the `hython` processes that do
@@ -112,13 +116,13 @@ better if the render is *load balanced*, so both machines can work at their full
 capacity, and finish at roughly the same time.  To accomplish this, you can submit
 one job per frame::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 --rop /out/mantra1
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 2 --rop /out/mantra1
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 3 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 1 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 2 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 3 --rop /out/mantra1
 
     ...
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 100 --rop /out/mantra1
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 100 --rop /out/mantra1
 
 Because this approach creates many small jobs, there is more overhead from
 `hython` processes starting and stopping, but both machines can complete
@@ -133,7 +137,7 @@ First, create a Mantra ROP in your .hip file that writes .ifd files to disk, ins
 
 Second, start a job that renders the .ifd-generating ROP in your scene::
 
-    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frame 1 100 --rop /out/generate_ifds
+    $ buildcat houdini-render-hip projectfoo/scene24/take13.hip --frames 1-100 --rop /out/generate_ifds
 
 Finally, submit jobs to render each of the .ifd files::
 

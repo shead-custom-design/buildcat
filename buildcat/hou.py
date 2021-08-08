@@ -100,14 +100,12 @@ def render_hip(hipfile, rop, frames):
         Path to the file to be rendered.
     rop: :class:`str`, required
         Absolute path of the ROP node to use for rendering.
-    frames: :class:`tuple` of three integers, required
-        Contains the half-open (start, end, step) of frames to be rendered.
+    frames: sequence of :class:`tuple` of three integers, required
+        Contains one-to-many half-open (start, stop, step) ranges of frames to be rendered.
     """
     hipfile = str(hipfile)
     rop = str(rop)
-    start = int(frames[0])
-    end = int(frames[1])
-    step = int(frames[2])
+    frames = [(int(start), int(stop), int(step)) for start, stop, step in frames]
 
     code = f"""
 import hou
@@ -116,7 +114,8 @@ hou.hipFile.load({hipfile!r}, suppress_save_prompt=True, ignore_load_warnings=Tr
 ropnode = hou.node({rop!r})
 if ropnode is None:
     raise ValueError("Missing ROP: {rop}")
-ropnode.render(frame_range=({start},{end-1},{step}), verbose=False, output_progress=False)
+for start, stop, step in {frames}:
+    ropnode.render(frame_range=(start,stop-1,step), verbose=False, output_progress=False)
 """
     command = [_hython_executable(), "-c", code]
     buildcat.check_call(command)

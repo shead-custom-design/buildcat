@@ -16,6 +16,23 @@ import blessings
 import buildcat
 import rq
 
+
+class FramesAction(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        if nargs is not None:
+            raise ValueError("nargs not allowed.")
+        super().__init__(option_strings, dest, **kwargs)
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        ranges = values.split(",")
+        ranges = [range.split(":") for range in ranges]
+        ranges = [[item.split("-") for item in range] for range in ranges]
+        ranges = [(int(range[0][0]), int(range[0][-1])+1, int(range[1][0]) if len(range) > 1 else 1) for range in ranges]
+        print(ranges)
+
+        setattr(namespace, self.dest, ranges)
+
+
 parser = argparse.ArgumentParser(description="Command line client for Buildcat: the portable, lightweight render farm.")
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
@@ -66,7 +83,7 @@ subparser.add_argument("--host", default="127.0.0.1", help="Server address. Defa
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
-subparser.add_argument("--frame", type=int, nargs="+", default=[1], help="Frame(s) to render.  Default: 1")
+subparser.add_argument("--frames", action=FramesAction, default="1", help="Frame(s) to render.  Default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
 # modo-info
@@ -248,18 +265,9 @@ if __name__ == "__main__":
 
     # houdini-render-hip
     if arguments.command == "houdini-render-hip":
-        if len(arguments.frame) == 1:
-            start, stop, step = arguments.frame[0], arguments.frame[0] + 1, 1
-        elif len(arguments.frame) == 2:
-            start, stop, step = arguments.frame[0], arguments.frame[1] + 1, 1
-        elif len(arguments.frame) == 3:
-            start, stop, step = arguments.frame[0], arguments.frame[1] + 1, arguments.frame[2]
-        else:
-            arguments.error("--frame must specify start, [stop, [step]] arguments only.")
-
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
-        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile, arguments.rop, (start, stop, step))
+        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile=hipfile, rop=arguments.rop, frames=arguments.frames)
         print(f"Submitted job {job.id}")
 
 
