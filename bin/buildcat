@@ -142,6 +142,7 @@ subparser.add_argument("--tunnel-port", type=int, default=4443, help="Listening 
 # worker
 subparser = subparsers.add_parser("worker", help="Start a Buildcat worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--max-jobs", default=None, type=int, help="Maximum number of jobs to execute. Default: unlimited")
 subparser.add_argument("--no-fork", action="store_true", help="Use a non-forking worker for collecting code coverage.")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering. Default: use all GPUs.")
@@ -367,7 +368,7 @@ if __name__ == "__main__":
             worker = rq.SimpleWorker(arguments.queues, connection=connection, serializer=buildcat.Serializer)
         else:
             worker = rq.Worker(arguments.queues, connection=connection, serializer=buildcat.Serializer)
-        worker.work()
+        worker.work(max_jobs=arguments.max_jobs)
 
 
     # worker-info
