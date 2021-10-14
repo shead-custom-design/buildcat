@@ -7,6 +7,21 @@
 Release Notes
 =============
 
+Buildcat 0.4.0 - October 14th, 2021
+-----------------------------------
+
+* Removed DCC-specific files from the install.
+* Improved consistency among subcommand arguments.
+* Added subcommands to secure communication channels with TLS.
+* Allow clients to contact the server using a nonstandard port.
+* Organized and streamlined the documentation.
+* Switched from Travis-CI to Github Actions for continuous integration.
+* Buildcat server can serialize tasks to an arbitrary storage path.
+* Added an option to run workers without forking, for Windows.
+* Added an integration to render Houdini .ifd files.
+* Added support for rendering arbitrary collections of frames and frame ranges from a Houdini .hip file.
+* Added an option to specify the maximum number of jobs executed by a worker.
+
 Buildcat 0.3.0 - March 30th, 2021
 ---------------------------------
 
