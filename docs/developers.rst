@@ -22,7 +22,7 @@ If you haven't already, you'll want to get familiar with the Buildcat repository
 at http://github.com/shead-custom-design/buildcat ... there, you'll find the Buildcat
 sources, issue tracker, and wiki.
 
-Next, you'll need to install Buildcat's :ref:`dependencies`.  Then, you'll be
+Next, you'll need to install Buildcat's dependencies, listed in setup.py.  Then, you'll be
 ready to get Buildcat's source code and use setuptools to install it. To do
 this, you'll almost certainly want to use "develop mode".  Develop mode is a a
 feature provided by setuptools that links the Buildcat source code into the
