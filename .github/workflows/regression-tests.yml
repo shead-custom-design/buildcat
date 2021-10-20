@@ -27,7 +27,10 @@ jobs:
         pip install behave coverage coveralls
         python setup.py develop
     - name: Run tests
-      run: python regression.py
+      run: |
+        coverage run --parallel-mode --source buildcat -m behave
+        coverage combine
+        coverage report
     - name: Upload coverage to Coveralls
       run: coveralls --service=github
       env:
