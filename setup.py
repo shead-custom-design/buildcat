@@ -36,7 +36,7 @@ setup(
     install_requires=[
         "arrow",
         "blessings",
-        "redis",
+        "redis<4.0",
         "rq",
     ],
     maintainer="Timothy M. Shead",
