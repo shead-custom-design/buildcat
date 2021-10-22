@@ -7,6 +7,12 @@
 Release Notes
 =============
 
+Buildcat 0.4.1 - October 22nd, 2021
+-----------------------------------
+
+* Updated the way we collect code coverage data.
+* Switched from Zulip to Github Discussions for support.
+
 Buildcat 0.4.0 - October 14th, 2021
 -----------------------------------
 

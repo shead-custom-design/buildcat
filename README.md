@@ -9,7 +9,7 @@ Buildcat is the elegant, minimalist render farm based on [RQ](http://python-rq.o
 
 You can see the full Buildcat documentation with tutorials at
 https://buildcat.readthedocs.io ... for questions, comments, or suggestions, get
-in touch with our team at https://buildcat.zulipchat.com.
+in touch with our team at https://github.com/shead-custom-design/buildcat/discussions.
 
 License
 =======

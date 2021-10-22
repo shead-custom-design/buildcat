@@ -14,7 +14,7 @@
 
 """Provides the Buildcat public API, for use by clients and integrations."""
 
-__version__ = "0.5.0-dev"
+__version__ = "0.4.1"
 
 import functools
 import getpass

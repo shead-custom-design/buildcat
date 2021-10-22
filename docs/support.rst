@@ -20,7 +20,7 @@ Our coverage statistics are updated automatically when modifications are committ
 
 For Buildcat questions, comments, or suggestions, get in touch with the team using chat at:
 
-* https://buildcat.zulipchat.com
+* https://github.com/shead-custom-design/buildcat/discussions
 
 Otherwise, you can contact Tim directly:
 

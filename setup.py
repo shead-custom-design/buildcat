@@ -43,7 +43,7 @@ setup(
     maintainer_email="tim@shead-custom-design.gov",
     packages=find_packages(),
     project_urls={
-        "Chat": "https://buildcat.zulipchat.com",
+        "Chat": "https://github.com/shead-custom-design/buildcat/discussions",
         "Coverage": "https://coveralls.io/r/shead-custom-design/buildcat",
         "Documentation": "https://buildcat.readthedocs.io",
         "Issue Tracker": "https://github.com/shead-custom-design/buildcat/issues",
