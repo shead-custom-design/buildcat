@@ -37,11 +37,15 @@ parser = argparse.ArgumentParser(description="Command line client for Buildcat: 
 parser.add_argument("--debug", action="store_true", help="Verbose logging output.")
 subparsers = parser.add_subparsers(title="commands (choose one)", dest="command")
 
+# certificate-info
+subparser = subparsers.add_parser("certificate-info", help="Display information about a TLS certificate.")
+subparser.add_argument("path", help="Path to the certificate file.")
+
 # client-keygen
 subparser = subparsers.add_parser("client-keygen", help="Generate client key and certificate for TLS encryption.")
 subparser.add_argument("--country", default="US", help="Certificate country. Default: %(default)s")
 subparser.add_argument("--days", type=int, default=365, help="Length of time the certificate will be valid. Default: %(default)s")
-subparser.add_argument("--email", default=None, help="Certificat email. Default: %(default)s")
+subparser.add_argument("--email", default=None, help="Certificate email. Default: %(default)s")
 subparser.add_argument("--locality", default="Albuquerque", help="Certificate locality. Default: %(default)s")
 subparser.add_argument("--name", default="*", help="Client name. Default: %(default)s")
 subparser.add_argument("--organization", default="Buildcat", help="Certificate organization. Default: %(default)s")
@@ -125,7 +129,7 @@ subparser.add_argument("--storage", default="buildcat.aof", help="Persistent sto
 subparser = subparsers.add_parser("server-keygen", help="Generate server key and certificate for TLS encryption.")
 subparser.add_argument("--country", default="US", help="Certificate country. Default: %(default)s")
 subparser.add_argument("--days", type=int, default=365, help="Length of time the certificate will be valid. Default: %(default)s")
-subparser.add_argument("--email", default=None, help="Certificat email. Default: %(default)s")
+subparser.add_argument("--email", default=None, help="Certificate email. Default: %(default)s")
 subparser.add_argument("--locality", default="Albuquerque", help="Certificate locality. Default: %(default)s")
 subparser.add_argument("--name", default="127.0.0.1", help="Server name. Default: %(default)s")
 subparser.add_argument("--organization", default="Buildcat", help="Certificate organization. Default: %(default)s")
@@ -166,6 +170,10 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG if arguments.debug else logging.INFO)
     log = logging.getLogger()
     log.name = os.path.basename(sys.argv[0])
+
+    # certificate-info
+    if arguments.command == "certificate-info":
+        buildcat.check_call(["openssl", "x509", "-in", arguments.path, "-text"])
 
     # client-keygen
     if arguments.command == "client-keygen":
