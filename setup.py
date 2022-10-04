@@ -38,6 +38,7 @@ setup(
         "blessings",
         "redis<4.0",
         "rq",
+        "tqdm",
     ],
     maintainer="Timothy M. Shead",
     maintainer_email="tim@shead-custom-design.gov",
