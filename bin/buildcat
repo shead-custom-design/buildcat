@@ -152,6 +152,17 @@ subparser.add_argument("--port", type=int, default=6379, help="Server port. Defa
 subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering. Default: use all GPUs.")
 subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle. Default: %(default)s")
 
+# workers
+subparser = subparsers.add_parser("workers", help="Start multiple Buildcat workers.")
+subparser.add_argument("--count", "-n", type=int, default=1, help="Number of workers to start. Default: %(default)s")
+subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
+subparser.add_argument("--max-jobs", default=None, type=int, help="Maximum number of jobs to execute. Default: unlimited")
+subparser.add_argument("--no-fork", action="store_true", help="Use non-forking workers for collecting code coverage.")
+subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
+subparser.add_argument("--redshift-gpu", action="append", help="Specify GPU indices to use for Redshift rendering. Default: use all GPUs.")
+subparser.add_argument("--session-name", "-s", default="buildcat-workers", help="tmux session name.  Default: %(default)s")
+subparser.add_argument("queues", default=["default"], nargs="*", help="Server queues to handle. Default: %(default)s")
+
 # worker-info
 subparser = subparsers.add_parser("worker-info", help="Retrieve information about a worker.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
@@ -377,6 +388,26 @@ if __name__ == "__main__":
         else:
             worker = rq.Worker(arguments.queues, connection=connection, serializer=buildcat.Serializer)
         worker.work(max_jobs=arguments.max_jobs)
+
+
+    # workers
+    if arguments.command == "workers":
+        command = []
+        for rank in range(arguments.count):
+            if rank == 0:
+                command += ["tmux", "new-session", "-s", arguments.session_name]
+            else:
+                command += [";", "new-window", "-d"]
+
+            command += ["-n", f"worker-{rank}"]
+
+            command += ["buildcat", "worker", "--host", arguments.host, "--port", str(arguments.port)]
+            if arguments.max_jobs is not None:
+                command += ["--max-jobs", arguments.max_jobs]
+            if arguments.no_fork:
+                command += ["--no-fork"]
+            command += arguments.queues
+        buildcat.check_call(command)
 
 
     # worker-info
