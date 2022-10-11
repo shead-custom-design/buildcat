@@ -79,7 +79,8 @@ subparser.add_argument("--queue", default="default", help="Server queue to ping.
 subparser = subparsers.add_parser("houdini-render-ifd", help="Submit Houdini .ifd render jobs.")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
-subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
+subparser.add_argument("--queue", default="default", help="server queue to use for rendering. default: %(default)s")
+subparser.add_argument("--timeout", type=int, default=15 * 60, help="Job timeout in seconds. default: %(default)s")
 subparser.add_argument("ifdfile", nargs="+", help="Houdini .ifd file(s) to render with mantra.")
 
 # houdini-render-hip
@@ -281,7 +282,7 @@ if __name__ == "__main__":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         ifdfiles = [buildcat.require_relative_path(ifdfile, "Houdini .ifd file must be a relative path.") for ifdfile in arguments.ifdfile]
         for ifdfile in tqdm.tqdm(ifdfiles, unit="frame"):
-            job = buildcat.submit(queue, "buildcat.hou.render_ifd", ifdfile)
+            job = buildcat.submit(queue, "buildcat.hou.render_ifd", ifdfile, job_timeout=arguments.timeout)
         print(f"Submitted {len(ifdfiles)} job(s).")
 
 
