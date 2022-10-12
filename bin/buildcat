@@ -85,11 +85,12 @@ subparser.add_argument("ifdfile", nargs="+", help="Houdini .ifd file(s) to rende
 
 # houdini-render-hip
 subparser = subparsers.add_parser("houdini-render-hip", help="Submit a Houdini .hip render job.")
+subparser.add_argument("--frames", action=FramesAction, default="1", help="Frame(s) to render.  Default: %(default)s")
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
 subparser.add_argument("--rop", default="/out/mantra_ipr", help="ROP to use for rendering. Default: %(default)s")
-subparser.add_argument("--frames", action=FramesAction, default="1", help="Frame(s) to render.  Default: %(default)s")
+subparser.add_argument("--timeout", type=int, default=15 * 60, help="Job timeout in seconds. default: %(default)s")
 subparser.add_argument("hipfile", help="Houdini .hip file to render.")
 
 # modo-info
@@ -106,6 +107,7 @@ subparser.add_argument("--queue", default="default", help="Server queue to ping.
 subparser.add_argument("--start", type=int, default=0, help="First frame to render. Default: %(default)s")
 subparser.add_argument("--step", type=int, default=1, help="Interval between rendered frames. Default: %(default)s.")
 subparser.add_argument("--stop", type=int, default=1, help="One past the last frame to render. Default: %(default)s")
+subparser.add_argument("--timeout", type=int, default=15 * 60, help="Job timeout in seconds. default: %(default)s")
 subparser.add_argument("lxofile", help="Modo .lxo file to render.")
 
 # redshift-info
@@ -119,6 +121,7 @@ subparser = subparsers.add_parser("redshift-render", help="Submit a Redshift ren
 subparser.add_argument("--host", default="127.0.0.1", help="Server address. Default: %(default)s")
 subparser.add_argument("--port", type=int, default=6379, help="Server port. Default: %(default)s")
 subparser.add_argument("--queue", default="default", help="Server queue to use for rendering. Default: %(default)s")
+subparser.add_argument("--timeout", type=int, default=15 * 60, help="Job timeout in seconds. default: %(default)s")
 subparser.add_argument("rsfile", help="Redshift .rs file to render.")
 
 # server
@@ -290,7 +293,7 @@ if __name__ == "__main__":
     if arguments.command == "houdini-render-hip":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         hipfile = buildcat.require_relative_path(arguments.hipfile, "Houdini .hip file must be a relative path.")
-        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile=hipfile, rop=arguments.rop, frames=arguments.frames)
+        job = buildcat.submit(queue, "buildcat.hou.render_hip", hipfile=hipfile, rop=arguments.rop, frames=arguments.frames, job_timeout=arguments.timeout)
         print(f"Submitted job {job.id}")
 
 
@@ -305,7 +308,7 @@ if __name__ == "__main__":
     if arguments.command == "modo-render":
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
         lxofile = buildcat.require_relative_path(arguments.lxofile, "Modo .lxo file must be a relative path.")
-        job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop, arguments.step))
+        job = buildcat.submit(queue, "buildcat.modo.split_frames", lxofile, (arguments.start, arguments.stop, arguments.step), job_timeout=arguments.timeout)
         print(f"Submitted job {job.id}")
 
 
@@ -320,7 +323,7 @@ if __name__ == "__main__":
     if arguments.command == "redshift-render":
         rsfile = buildcat.require_relative_path(arguments.rsfile, "Redshift .rs file must be a relative path.")
         connection, queue = buildcat.queue(queue=arguments.queue, host=arguments.host, port=arguments.port)
-        job = buildcat.submit(queue, "buildcat.redshift.render", rsfile)
+        job = buildcat.submit(queue, "buildcat.redshift.render", rsfile, job_timeout=arguments.timeout)
         print(f"Submitted job {job.id}")
 
 
