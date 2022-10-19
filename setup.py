@@ -36,7 +36,7 @@ setup(
     install_requires=[
         "arrow",
         "blessings",
-        "redis<4.0",
+        "redis",
         "rq",
         "tqdm",
     ],
