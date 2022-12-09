@@ -1,6 +1,6 @@
 # Welcome!
 
-<img src="artwork/buildcat.png" width="300" style="float:right"/>
+<img src="artwork/logo.png" width="300" style="float:right"/>
 
 Buildcat is the elegant, minimalist render farm based on [RQ](http://python-rq.org), featuring:
 
