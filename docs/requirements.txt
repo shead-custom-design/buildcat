@@ -1,7 +1,11 @@
+arrow
+blessings
 nbsphinx
 redis
+rq
 sphinx >= 3.5
 sphinx-argparse
 sphinx-gallery
 sphinx_rtd_theme
 sphinx-tabs
+tqdm
