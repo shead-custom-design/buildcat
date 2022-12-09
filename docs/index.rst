@@ -1,4 +1,4 @@
-.. image:: ../artwork/buildcat.png
+.. image:: ../artwork/logo.png
   :width: 300px
   :align: right
 
@@ -19,15 +19,15 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   design.rst
-   basic-setup.rst
+   installation.rst
+   tutorial.rst
    user-guide.rst
    commands.rst
+   development.rst
    reference.rst
    compatibility.rst
-   developers.rst
-   support.rst
    release-notes.rst
+   support.rst
 
 Indices and tables
 ==================

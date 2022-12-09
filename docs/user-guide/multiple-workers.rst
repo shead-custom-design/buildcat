@@ -1,4 +1,4 @@
-.. image:: ../../artwork/buildcat.png
+.. image:: ../../artwork/logo.png
   :width: 200px
   :align: right
 
@@ -9,7 +9,7 @@ Multiple Worker Setup
 
 This section covers the additional details you'll need to setup a real Buildcat
 render farm on multiple machines.  If you haven't already, we strongly
-recommend that you create a single-machine farm using the :ref:`basic-setup`
+recommend that you create a single-machine farm using the :ref:`tutorial`
 documentation before proceeding.
 
 Shared Storage
@@ -46,7 +46,7 @@ We'll use the address `192.168.2.1` for our server throughout the rest of this s
 Server
 ------
 
-When we ran the Buildcat server in :ref:`basic-setup`, it defaulted to the
+When we ran the Buildcat server in :ref:`tutorial`, it defaulted to the
 loopback address `127.0.0.1`, which meant that it would only accept connections
 from workers and clients running on the same host.  Now, we need the server to
 accept connections from other machines, using a public server address.  To do

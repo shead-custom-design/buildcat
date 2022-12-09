@@ -9,7 +9,7 @@ buildcat
 --------
 
 .. argparse::
-    :module: cicada.cli
+    :module: buildcat.cli
     :func: parser
     :prog: buildcat
 

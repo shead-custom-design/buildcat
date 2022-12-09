@@ -1,38 +1,31 @@
-.. image:: ../artwork/buildcat.png
+.. image:: ../artwork/logo.png
   :width: 200px
   :align: right
 
-.. _developers:
+.. _development:
 
-Developers
-==========
-
-Even if you're not in a position to contribute code to Buildcat, there are many
-ways you can help the project out:
-
-* Show us cool stuff that you rendered using Buildcat!
-* Tell us if Buildcat doesn't work for your pipeline.
-* Help us write documentation.
-* Spread the word!
+Development
+===========
 
 Getting Started
 ---------------
 
 If you haven't already, you'll want to get familiar with the Buildcat repository
 at http://github.com/shead-custom-design/buildcat ... there, you'll find the Buildcat
-sources, issue tracker, and wiki.
+sources, issue tracker, discussions, and wiki.
 
-Next, you'll need to install Buildcat's dependencies, listed in setup.py.  Then, you'll be
-ready to get Buildcat's source code and use setuptools to install it. To do
-this, you'll almost certainly want to use "develop mode".  Develop mode is a a
-feature provided by setuptools that links the Buildcat source code into the
-install directory instead of copying it ... that way you can edit the source
-code in your git sandbox, and you don't have to re-install it to test your
-changes::
+Next, you'll need to install all of the extra dependencies needed for Buildcat development::
 
-    $ git clone https://github.com/sandialabs/buildcat.git
+    $ pip install buildcat[all]
+
+Then, you'll be ready to obtain Buildcat's source code and install it using "editable mode".  Editable
+mode is a feature provided by `pip` that links the Buildcat source code into the install directory
+instead of copying it ... that way you can edit the source code in your git sandbox, and you don't
+have to keep re-installing it to test your changes::
+
+    $ git clone https://github.com/shead-custom-design/buildcat.git
     $ cd buildcat
-    $ python setup.py develop
+    $ pip install --editable .
 
 Versioning
 ----------
@@ -60,7 +53,7 @@ Test Coverage
 
 When you run the test suite with `regression.py`, it also automatically
 generates code coverage statistics.  To see the coverage results, open
-`.cover/index.html` in a web browser.
+`buildcat/.cover/index.html` in a web browser.
 
 Building the Documentation
 --------------------------

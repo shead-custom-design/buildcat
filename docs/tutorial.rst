@@ -1,13 +1,19 @@
-.. image:: ../artwork/buildcat.png
+.. image:: ../artwork/logo.png
   :width: 200px
   :align: right
 
-.. _basic-setup:
+.. _tutorial:
 
-Basic Setup
-===========
+Tutorial
+========
 
-We strongly recommend you follow these instructions to quickly setup a
+We created Buildcat because we were frustrated with the complexity and builtin
+assumptions of other render farms.  Buildcat is written in Python for
+portability, simplicity, and flexibility.  It runs on MacOS, Linux, and Windows
+(using WSL), requires little-to-no configuration, and uses existing open source
+software wherever possible instead of reinventing wheels.
+
+We strongly recommend you follow this tutorial to quickly setup a
 minimal-but-complete Buildcat render farm on a single machine. It's quick and
 easy, and once you've done it on one machine, you'll have a good feel for the
 process.  Then, individual articles in the :ref:`user_guide` will
@@ -15,11 +21,67 @@ discuss how to setup a full-fledged render farm deployed on multiple
 hosts.
 
 .. tip::
-    Make sure you read :ref:`design` and understand how the parts of a Buildcat
-    farm work together before you start!
+    While Buildcat is as simple as we could possibly make it, there are still
+    many moving parts in a render farm - make sure you read and  understand the
+    following description of how the parts of a Buildcat farm work together
+    before you start!
+
+Your Buildcat render farm will have all of the following:
+
+Server
+    The server keeps track of your render jobs, dispatching them to
+    workers as the workers become available.  In Buildcat, the server
+    is actually an instance of the widely used open source `Redis <https://redis.io>`_
+    key-value store.
+
+Workers
+    Workers are the processes that carry out the actual work of rendering.
+    Idle workers receive jobs from the server and execute commands with your
+    DCC tools, typically (but not necessarily) instructions to render an image
+    from an animation.  Buildcat workers are actually instances of `RQ <https://python-rq.org>`_
+    workers executing Buildcat integrations written for rendering.
+
+Integrations
+    Integrations are the DCC-tool-specific code provided by Buildcat for
+    rendering.  Technically, integrations are Python functions that are called
+    when a job is executed by a worker.  You can easily use your own functions
+    with Buildcat workers, written to work with your own tools for any purpose,
+    not just rendering.
+
+Clients
+    Clients submit jobs to the server to be rendered by workers.  Any Python
+    code can use the `RQ <https://python-rq.org>`_ API to submit a job to the
+    server, and Buildcat provides API to make job submissions even easier.
+    Buildcat also provides a command-line client that can be used to submit
+    jobs using any of Buildcat's builtin integrations.  Using the API or the
+    command line tool, jobs can  be submitted from within your DCC tool using
+    scripting.
+
+Shared Storage.
+    Typically, a render job includes just the name of a scene file and a range
+    of frames to render. To run the job, your workers must have access to the
+    scene file and all of the assets it uses, including geometry, cached
+    simulations, textures, and-so-on.  Typically, this means setting up a network
+    share that all of the workers can reach.  It also means that artists will need
+    to ensure that scene files and assets are moved to this location prior to job
+    submission.
+
+Network Connectivity.
+    To function, all clients and all workers must be able to communicate with the
+    server.
+
+
+.. note::
+    The server, workers, and clients in your Buildcat render farm can be run on any
+    combination of hosts, including any mixture of platforms.
+
 
 Platform Notes
 --------------
+
+Now you're ready to run through the tutorial.  In the sections that follow, we
+will put platform-specific information in tabs, as you see here ... please choose
+the tab for your platform before proceeding:
 
 .. tabs::
 
@@ -101,8 +163,9 @@ installing `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_, a
 minimalist subset of Anaconda.  Anaconda is a portable (MacOS, Linux, and
 Windows) Python distribution that you can use to conveniently install Python in
 your home directory.  This is incredibly useful because installing the rest of
-Buildcat's dependencies is easy and consistent across platforms, and you will
-be leaving your system-provided Python in pristine condition.
+Buildcat's dependencies is easy and consistent across platforms, you get access
+to the latest versions of Python and related software, and your separate Anaconda
+install leaves your system-provided Python in pristine condition.
 
 The remainder of this documentation will assume that you have Anaconda
 installed.  You can still obtain Buildcat's dependencies using other methods,
