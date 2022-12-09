@@ -1,4 +1,5 @@
 nbsphinx
+redis
 sphinx >= 3.5
 sphinx-argparse
 sphinx-gallery
