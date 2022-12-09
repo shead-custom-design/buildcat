@@ -177,7 +177,7 @@ subparser.add_argument("--queue", default="default", help="Server queue. Default
 # version
 subparser = subparsers.add_parser("version", help="Print the version of this client.")
 
-if __name__ == "__main__":
+def main():
     arguments = parser.parse_args()
 
     if arguments.command is None:

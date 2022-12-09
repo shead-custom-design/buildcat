@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This file only contains a selection of the most common options. For a full
+# list see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -72,10 +76,11 @@ master_doc = "index"
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
+nitpicky = True
 
 # -- nbsphinx options --------------------------------------------------------
 
-nbsphinx_execute = "never" if "READTHEDOCS" in os.environ else "always"
+nbsphinx_execute = "never"
 
 nbsphinx_thumbnails = {
     "user-guide/houdini": "_static/houdini.png",
@@ -103,3 +108,4 @@ def warn_undocumented_members(app, what, name, obj, options, lines):
 def setup(app):
     app.connect("autodoc-process-docstring", warn_undocumented_members);
 
+tls_verify = False
