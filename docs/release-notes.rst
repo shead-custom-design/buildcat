@@ -7,6 +7,17 @@
 Release Notes
 =============
 
+Buildcat 0.5.0 - December 9th, 2022
+-----------------------------------
+
+* Added certificate-info command to show certificate file details.
+* Added workers command to start more than one worker at a time.
+* Updated houdini-render-ifd command can submit multiple jobs at once.
+* Set a reasonable default timeout for the houdini-render-ifd command.
+* Added timeout arguments for houdini-render-hip, modo-render, and redshift-render commands.
+* Allow newer Redis versions.
+* Switched to pyproject.toml and flit for packaging.
+
 Buildcat 0.4.1 - October 22nd, 2021
 -----------------------------------
 
